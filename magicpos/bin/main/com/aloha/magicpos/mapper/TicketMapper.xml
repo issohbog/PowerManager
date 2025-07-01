@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aloha.magicpos.mapper.TicketMapper">
+
+    <!-- 전체 이용권 조회 -->
+    <select id="findAll" resultType="Ticket">
+        SELECT *
+        FROM tickets
+        ORDER BY price ASC
+    </select>
+
+    <!-- (선택) 특정 이용권 조회 -->
+    <select id="findById" resultType="Ticket">
+        SELECT *
+        FROM tickets
+        WHERE no = #{no}
+    </select>
+
+</mapper>
