@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.header {
+    background-color: #2C3E50; /* 어두운 파랑 */
+    display: flex;
+    padding: 10px;
+}
+
+.menu-item {
+    background-color: #F7D358; /* 노란색 */
+    color: black;
+    padding: 10px 20px;
+    margin-right: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.menu-item:hover {
+    background-color: #FFEB3B;
+}

@@ -5,7 +5,7 @@
 
 <mapper namespace="com.aloha.magicpos.mapper.UserTicketMapper">
 
-    <resultMap id="UserTicketMap" type="com.aloha.magicpos.domain.UserTicket">
+    <resultMap id="UserTicketMap" type="com.aloha.magicpos.domain.UserTickets">
         <id property="no" column="no" />
         <result property="uNo" column="u_no" />
         <result property="tNo" column="t_no" />
