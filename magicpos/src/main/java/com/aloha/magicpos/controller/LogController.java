@@ -12,55 +12,55 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.aloha.magicpos.domain.Logs;
-import com.aloha.magicpos.mapper.LogMapper;
+import com.aloha.magicpos.service.LogService;
 
 @Controller
 @RequestMapping("/logs")
 public class LogController {
     @Autowired
-    private LogMapper logMapper;
+    private LogService logService;
 
     // 🔸 로그 등록
     @PostMapping
-    public String insert(@RequestBody Logs logs) {
-        logMapper.insert(logs);
+    public String insert(@RequestBody Logs logs) throws Exception{
+        logService.insert(logs);
         return "created";
     }
 
     // 🔹 전체 로그 조회
     @GetMapping
-    public List<Logs> findAll() {
-        return logMapper.findAll();
+    public List<Logs> findAll() throws Exception{
+        return logService.findAll();
     }
 
     // 🔹 유저 번호로 조회
     @GetMapping("/user-no/{uNo}")
-    public List<Logs> findByUserNo(@PathVariable Long uNo) {
-        return logMapper.findByUserNo(uNo);
+    public List<Logs> findByUserNo(@PathVariable Long uNo) throws Exception{
+        return logService.findByUserNo(uNo);
     }
 
     // 🔹 사용자 이름으로 조회
     @GetMapping("/username")
-    public List<Logs> findByUsername(@RequestParam String username) {
-        return logMapper.findByUsername(username);
+    public List<Logs> findByUsername(@RequestParam String username) throws Exception{
+        return logService.findByUsername(username);
     }
 
     // 🔹 사용자 아이디로 조회
     @GetMapping("/user-id")
-    public List<Logs> findByUserId(@RequestParam String id) {
-        return logMapper.findByUserId(id);
+    public List<Logs> findByUserId(@RequestParam String id) throws Exception{
+        return logService.findByUserId(id);
     }
 
     // 🔹 좌석 아이디로 조회
     @GetMapping("/seat-id")
-    public List<Logs> findBySeatId(@RequestParam String seatId) {
-        return logMapper.findBySeatId(seatId);
+    public List<Logs> findBySeatId(@RequestParam String seatId) throws Exception{
+        return logService.findBySeatId(seatId);
     }
 
     // 🔹 로그 액션 타입으로 조회
     @GetMapping("/action-type")
-    public List<Logs> findByActionType(@RequestParam String actionType) {
-        return logMapper.findByActionType(actionType);
+    public List<Logs> findByActionType(@RequestParam String actionType) throws Exception{
+        return logService.findByActionType(actionType);
     }
 
     // 🔹 로그 액션타입 + 키워드 검색
@@ -68,7 +68,7 @@ public class LogController {
     public List<Logs> searchLogsByActionTypeAndKeyword(
             @RequestParam String actionType,
             @RequestParam String keyword
-    ) {
-        return logMapper.searchLogsByActionTypeAndKeyword(actionType, keyword);
+    ) throws Exception{
+        return logService.searchLogsByActionTypeAndKeyword(actionType, keyword);
     }
 }
