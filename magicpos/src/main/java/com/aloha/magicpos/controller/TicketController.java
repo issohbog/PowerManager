@@ -10,27 +10,27 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.aloha.magicpos.domain.Tickets;
-import com.aloha.magicpos.mapper.TicketMapper;
+import com.aloha.magicpos.service.TicketService;
 
 @Controller
 @RequestMapping("/tickets")
 public class TicketController {
 
     @Autowired
-    private TicketMapper ticketMapper;
+    private TicketService ticketService;
 
     // ✅ 전체 이용권 목록
     @GetMapping
-    public String list(Model model) {
-        List<Tickets> tickets = ticketMapper.findAll();
+    public String list(Model model) throws Exception {
+        List<Tickets> tickets = ticketService.findAll();
         model.addAttribute("tickets", tickets);
         return "ticket/list"; // => /templates/ticket/list.html
     }
 
     // ✅ 단일 이용권 상세보기 (선택적)
     @GetMapping("/{no}")
-    public String view(@PathVariable Long no, Model model) {
-        Tickets ticket = ticketMapper.findById(no);
+    public String view(@PathVariable Long no, Model model) throws Exception {
+        Tickets ticket = ticketService.findById(no);
         model.addAttribute("ticket", ticket);
         return "ticket/view"; // => /templates/ticket/view.html
     }
