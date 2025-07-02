@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.aloha.magicpos.domain.Users;
+import com.aloha.magicpos.mapper.LogMapper;
 import com.aloha.magicpos.mapper.UserMapper;
+import com.aloha.magicpos.util.LogHelper;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -18,6 +20,9 @@ import jakarta.servlet.http.HttpSession;
 public class LoginController {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private LogMapper logMapper;
     
     // 🔐 로그인 폼
     @GetMapping("/login")
@@ -40,12 +45,22 @@ public class LoginController {
 
         // 로그인 성공 → 세션 저장
         session.setAttribute("loginUser", user);
+
+        // ✅ 로그인 로그 기록
+        LogHelper.writeLog(session, "LOGIN", user.getUsername() + " 로그인 성공", logMapper);
+
         return "redirect:/"; // 로그인 후 메인 페이지로
     }
 
     // 🔓 로그아웃
     @GetMapping("/logout")
     public String logout(HttpSession session) {
+        Users user = (Users) session.getAttribute("loginUser");
+
+        if (user != null) {
+        // ✅ 로그아웃 로그 기록
+        LogHelper.writeLog(session, "LOGOUT", user.getUsername() + " 로그아웃", logMapper);
+        }
         session.invalidate();
         return "redirect:/auth/login?logout";
     }
