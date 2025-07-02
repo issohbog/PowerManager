@@ -12,23 +12,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.aloha.magicpos.domain.Products;
-import com.aloha.magicpos.mapper.CategoryMapper;
-import com.aloha.magicpos.mapper.ProductMapper;
+import com.aloha.magicpos.service.ProductService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/products")
 public class ProductController {
 
     @Autowired
-    private ProductMapper productMapper;
+    private ProductService productService;
 
     @Autowired
-    private CategoryMapper categoryMapper;
+    private CategoryService categoryService;
+
     
     // 전체 상품 목록
     @GetMapping
     public String list(Model model) {
-        List<Products> products = productMapper.findAll();
+        List<Products> products = productService.findAll();
         model.addAttribute("products", products);
         return "product/list";
     }
@@ -37,23 +40,23 @@ public class ProductController {
     @GetMapping("/new")
     public String form(Model model) {
         model.addAttribute("product", new Products());
-        model.addAttribute("categories", categoryMapper.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "product/form";
     }
 
     // 상품 등록 처리
     @PostMapping
     public String insert(Products product) {
-        productMapper.insert(product);
+        productService.insert(product);
         return "redirect:/products";
     }
 
     // 상품 수정 폼
     @GetMapping("/{no}/edit")
     public String edit(@PathVariable Long no, Model model) {
-        Products product = productMapper.findById(no);
+        Products product = productService.findById(no);
         model.addAttribute("product", product);
-        model.addAttribute("categories", categoryMapper.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "product/form";
     }
 
@@ -61,21 +64,21 @@ public class ProductController {
     @PostMapping("/{no}")
     public String update(@PathVariable Long no, Products product) {
         product.setNo(no);
-        productMapper.update(product);
+        productService.update(product);
         return "redirect:/products";
     }
 
     // 상품 삭제
     @PostMapping("/{no}/delete")
     public String delete(@PathVariable Long no) {
-        productMapper.delete(no);
+        productService.delete(no);
         return "redirect:/products";
     }
 
     // 🔍 상품 검색 (통합 검색)
     @GetMapping("/search")
     public String search(@RequestParam String keyword, Model model) {
-        List<Products> products = productMapper.searchProductsAll(keyword);
+        List<Products> products = productService.searchProductsAll(keyword);
         model.addAttribute("products", products);
         return "product/list";
     }
@@ -85,7 +88,7 @@ public class ProductController {
     public String filter(@RequestParam("cNo") long cNo,
                          @RequestParam("keyword") String keyword,
                          Model model) {
-        List<Products> products = productMapper.searchProducts(cNo, keyword);
+        List<Products> products = productService.searchProducts(cNo, keyword);
         model.addAttribute("products", products);
         return "product/list";
     }
