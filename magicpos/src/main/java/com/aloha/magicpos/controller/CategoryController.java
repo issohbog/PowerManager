@@ -14,51 +14,50 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.magicpos.domain.Categories;
-import com.aloha.magicpos.mapper.CategoryMapper;
+import com.aloha.magicpos.service.CategoryService;
 
 @Controller
 @RequestMapping("/categories")
 public class CategoryController {
 
     @Autowired
-    private CategoryMapper categoryMapper;
+    private CategoryService categoryService;
 
     // 카테고리 등록
     @PostMapping
     @ResponseBody
-    public String create(@RequestBody Categories category) {
-        categoryMapper.insert(category);
+    public String create(@RequestBody Categories category) throws Exception{
+        categoryService.create(category);
         return "created";
     }
 
     // 카테고리 수정
     @PutMapping("/{no}")
     @ResponseBody
-    public String update(@PathVariable Long no, @RequestBody Categories category) {
-        category.setNo(no);
-        categoryMapper.update(category);
+    public String update(@PathVariable Long no, @RequestBody Categories category)  throws Exception{
+        categoryService.update(no, category);
         return "updated";
     }
 
     // 카테고리 삭제
     @DeleteMapping("/{no}")
     @ResponseBody
-    public String delete(@PathVariable Long no) {
-        categoryMapper.delete(no);
+    public String delete(@PathVariable Long no)  throws Exception{
+        categoryService.delete(no);
         return "deleted";
     }
 
     // 전체 조회
     @GetMapping
     @ResponseBody
-    public List<Categories> findAll() {
-        return categoryMapper.findAll();
+    public List<Categories> findAll()  throws Exception{
+        return categoryService.findAll();
     }
 
     // 단일 조회
     @GetMapping("/{no}")
     @ResponseBody
-    public Categories findByNo(@PathVariable Long no) {
-        return categoryMapper.findByNo(no);
+    public Categories findByNo(@PathVariable Long no)  throws Exception{
+        return categoryService.findByNo(no);
     }
 }
