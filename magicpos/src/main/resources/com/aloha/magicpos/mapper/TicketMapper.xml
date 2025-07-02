@@ -6,14 +6,14 @@
 <mapper namespace="com.aloha.magicpos.mapper.TicketMapper">
 
     <!-- 전체 이용권 조회 -->
-    <select id="findAll" resultType="Ticket">
+    <select id="findAll" resultType="Tickets">
         SELECT *
         FROM tickets
         ORDER BY price ASC
     </select>
 
     <!-- (선택) 특정 이용권 조회 -->
-    <select id="findById" resultType="Ticket">
+    <select id="findById" resultType="Tickets">
         SELECT *
         FROM tickets
         WHERE no = #{no}

@@ -5,7 +5,7 @@
 
 <mapper namespace="com.aloha.magicpos.mapper.AuthMapper">
 
-    <resultMap id="AuthMap" type="com.aloha.magicpos.domain.Auth">
+    <resultMap id="AuthMap" type="com.aloha.magicpos.domain.Auths">
         <id property="no" column="no"/>
         <result property="uNo" column="u_no"/>
         <result property="auth" column="auth"/>
@@ -17,7 +17,7 @@
     </select>
 
     <!-- 사용자 권한 등록 (회원가입 시) -->
-    <insert id="insert" parameterType="com.aloha.magicpos.domain.Auth" useGeneratedKeys="true" keyProperty="no">
+    <insert id="insert" parameterType="com.aloha.magicpos.domain.Auths" useGeneratedKeys="true" keyProperty="no">
         INSERT INTO auths (u_no, auth)
         VALUES (#{uNo}, #{auth})
     </insert>
