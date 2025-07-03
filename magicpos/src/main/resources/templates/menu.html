@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" 
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/user/main_layout}">
+<body layout:fragment="content">
+        <div style="display: flex;">
+            <div style="width: 80%; height: calc(100vh - 100px); display: flex; flex-direction: column; background-color: #2a3b4d;overflow: hidden; color: white; font-family: sans-serif;">
+                
+                <!-- 🔹 상단 메뉴 영역 -->
+                <div style="width:100%; height:50px; background-color: #5D6D7E; display: flex; align-items: center; display: flex; gap: 20px; padding: 0 40px; border-radius: 40px; margin: 0 auto; margin-top: 10px;">
+                    <button style="background: none; border: none; cursor: pointer;">
+                        <img th:src="@{/images/뒤로가기.png}" alt="뒤로가기" style="width: 24px; height: 24px;">
+                    </button>
+                    
+                    
+                    <!-- 메뉴 탭 -->
+                    <div style="display: flex; gap: 10px;">
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: white;">추천 상품</button>
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: white;">세트 메뉴</button>
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: white;">라면</button>
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: #ffd700; font-weight: bold;">밥</button>
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: white;">간식</button>
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: white;">cafe</button>
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: white;">스낵</button>
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: white;">아이스크림</button>
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: white;">추가사리</button>
+                        <button style="font-size:16px; padding: 0 20px; background: none; border: none; color: white;">디스펜서 음료</button>
+                    </div>
+                    
+                    <button style="background: none; border: none; cursor: pointer;">
+                        <img th:src="@{/images/다음페이지.png}" alt="뒤로가기" style="width: 24px; height: 24px;">
+                    </button>
+                    
+                    <!-- 검색창 -->
+                    <div style="position: relative; display: inline-block;">
+                        <input type="text" placeholder="상품명 검색"
+                        style="width: 220px; border-radius: 10px; border: none;
+                    background-color: #333333; color: #7B8D8E; padding: 5px 35px 5px 10px;">
+    <img th:src="@{/images/검색.png}"
+    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+                width: 18px; height: 18px;">
+    </div>
+    
+</div>
+
+<!-- 🔹 상품 리스트 영역 -->
+<div style="flex-grow: 1; overflow-y: auto; padding: 20px; height:calc(100% - 45px)">
+    <!-- 5열 설정 -->
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px;">
+        
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/고기짬뽕밥.png}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">고기짬뽕밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/떡만두국.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">떡만두국</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/삼겹비빔밥.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">삼겹비빔밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/쭈삼.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">쭈삼덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/직화불고기.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">직화불고기 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/안동찜닭.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">안동찜닭 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/제육덮밥.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">제육 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/춘천닭갈비덮밥.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">춘천닭갈비 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/치즈간계밥.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">치즈간장계란X2밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/카레덮밥.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">카레 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/치킨마요.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">치킨마요 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/빅치킨불닭마요.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">빅치킨불닭마요 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/돈가스마요.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">돈까스마요 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/돈가스마요.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">돈까스불닭마요 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/치킨카레.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">치킨카레덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/돈가스김치나베.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">돈까스 김치나베</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/참치마요.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">참치마요 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/소불고기덮밥.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">소불고기 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/오삼불고기덮밥.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">오삼 덮밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+        <!-- 상품 카드 반복 -->
+        <div style="height: 240px; background-color: white; border-radius: 8px; overflow: hidden; text-align: center; color: black;">
+            <img th:src="@{/images/해물짬뽕밥.jpg}" style="width: 100%; height: 170px; object-fit: cover;">
+            <div style="height:70px; display: flex; flex-direction: column; justify-content: space-between; padding:10px">
+                <div style="text-align:start; width: 100%;">해물 짬뽕밥</div>
+                <div style="text-align:start; width: 100%; font-weight: bold;">8,000원</div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+    <div style="width: 20%; height: calc(100vh - 100px); background-color: #2C3E50; color: white; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; font-size: 14px; gap: 15px;">
+        
+        <!-- 좌석번호 / 주문내역보기 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size:16px; ">
+            <div>좌석번호 <strong th:text="${seat.seatId}">50</strong></div>
+            <button id="openModalBtn" style="font-size: 12px; padding: 2px 8px; border-radius: 4px; background-color: #3d4b5a; border: none; color: white;">주문내역보기</button>
+        </div>
+        
+        <!-- 장바구니 목록 -->
+        <div style="width:100%; flex-grow: 1; background-color: #1A252F; border-radius: 8px;
+                        display: flex; flex-direction: column; justify-content: space-between;">
+
+    <!-- 상품 목록 묶음 -->
+    <div style="display: flex; flex-direction: column; overflow-y: auto;">
+        <!-- 상품 1 -->
+        <div style="padding: 0 15px; margin-top:10px">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #f0f0f0;  padding:10px">
+                <div style="display: flex; flex-direction: column; gap:10px;">
+                    <div style="font-weight: bold; font-size:16px; ">직화불고기 덮밥</div>
+                    <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                        <img th:src="@{/images/마이너스 하얀색.png}" alt=""><span>11</span><img th:src="@{/images/플러스 노란색.png}" alt="">
+                    </div>
+                </div>
+                <div style="text-align: right; font-size:16px; display: flex; flex-direction: column; gap:10px">
+                    <div>80,000원</div>
+                    <button style="background: none; border: none; color: white; font-size: 16px; text-align: end;">✕</button>
+                </div>
+            </div>
+        </div>
+        <!-- 상품 1 -->
+        <div style="padding: 0 15px; margin-top:10px">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #f0f0f0;  padding:10px">
+                <div style="display: flex; flex-direction: column; gap:10px;">
+                    <div style="font-weight: bold; font-size:16px; ">직화불고기 덮밥</div>
+                    <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                        <img th:src="@{/images/마이너스 하얀색.png}" alt=""><span>11</span><img th:src="@{/images/플러스 노란색.png}" alt="">
+                    </div>
+                </div>
+                <div style="text-align: right; font-size:16px; display: flex; flex-direction: column; gap:10px">
+                    <div>80,000원</div>
+                    <button style="background: none; border: none; color: white; font-size: 16px; text-align: end;">✕</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- 총 주문금액 -->
+    <div style="width: 100%; height: 65px; background-color: #222B33; border-radius: 4px;
+                            font-size: 16px; display: flex; justify-content: center; align-items: center; gap:15px">
+                    총 주문금액 <span th:text="${totalPrice}">16,000원</span>
+                </div>
+            </div>
+            
+            
+            
+            <!-- 결제 수단 선택 (현금 / 신용카드 / QR) -->
+            <div style="width:100%; display: flex; padding: 10px; background-color: #1e2b38; border-radius: 6px; gap:10px; font-size:16px">
+                <label style="width: calc((100% - 20px) / 3); height: 50px; background-color: #3d4b5a; padding: 10px;
+                            text-align: center; border-radius: 5px; color: white; cursor: pointer;
+                            display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <input type="radio" name="payment" value="cash" style="display: none;">현금
+                </label>
+                
+                <label style="width: calc((100% - 20px) / 3); height: 50px; background-color: #3d4b5a; padding: 10px;
+                            text-align: center; border-radius: 5px; color: white; cursor: pointer;
+                            display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <input type="radio" name="payment" value="card" style="display: none;">신용카드
+                </label>
+                
+                <label style="width: calc((100% - 20px) / 3); height: 50px; background-color: #3d4b5a; padding: 10px;
+                            text-align: center; border-radius: 5px; color: white; cursor: pointer;
+                            display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <input type="radio" name="payment" value="qr" style="display: none;">💬<br>QR 결제
+                </label>
+            </div>
+            
+            
+            <!-- 지폐 단위 금액 선택 -->
+            <div style="width:343px; height:72px; padding: 5px; background-color: #1e2b38; border-radius: 6px; font-size: 13px; display: flex; flex-direction: column;">
+
+                <!-- 첫 줄: 금액 단위 선택 -->
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 7px; padding: 5px;">
+                    <label style="display: flex; align-items: center; gap: 4px;">
+                        <input type="radio" name="cash" value="50000"> 5만원
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 4px;">
+                        <input type="radio" name="cash" value="10000"> 1만원
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 4px;">
+                        <input type="radio" name="cash" value="5000"> 5천원
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 4px;">
+                        <input type="radio" name="cash" value="1000"> 1천원
+                    </label>
+                </div>
+
+                <!-- 두 번째 줄: 자동/수동 선택 + 입력창 -->
+                <div style="display: flex; align-items: center; gap: 25px; padding: 5px;">
+                    <label style="display: flex; align-items: center; gap: 4px;">
+                        <input type="radio" name="cash" value="auto"> 금액에 맞게
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 4px;">
+                        <input type="radio" name="cash" value="manual"> 직접 입력
+                    </label>
+                    <input type="text" style="width: 100px; padding: 4px 6px; border: none; border-radius: 4px;">
+                </div>
+            </div>
+
+            
+            
+            <!-- 요청사항 -->
+            <input type="text" maxlength="50" placeholder="요청사항은 50자 까지 입력할 수 있습니다."style=
+            " width: 100%;
+            background-color: #1e2b38;
+            color: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 20px;
+            padding: 10px 16px;
+            font-size: 16px;
+            outline: none;">
+
+
+    <!-- 주문하기 버튼 -->
+        <button style="width: 100%; background-color: #f1c40f; color: black; font-weight: bold; border: none; padding: 15px 0; border-radius: 6px; font-size: 16px;">주문하기</button>
+    </div>
+</div>
+<script src="../static/js/userscript.js"></script>
+</body>
+</html>

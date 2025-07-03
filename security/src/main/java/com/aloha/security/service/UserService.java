@@ -1,6 +1,5 @@
 package com.aloha.security.service;
 
-import org.apache.ibatis.annotations.Param;
 
 import com.aloha.security.domain.UserAuth;
 import com.aloha.security.domain.Users;
