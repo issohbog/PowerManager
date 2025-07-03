@@ -8,6 +8,17 @@
             "mainClass": "com.aloha.magicpos.MagicposApplication",
             "projectName": "magicpos",
             "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=62911 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=magicpos"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SecurityApplication<security>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.aloha.security.SecurityApplication",
+            "projectName": "security",
+            "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
     ]
