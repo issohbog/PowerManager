@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    </style>
+</head>
+<body>
+    
+    <div style="width: 20%; height: calc(100vh - 100px); background-color: #2C3E50; color: white; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; font-size: 14px; gap: 15px;">
+
+        <!-- 좌석번호 / 주문내역보기 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size:16px; ">
+            <div>좌석번호 <strong th:text="${seat.seatNo}">50</strong></div>
+            <button style="font-size: 12px; padding: 2px 8px; border-radius: 4px; background-color: #3d4b5a; border: none; color: white;">주문내역보기</button>
+        </div>
+
+        <!-- 장바구니 목록 -->
+        <div style="width:100%; flex-grow: 1; background-color: #1A252F; border-radius: 8px;
+                    display: flex; flex-direction: column; justify-content: space-between;">
+
+            <!-- 상품 목록 묶음 -->
+            <div style="display: flex; flex-direction: column; overflow-y: auto;">
+                <!-- 상품 1 -->
+                <div style="padding: 0 15px; margin-top:10px">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #f0f0f0;  padding:10px">
+                        <div style="display: flex; flex-direction: column; gap:10px;">
+                            <div style="font-weight: bold; font-size:16px; ">직화불고기 덮밥</div>
+                            <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                                <img src="../static/images/마이너스 하얀색.png" alt=""><span>11</span><img src="../static/images/플러스 노란색.png" alt="">
+                            </div>
+                        </div>
+                        <div style="text-align: right; font-size:16px; display: flex; flex-direction: column; gap:10px">
+                            <div>80,000원</div>
+                            <button style="background: none; border: none; color: white; font-size: 16px; text-align: end;">✕</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- 상품 1 -->
+                <div style="padding: 0 15px; margin-top:10px">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #f0f0f0;  padding:10px">
+                        <div style="display: flex; flex-direction: column; gap:10px;">
+                            <div style="font-weight: bold; font-size:16px; ">직화불고기 덮밥</div>
+                            <div style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                                <img src="../static/images/마이너스 하얀색.png" alt=""><span>11</span><img src="../static/images/플러스 노란색.png" alt="">
+                            </div>
+                        </div>
+                        <div style="text-align: right; font-size:16px; display: flex; flex-direction: column; gap:10px">
+                            <div>80,000원</div>
+                            <button style="background: none; border: none; color: white; font-size: 16px; text-align: end;">✕</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 총 주문금액 -->
+            <div style="width: 100%; height: 65px; background-color: #222B33; border-radius: 4px;
+                        font-size: 16px; display: flex; justify-content: center; align-items: center; gap:15px">
+                총 주문금액 <span th:text="${totalPrice}">16,000원</span>
+            </div>
+        </div>
+
+
+
+        <!-- 결제 수단 선택 (현금 / 신용카드 / QR) -->
+        <div style="width:100%; display: flex; padding: 10px; background-color: #1e2b38; border-radius: 6px; gap:10px; font-size:16px">
+            <label style="width: calc((100% - 20px) / 3); height: 50px; background-color: #3d4b5a; padding: 10px;
+                        text-align: center; border-radius: 5px; color: white; cursor: pointer;
+                        display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <input type="radio" name="payment" value="cash" style="display: none;">현금
+            </label>
+
+            <label style="width: calc((100% - 20px) / 3); height: 50px; background-color: #3d4b5a; padding: 10px;
+                        text-align: center; border-radius: 5px; color: white; cursor: pointer;
+                        display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <input type="radio" name="payment" value="card" style="display: none;">신용카드
+            </label>
+
+            <label style="width: calc((100% - 20px) / 3); height: 50px; background-color: #3d4b5a; padding: 10px;
+                        text-align: center; border-radius: 5px; color: white; cursor: pointer;
+                        display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <input type="radio" name="payment" value="qr" style="display: none;">💬<br>QR 결제
+            </label>
+        </div>
+
+
+        <!-- 지폐 단위 금액 선택 -->
+        <div style="padding: 10px; background-color: #1e2b38; border-radius: 6px; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; font-size: 16px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <label><input type="radio" name="cash" value="50000"> 5만원</label>
+                <label><input type="radio" name="cash" value="10000"> 1만원</label>
+                <label><input type="radio" name="cash" value="5000"> 5천원</label>
+                <label><input type="radio" name="cash" value="1000"> 1천원</label>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label><input type="radio" name="cash" value="auto"> 금액에 맞게</label>
+                <label><input type="radio" name="cash" value="manual"> 직접 입력</label>
+                <input type="text" style="flex: 1; padding: 4px; border: none; border-radius: 4px;">
+            </div>
+        </div>
+
+
+        <!-- 요청사항 -->
+         <input type="text" maxlength="50" placeholder="요청사항은 50자 까지 입력할 수 있습니다."style=
+         " width: 100%;
+           background-color: #1e2b38;
+           color: white;
+           border: 1px solid #f0f0f0;
+           border-radius: 20px;
+           padding: 10px 16px;
+           font-size: 16px;
+           outline: none;">
+
+
+        <!-- 주문하기 버튼 -->
+        <button style="width: 100%; background-color: #f1c40f; color: black; font-weight: bold; border: none; padding: 15px 0; border-radius: 6px; font-size: 16px;">주문하기</button>
+    </div>
+
+
+</body>
+</html>
