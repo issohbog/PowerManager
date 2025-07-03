@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- link -->
+    <th:block th:replace="~{fragments/admin/admin_link::link}"></th:block>
+</head>
+
+<body>
+    <!-- header -->
+    <th:block th:replace="~{fragments/admin/admin_header :: header}"></th:block>
+
+    <!-- ⭐ content -->
+    <div class="main-container">
+        <!-- 왼쪽 사이드바 -->
+        <th:block th:replace="~{fragments/admin/admin_sidebar-left :: sidebarLeft}"></th:block>
+
+        <!-- 본문 (여기에 페이지 내용 들어감) -->
+        <main>
+        <div layout:fragment="content"></div>
+        </main>
+
+        <!-- 오른쪽 사이드바 -->
+        <th:block th:replace="~{fragments/admin/admin_sidebar-right :: sidebarRight}"></th:block>
+    </div>
+
+    <!-- script -->
+    <!-- <th:block th:replace="~{fragments/script::script}"></th:block> -->
+</body>
+</html>
