@@ -8,6 +8,9 @@ public interface UserService {
     // 회원 전체 조회
     public List<Users> selectAll() throws Exception;
 
+    // 조건 별 회원 조회(아이디, 이름, 전화번호로 검색)
+    public List<Users> searchUsers(String type, String keyword);
+
     // 단일 회원 조회 (번호 기준)
     public Users selectById(long no) throws Exception;
 

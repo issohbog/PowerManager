@@ -12,6 +12,9 @@ public interface UserMapper {
     // 회원 전체 조회
     List<Users> selectAll();
 
+    // 회원 조회시 검색기능
+    List<Users> searchBy(@Param("type") String type, @Param("keyword") String keyword);
+
     // 단일 회원 조회 (번호 기준)
     Users selectById(@Param("no") long no);
 

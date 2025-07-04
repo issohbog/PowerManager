@@ -12,6 +12,23 @@
         ORDER BY seat_id
     </select>
 
+    <!-- 전체 좌석 조회 (좌석 데시보드 용 - 사용자 정보, 남은시간 도 조회) -->
+    <select id="findAllSeatWithUsage" resultType="Seats">
+        SELECT 
+            s.seat_id, 
+            s.seat_name, 
+            s.seat_status, 
+            u.username, 
+            ut.remain_time AS reaminTime
+        FROM seats s 
+        LEFT JOIN orders o ON s.seat_id = o.seat_id AND o.order_status = 1
+        LEFT JOIN users u ON o.u_no = u.no 
+        LEFT JOIN user_tickets ut ON u.no = ut.u_no
+        ORDER BY seat_id
+    </select>
+
+
+
     <!-- 단일 좌석 조회 -->
     <select id="findById" resultType="Seats">
         SELECT *

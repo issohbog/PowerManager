@@ -1,6 +1,6 @@
 package com.aloha.magicpos.domain;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
@@ -15,6 +15,6 @@ public class Users {
     private String email;
     private String phone;
     private String memo;
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
     private List<Auths> authList;
 }

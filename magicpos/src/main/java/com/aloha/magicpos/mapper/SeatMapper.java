@@ -13,6 +13,9 @@ public interface SeatMapper {
     // 전체 좌석 조회
     List<Seats> findAll();
 
+    // 전체 좌석 조회 (좌석 데시보드 용 - 사용자 정보, 남은시간 도 조회)
+    List<Seats> findAllSeatWithUsage();
+
     // 단일 좌석 조회
     Seats findById(@Param("seatId") String seatId);
 

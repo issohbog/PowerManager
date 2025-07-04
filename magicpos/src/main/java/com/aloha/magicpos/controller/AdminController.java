@@ -1,7 +1,5 @@
 package com.aloha.magicpos.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,50 +7,36 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.aloha.magicpos.domain.Seats;
+import com.aloha.magicpos.service.SeatService;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-
+@RequiredArgsConstructor
 @Slf4j
 @Controller
 public class AdminController {
+
+
+    private final SeatService seatService;
+
     @GetMapping("/admin")
-    public String getMethodName(Model model) {
-        if (model.getAttribute("seats") == null) {
-            List<Map<String, Object>> seats = new ArrayList<>();
-            for (int i = 1; i <= 43; i++) {
-                Map<String, Object> seat = new HashMap<>();
-                seat.put("no", i);
+    public String findAllSeat(Model model) {
+        
+        Map<String, List<Seats>> seatMap = seatService.getSeatSections();
 
-                // 예시로 상태를 순환: available, in-use, cleaning, broken
-                String[] statuses = {"available", "in-use", "cleaning", "broken"};
-                String status = statuses[i % statuses.length];
-                seat.put("status", status);
-
-                boolean isInUse = status.equals("in-use");
-                int timeLeft = isInUse ? i * 5 : 0;
-                String userName = isInUse ? "User" + i : null;
-
-                seat.put("timeLeft", timeLeft);
-                seat.put("userName", userName);
-
-
-                // ✅ className 결정
-                String className = switch (status) {
-                    case "broken" -> "broken";
-                    case "cleaning" -> "cleaning";
-                    case "in-use" -> (timeLeft > 60 ? "in-use-green" : "in-use-red");
-                    default -> "available";
-                };
-                
-                seat.put("className", className);
-                
-                seats.add(seat);
-            }
-            model.addAttribute("seats", seats);
-        }
+        model.addAttribute("topSeats", seatMap.get("topSeats"));
+        model.addAttribute("middleSeats", seatMap.get("middleSeats"));
+        model.addAttribute("bottomSeats", seatMap.get("bottomSeats"));
+    
         return "pages/admin/seat_status";
+    
     }
     
+    
 }
+    
+
     
 

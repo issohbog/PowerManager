@@ -27,14 +27,22 @@ public class UserController {
     private AuthService authService;
     
     // ✅ 전체 회원 목록
-    @GetMapping
-    public String list(Model model) throws Exception {
-        List<Users> users = userService.selectAll();
-        model.addAttribute("users", users);
-        return "user/list";
+    @GetMapping("/admin/userlist")
+    public String list(
+        @RequestParam(value = "type", required = false) String type, 
+        @RequestParam(value = "keyword", required = false) String keyword, 
+        Model model
+        ) throws Exception {
+
+        List<Users> userList = userService.searchUsers(type, keyword);
+        model.addAttribute("users", userList);
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
+
+        return "pages/admin/admin_user_list";
     }
 
-    // ✅ 회원 등록 폼
+    // ✅ 회원 등록 폼(사용안함)
     @GetMapping("/new")
     public String form(Model model) {
         model.addAttribute("user", new Users());
@@ -42,7 +50,7 @@ public class UserController {
     }
 
     // ✅ 회원 등록 처리
-    @PostMapping
+    @PostMapping("/save")
     public String insert(Users user) throws Exception {
         userService.insert(user);
 
@@ -52,7 +60,7 @@ public class UserController {
         auth.setAuth("ROLE_USER");
         authService.insert(auth);
 
-        return "redirect:/users";
+        return "redirect:/users/admin/userlist";
     }
 
     // ✅ 회원 수정 폼
@@ -64,11 +72,11 @@ public class UserController {
     }
 
     // ✅ 회원 수정 처리
-    @PostMapping("/{no}")
-    public String update(@PathVariable Long no, Users user) throws Exception {
-        user.setNo(no);
+    @PostMapping("/update")
+    public String update(Users user) throws Exception {
+        
         userService.update(user);
-        return "redirect:/users";
+        return "redirect:/users/admin/userlist";
     }
 
     // ✅ 회원 삭제

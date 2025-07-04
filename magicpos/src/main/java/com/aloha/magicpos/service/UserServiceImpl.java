@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.mapper.UserMapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service("UserService")
 public class UserServiceImpl implements UserService {
 
@@ -19,6 +21,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Users> selectAll() throws Exception {
         return userMapper.selectAll();
+    }
+
+    @Override
+    public List<Users> searchUsers(String type, String keyword) {
+        // 전체보기 (검색 조건 없을 때)
+        if (keyword == null || keyword.isBlank() || type == null || type.isBlank()) {
+            return userMapper.selectAll();
+        }
+
+        // 검색어 있을 경우 
+        return userMapper.searchBy(type, keyword);
     }
 
 
@@ -61,5 +74,8 @@ public class UserServiceImpl implements UserService {
     public List<Users> searchUsersByKeyword(String keyword) throws Exception {
         return userMapper.searchUsersByKeyword(keyword);
     }
+
+
+
     
 }
