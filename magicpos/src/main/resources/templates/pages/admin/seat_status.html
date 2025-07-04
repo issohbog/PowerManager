@@ -11,17 +11,19 @@
 
         <!-- ✅ 상단 12개 좌석 -->
         <div class="seat-row row-6">
-          <div th:each="seat : ${seats}"
-              th:if="${seat.no >= 1 and seat.no <= 12}"
-              class="seat"
-              th:classappend="' ' + ${seat.className}">
+          <div th:each="seat : ${topSeats}" class="seat" th:classappend="' ' + ${seat.className}">
+            <div class="seat-number"
+                th:text="${seat.seatName + (seat.className == 'broken' ? ' (고장)' : '')}"></div>
 
+            <div class="member-name"
+                th:if="${seat.username}" th:text="${seat.username}"></div>
 
-            <div class="seat-number" th:text="${seat.no + (seat.status == 'broken' ? ' (고장)' : '')}"></div>
-            <div class="member-name" th:if="${seat.userName}" th:text="${seat.userName}"></div>
-            <div class="time-left" th:if="${seat.status == 'in-use'}"
-                th:text="${#numbers.formatInteger(seat.timeLeft / 60, 2) + ':' + #numbers.formatInteger(seat.timeLeft % 60, 2)} + ' 남음'"></div>
-            <button class="clear-btn" th:if="${seat.status == 'cleaning'}">
+            <div class="time-left"
+                th:if="${seat.remainTime != null and (seat.className == 'in-use-green' or seat.className == 'in-use-red')}"
+                th:text="${(seat.remainTime / 60)} + ':' + (seat.remainTime % 60) + ' 남음'">
+            </div>
+
+            <button class="clear-btn" th:if="${seat.className == 'cleaning'}">
               <img th:src="@{/images/trash.png}" alt="휴지통" />
             </button>
           </div>
@@ -29,16 +31,20 @@
 
         <!-- ✅ 중간 10개 좌석 -->
         <div class="seat-row row-5" id="middle-seats">
-          <div th:each="seat : ${seats}"
-              th:if="${seat.no >= 13 and seat.no <= 22}"
-              class="seat"
-              th:classappend="' ' + ${seat.className}">
+          <div th:each="seat : ${middleSeats}" class="seat" th:classappend="' ' + ${seat.className}">
 
-            <div class="seat-number" th:text="${seat.no + (seat.status == 'broken' ? ' (고장)' : '')}"></div>
-            <div class="member-name" th:if="${seat.userName}" th:text="${seat.userName}"></div>
-            <div class="time-left" th:if="${seat.status == 'in-use'}"
-                th:text="${#numbers.formatInteger(seat.timeLeft / 60, 2) + ':' + #numbers.formatInteger(seat.timeLeft % 60, 2)} + ' 남음'"></div>
-            <button class="clear-btn" th:if="${seat.status == 'cleaning'}">
+            <div class="seat-number"
+                th:text="${seat.seatName + (seat.className == 'broken' ? ' (고장)' : '')}"></div>
+
+            <div class="member-name"
+                th:if="${seat.username}" th:text="${seat.username}"></div>
+
+            <div class="time-left"
+                th:if="${seat.className.contains('in-use') and seat.remainTime != null}"
+                th:text="${#numbers.formatInteger(seat.remainTime / 60, 2) + ':' + #numbers.formatInteger(seat.remainTime % 60, 2)} + ' 남음'">
+            </div>
+
+            <button class="clear-btn" th:if="${seat.className == 'cleaning'}">
               <img th:src="@{/images/trash.png}" alt="휴지통" />
             </button>
           </div>
@@ -46,23 +52,26 @@
 
         <!-- ✅ 하단 12개 좌석 -->
         <div class="seat-row row-6" id="bottom-seats">
-        <div th:each="seat : ${seats}"
-              th:if="${seat.no >= 23 and seat.no <= 34}"
-              class="seat"
-              th:classappend="' ' + ${seat.className}">
+         <div th:each="seat : ${bottomSeats}" class="seat" th:classappend="' ' + ${seat.className}">
 
 
-            <div class="seat-number" th:text="${seat.no + (seat.status == 'broken' ? ' (고장)' : '')}"></div>
-            <div class="member-name" th:if="${seat.userName}" th:text="${seat.userName}"></div>
-            <div class="time-left" th:if="${seat.status == 'in-use'}"
-                th:text="${#numbers.formatInteger(seat.timeLeft / 60, 2) + ':' + #numbers.formatInteger(seat.timeLeft % 60, 2)} + ' 남음'"></div>
-            <button class="clear-btn" th:if="${seat.status == 'cleaning'}">
+            <div class="seat-number"
+                th:text="${seat.seatName + (seat.className == 'broken' ? ' (고장)' : '')}"></div>
+
+            <div class="member-name"
+                th:if="${seat.username}" th:text="${seat.username}"></div>
+
+            <div class="time-left"
+                th:if="${seat.className.contains('in-use') and seat.remainTime != null}"
+                th:text="${#numbers.formatInteger(seat.remainTime / 60, 2) + ':' + #numbers.formatInteger(seat.remainTime % 60, 2)} + ' 남음'">
+            </div>
+
+            <button class="clear-btn" th:if="${seat.className == 'cleaning'}">
               <img th:src="@{/images/trash.png}" alt="휴지통" />
             </button>
           </div>
         </div>
 
-      </div>
 
       <div class="counter">카운터</div>
     </div>

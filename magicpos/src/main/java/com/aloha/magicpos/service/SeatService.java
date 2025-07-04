@@ -9,6 +9,12 @@ public interface SeatService {
     // 전체 좌석 조회
     public List<Seats> findAll() throws Exception;
 
+    // 전체 좌석 조회 (좌석 데시보드 용 - 사용자 정보, 남은시간 도 조회)
+    List<Seats> findAllSeatWithUsage();
+
+    // 좌석 구간별 분리 
+    Map<String, List<Seats>> getSeatSections();
+
     // 단일 좌석 조회
     public Seats findById(String seatId) throws Exception;
 
