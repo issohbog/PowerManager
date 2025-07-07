@@ -66,7 +66,7 @@ public class UserController {
     // ✅ 회원 수정 폼
     @GetMapping("/{no}/edit")
     public String edit(@PathVariable Long no, Model model) throws Exception {
-        Users user = userService.selectById(no);
+        Users user = userService.selectByNo(no);
         model.addAttribute("user", user);
         return "user/form";
     }

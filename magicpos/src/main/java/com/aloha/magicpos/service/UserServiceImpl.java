@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Users selectById(long no) throws Exception {  
-        return userMapper.selectById(no);
+    public Users selectByNo(long no) throws Exception {  
+        return userMapper.selectByNo(no);
     }
 
     @Override

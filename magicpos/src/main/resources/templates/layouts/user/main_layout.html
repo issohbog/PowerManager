@@ -5,17 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- link -->
-    <!-- <th:block th:replace="~{fragments/link::link}"></th:block> -->
-    <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    img {
-        vertical-align: top;
-    }
-    </style>
+    <th:block th:replace="~{fragments/user/link::link}"></th:block>
 </head>
 <body>
     <!-- header -->
@@ -32,6 +22,7 @@
     <!-- script -->
     <!-- <th:block th:replace="~{fragments/user/modal/userscript::userscript}"></th:block> -->
 
-    <div th:replace="fragments/user/modal/orderModal::orderModal"></div>
+    <div th:replace="~{fragments/user/modal/orderModal::orderModal}"></div>
+    <div th:replace="~{fragments/user/modal/orderCompleteModal::orderCompleteModal}"></div>
 </body>
 </html>

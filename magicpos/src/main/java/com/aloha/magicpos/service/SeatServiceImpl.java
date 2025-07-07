@@ -88,6 +88,10 @@ public class SeatServiceImpl implements SeatService {
     }
 
 
+    @Override
+    public Map<String, Object> findSeatUsageInfoByUser(Long userNo) throws Exception {
+        return seatMapper.findSeatUsageInfoByUser(userNo);
+    }
 
 
 

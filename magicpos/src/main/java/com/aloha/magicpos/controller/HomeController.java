@@ -1,27 +1,115 @@
 package com.aloha.magicpos.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.aloha.magicpos.domain.Orders;
+import com.aloha.magicpos.domain.Products;
 import com.aloha.magicpos.domain.Seats;
-import com.aloha.magicpos.domain.Users;
+import com.aloha.magicpos.service.CartService;
+import com.aloha.magicpos.service.CategoryService;
+import com.aloha.magicpos.service.OrderService;
+import com.aloha.magicpos.service.ProductService;
+import com.aloha.magicpos.service.SeatService;
 
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class HomeController {
-    @GetMapping("/menu")
-    public String showMenuPage(Model model) {
-        // 사용자 정보 세팅 (임시)
-        Users user = new Users();
-        user.setUsername("user123"); // 임시 유저 이름
+    @Autowired
+    private ProductService productService;
 
-        model.addAttribute("user", user);
-        
-        Seats seat = new Seats();
-        seat.setSeatId("A10");
-        seat.setSeatName("10번");
-        seat.setSeatStatus(1L);
-        model.addAttribute("seat", seat);
-        return "menu"; // templates/menu.html
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private SeatService seatService;
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @GetMapping({"/menu", "/menu/search"})
+    public String menulist(@RequestParam(name = "keyword", required = false) String keyword, Model model, HttpSession session) throws Exception {
+
+        // ✅ 1. 세션에서 userNo 가져오기
+        Long userNo = (Long) session.getAttribute("userNo");
+
+        // ✅ 2. 세션에 없으면 임시 userNo로 설정
+        if (userNo == null) {
+            userNo = 1L; // 임시 유저 번호
+            session.setAttribute("userNo", userNo);
+        }
+
+        // ✅ 3. userNo로 모든 사용자 정보 + 좌석 정보 + 남은 시간 조회
+        Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
+        model.addAttribute("usageInfo", usageInfo);
+
+        // ✅ 4. 상품 목록 조회(검색 기능 포함)
+        List<Products> products;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            products = productService.searchProductsAll(keyword);
+        } else {
+            products = productService.findAll();
+        }
+        model.addAttribute("products", products);
+        // -------------------------------------------------------------------
+        // 장바구니
+        List<Map<String, Object>> cartList = cartService.getCartWithProductByUser(userNo);
+        if (cartList == null) {
+            cartList = new ArrayList<>();
+        }
+        model.addAttribute("cartList", cartList);
+
+        // 장바구니 총 주문 금액
+        int totalPrice = cartService.getTotalPrice(userNo);
+        model.addAttribute("totalPrice", totalPrice);
+ 
+        // 모달. 주문 목록
+        List<Orders> orderList = orderService.findOrdersByUser(userNo);
+        log.info("🧪 주문 목록: {}", orderList);
+        log.info("🧪 주문 개수: {}", (orderList != null ? orderList.size() : "null"));
+
+        // 진행중인 주문 목록 개수 : status != 2
+        long ongoingOrdersCount = orderList.stream().filter(order -> order.getOrderStatus() != 2).count();
+        List<Orders> ongoingOrderList = orderList.stream().filter(order -> order.getOrderStatus() != 2).toList();
+        model.addAttribute("ongoingOrdersCount", ongoingOrdersCount);
+        model.addAttribute("ongoingOrderList", ongoingOrderList);
+
+        // 히스토리 주문 목록 개수 : status = 2
+        long historyOrdersCount = orderList.stream().filter(order -> order.getOrderStatus() == 2).count();
+        List<Orders> historyOrderList = orderList.stream().filter(order -> order.getOrderStatus() == 2).toList();
+        model.addAttribute("historyOrdersCount", historyOrdersCount);
+        model.addAttribute("historyOrderList", historyOrderList);
+
+        model.addAttribute("orderList", orderList);
+
+
+
+        // 모달. 각 주문에 대한 상세 내역 묶기
+        Map<Long, List<Map<String, Object>>> orderDetailsMap = new HashMap<>();
+        for (Orders order : orderList) {
+            Long oNo = order.getNo();
+            List<Map<String, Object>> details = orderService.findDetailsWithProductNames(oNo);
+            if (details == null || details.isEmpty()) {
+                log.warn("❗ 주문 상세 없음: orderNo = {}", oNo);
+                details = new ArrayList<>();
+            }
+            orderDetailsMap.put(oNo, details);
+        }
+        model.addAttribute("orderDetailsMap", orderDetailsMap);
+        return "menu";
     }
 }
