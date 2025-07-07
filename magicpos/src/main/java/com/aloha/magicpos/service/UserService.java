@@ -12,7 +12,7 @@ public interface UserService {
     public List<Users> searchUsers(String type, String keyword);
 
     // 단일 회원 조회 (번호 기준)
-    public Users selectById(long no) throws Exception;
+    public Users selectByNo(long no) throws Exception;
 
     // 아이디로 회원 조회
     public Users findById(String id) throws Exception;

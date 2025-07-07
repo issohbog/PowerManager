@@ -42,7 +42,7 @@
     </select>
 
     <!-- 단일 회원 조회 -->
-    <select id="selectById" resultMap="UsersMap" parameterType="long">
+    <select id="selectByNo" resultMap="UsersMap" parameterType="long">
         SELECT * FROM users WHERE no = #{no}
     </select>
 

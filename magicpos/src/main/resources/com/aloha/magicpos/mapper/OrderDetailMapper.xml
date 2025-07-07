@@ -37,4 +37,12 @@
         WHERE o_no = #{oNo}
     </select>
 
+    <!-- 주문번호로 상품 이름 조회 -->
+    <select id="findDetailsWithProductNamesByOrderNo" resultType="map">
+        SELECT od.*, p.p_name
+        FROM orders_details od
+        JOIN products p ON od.p_no = p.no
+        WHERE od.o_no = #{oNo}
+    </select>
+
 </mapper>

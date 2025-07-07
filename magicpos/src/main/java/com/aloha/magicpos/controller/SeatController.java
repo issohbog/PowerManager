@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.magicpos.domain.Seats;
+import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.service.SeatService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -56,4 +58,13 @@ public class SeatController {
     public Map<String, Object> usageInfo(@PathVariable("seatId") String seatId) throws Exception {
         return seatService.findSeatUsageInfo(seatId);
     }
+
+    @GetMapping("/my/usage")
+    @ResponseBody
+    public Map<String, Object> usageInfo(HttpSession session) throws Exception {
+    Users loginUser = (Users) session.getAttribute("loginUser");
+    Long userNo = loginUser.getNo();
+    return seatService.findSeatUsageInfoByUser(userNo);
+    }
+
 }

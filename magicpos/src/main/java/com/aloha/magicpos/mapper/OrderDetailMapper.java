@@ -25,9 +25,6 @@ public interface OrderDetailMapper {
     // 주문 번호 기준 상세 목록 조회
     List<OrdersDetails> findByOrderNo(@Param("oNo") Long oNo);
 
-    // 주문 번호 + 상품 번호 기준 단일 상세 조회
-    OrdersDetails findByOrderNoAndProductNo(@Param("oNo") Long oNo, @Param("pNo") Long pNo);
-
     // 주문 번호 기준 상세 목록 + 상품명/가격 조인 조회
     List<Map<String, Object>> findDetailsWithProductNamesByOrderNo(@Param("oNo") Long oNo);
 }

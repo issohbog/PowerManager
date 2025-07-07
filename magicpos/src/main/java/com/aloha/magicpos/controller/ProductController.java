@@ -28,14 +28,15 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
-    
+
     // 전체 상품 목록
-    @GetMapping
+    @GetMapping("/productlist")
     public String list(Model model) throws Exception{
         List<Products> products = productService.findAll();
         model.addAttribute("products", products);
         return "product/list";
     }
+
 
     // 상품 등록 폼
     @GetMapping("/new")

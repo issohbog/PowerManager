@@ -95,6 +95,7 @@ public class UserController {
     }
 
     // ✅ 회원 수정 폼
+
     @GetMapping("/admin/{userNo}/info")
     @ResponseBody
     public Map<String, Object> getUserInfo(@PathVariable("userNo") Long userNo) throws Exception {
@@ -111,6 +112,7 @@ public class UserController {
         result.put("usedTime", usedTime);
 
         return result;      // json응답
+
     }
 
     // ✅ 회원 수정 처리

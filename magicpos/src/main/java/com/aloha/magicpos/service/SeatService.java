@@ -23,4 +23,8 @@ public interface SeatService {
 
     // 좌석 사용 정보 조회 (사용자, 남은 시간 등) throws Exception
     public Map<String, Object> findSeatUsageInfo(String seatId) throws Exception;
+
+    // 로그인한 유저 기준 좌석 사용 정보 조회
+    public Map<String, Object> findSeatUsageInfoByUser(Long userNo) throws Exception;
+
 }
