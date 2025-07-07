@@ -13,7 +13,7 @@ public interface UserMapper {
     List<Users> selectAll();
 
     // 단일 회원 조회 (번호 기준)
-    Users selectById(@Param("no") long no);
+    Users selectByNo(@Param("no") long no);
 
     // 아이디로 회원 조회
     Users findById(@Param("id") String id);

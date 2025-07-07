@@ -21,4 +21,7 @@ public interface SeatMapper {
 
     // 좌석 사용 정보 조회 (사용자, 남은 시간 등)
     Map<String, Object> findSeatUsageInfo(@Param("seatId") String seatId);
+
+    // 로그인한 유저 기준 좌석 사용 정보 조회
+    Map<String, Object> findSeatUsageInfoByUser(@Param("userNo") Long userNo);
 }

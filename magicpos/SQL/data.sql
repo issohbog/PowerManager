@@ -47,12 +47,28 @@ INSERT INTO categories (c_name) VALUES
 ('분류5');
 
 
-INSERT INTO products (c_no, p_name, p_price, img_path, description, sell_status, stock) VALUES
-(2, '상품1', 500, '/images/product1.jpg', '상품1 설명', 0, 10),
-(3, '상품2', 1000, '/images/product2.jpg', '상품2 설명', 1, 20),
-(4, '상품3', 1500, '/images/product3.jpg', '상품3 설명', 0, 30),
-(5, '상품4', 2000, '/images/product4.jpg', '상품4 설명', 1, 40),
-(1, '상품5', 2500, '/images/product5.jpg', '상품5 설명', 0, 50);
+INSERT INTO products (c_no, p_name, p_price, img_path, description, sell_status, stock)
+VALUES 
+(1, '고기짬뽕밥', 8000, '/images/고기짬뽕밥.png', '얼큰한 국물과 고기가 어우러진 짬뽕밥입니다.', true, 10),
+(1, '떡만두국', 8000, '/images/떡만두국.jpg', '쫄깃한 만두와 떡이 듬뿍 담긴 든든한 국물요리.', true, 10),
+(1, '삼겹비빔밥', 8000, '/images/삼겹비빔밥.jpg', '불맛 가득한 삼겹살과 신선한 야채가 어우러진 비빔밥.', true, 10),
+(1, '쭈삼덮밥', 8000, '/images/쭈삼.jpg', '쭈꾸미와 삼겹살의 환상적인 조합!', true, 10),
+(1, '직화불고기 덮밥', 8000, '/images/직화불고기.jpg', '불맛 가득한 직화불고기 덮밥입니다.', true, 10),
+(1, '안동찜닭 덮밥', 8000, '/images/안동찜닭.jpg', '간장 베이스의 달달한 안동찜닭을 덮밥으로 즐겨보세요.', true, 10),
+(1, '제육 덮밥', 8000, '/images/제육덮밥.jpg', '매콤달콤한 제육볶음이 올라간 든든한 한끼.', true, 10),
+(1, '춘천닭갈비 덮밥', 8000, '/images/춘천닭갈비덮밥.jpg', '춘천식 닭갈비 소스를 곁들인 덮밥!', true, 10),
+(1, '치즈간장계란X2밥', 8000, '/images/치즈간계밥.jpg', '치즈와 계란이 두 배! 고소하고 부드러운 맛.', true, 10),
+(1, '카레 덮밥', 8000, '/images/카레덮밥.jpg', '한국식 매콤한 카레로 즐기는 덮밥 한 그릇.', true, 10),
+(1, '치킨마요 덮밥', 8000, '/images/치킨마요.jpg', '고소한 치킨과 마요네즈가 어우러진 덮밥입니다.', true, 10),
+(1, '빅치킨불닭마요 덮밥', 8000, '/images/빅치킨불닭마요.jpg', '맵단맛이 중독성 있는 불닭소스와 치킨마요.', true, 10),
+(1, '돈까스마요 덮밥', 8000, '/images/돈가스마요.jpg', '바삭한 돈까스와 마요 소스의 환상 조합.', true, 10),
+(1, '돈까스불닭마요 덮밥', 8000, '/images/돈가스마요.jpg', '불닭 소스의 매콤함이 어우러진 돈까스마요.', true, 10),
+(1, '치킨카레덮밥', 8000, '/images/치킨카레.jpg', '치킨과 카레가 만난 든든한 메뉴.', true, 10),
+(1, '돈까스 김치나베', 8000, '/images/돈가스김치나베.jpg', '김치찌개 느낌의 따끈한 나베와 돈까스.', true, 10),
+(1, '참치마요 덮밥', 8000, '/images/참치마요.jpg', '담백한 참치와 고소한 마요네즈가 가득.', true, 10),
+(1, '소불고기 덮밥', 8000, '/images/소불고기덮밥.jpg', '달달한 소불고기와 밥의 완벽한 조합.', true, 10),
+(1, '오삼 덮밥', 8000, '/images/오삼불고기덮밥.jpg', '오징어와 삼겹살이 매콤하게 볶아진 덮밥.', true, 10),
+(1, '해물 짬뽕밥', 8000, '/images/해물짬뽕밥.jpg', '해물의 풍미가 살아있는 국물 덮밥.', true, 10);
 
 
 INSERT INTO seats (seat_id, seat_name, seat_status) VALUES
@@ -75,8 +91,7 @@ INSERT INTO carts (p_no, u_no, quantity) VALUES
 (1, 1, 1),
 (2, 2, 2),
 (3, 3, 3),
-(4, 4, 4),
-(5, 5, 5);
+(4, 4, 4)
 
 
 INSERT INTO user_tickets (u_no, t_no, remain_time, pay_at) VALUES
@@ -99,8 +114,7 @@ INSERT INTO orders_details (o_no, p_no, quantity) VALUES
 (1, 1, 1),
 (2, 2, 2),
 (3, 3, 3),
-(4, 4, 4),
-(5, 5, 5);
+(4, 4, 4)
 
 
 INSERT INTO seats_reservations (seat_id, t_no, u_no, start_time, end_time) VALUES
@@ -117,3 +131,4 @@ INSERT INTO logs (u_no, seat_id, action_type, description) VALUES
 (3, 'S3', 'LOGIN', '사용자3님이 로그인하셨습니다.'),
 (4, 'S4', 'LOGIN', '사용자4님이 로그인하셨습니다.'),
 (5, 'S5', 'LOGIN', '사용자5님이 로그인하셨습니다.');
+
