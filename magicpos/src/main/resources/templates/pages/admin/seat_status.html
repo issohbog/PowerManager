@@ -19,8 +19,8 @@
                 th:if="${seat.username}" th:text="${seat.username}"></div>
 
             <div class="time-left"
-                th:if="${seat.remainTime != null and (seat.className == 'in-use-green' or seat.className == 'in-use-red')}"
-                th:text="${(seat.remainTime / 60)} + ':' + (seat.remainTime % 60) + ' 남음'">
+                th:if="${seat.className != null and seat.className.contains('in-use') and seat.remainTime != null}"
+                th:text="|${#numbers.formatInteger(seat.remainTime / 60, 2)}:${#numbers.formatInteger(seat.remainTime % 60, 2)} 남음|">
             </div>
 
             <button class="clear-btn" th:if="${seat.className == 'cleaning'}">
@@ -40,8 +40,8 @@
                 th:if="${seat.username}" th:text="${seat.username}"></div>
 
             <div class="time-left"
-                th:if="${seat.className.contains('in-use') and seat.remainTime != null}"
-                th:text="${#numbers.formatInteger(seat.remainTime / 60, 2) + ':' + #numbers.formatInteger(seat.remainTime % 60, 2)} + ' 남음'">
+                th:if="${seat.className != null and seat.className.contains('in-use') and seat.remainTime != null}"
+                th:text="|${#numbers.formatInteger(seat.remainTime / 60, 2)}:${#numbers.formatInteger(seat.remainTime % 60, 2)} 남음|">
             </div>
 
             <button class="clear-btn" th:if="${seat.className == 'cleaning'}">
@@ -62,8 +62,8 @@
                 th:if="${seat.username}" th:text="${seat.username}"></div>
 
             <div class="time-left"
-                th:if="${seat.className.contains('in-use') and seat.remainTime != null}"
-                th:text="${#numbers.formatInteger(seat.remainTime / 60, 2) + ':' + #numbers.formatInteger(seat.remainTime % 60, 2)} + ' 남음'">
+                th:if="${seat.className != null and seat.className.contains('in-use') and seat.remainTime != null}"
+                th:text="|${#numbers.formatInteger(seat.remainTime / 60, 2)}:${#numbers.formatInteger(seat.remainTime % 60, 2)} 남음|">
             </div>
 
             <button class="clear-btn" th:if="${seat.className == 'cleaning'}">
@@ -72,6 +72,10 @@
           </div>
         </div>
 
+        <div th:each="seat : ${topSeats}">
+          <div th:text="'좌석이름: ' + ${seat.seatName}"></div>
+          <div th:text="'사용자: ' + ${seat.username}"></div>
+        </div>
 
       <div class="counter">카운터</div>
     </div>

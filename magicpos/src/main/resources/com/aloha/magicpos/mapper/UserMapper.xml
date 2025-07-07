@@ -51,6 +51,11 @@
         SELECT * FROM users WHERE id = #{id}
     </select>
 
+    <!-- userNo로 회원 조회 -->
+    <select id="selectByNo" parameterType="long" resultType="Users">
+        SELECT * FROM users WHERE no = #{userNo}
+    </select>
+
     <!-- 회원가입 -->
     <insert id="insert" parameterType="com.aloha.magicpos.domain.Users" useGeneratedKeys="true" keyProperty="no">
         INSERT INTO users (id, username, password, birth, email, phone, memo)

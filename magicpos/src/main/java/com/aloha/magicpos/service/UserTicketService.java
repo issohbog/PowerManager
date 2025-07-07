@@ -14,6 +14,10 @@ public interface UserTicketService {
     // 특정 사용자 이용권 내역 조회
     public List<UserTickets> findByUserNo(long uNo) throws Exception;
 
-    // 특정 사용자 최근 남은 시간 조회
+    // 특정 사용자 최근 남은 시간 조회(특정 티켓-단건 에 대한 남은시간)
     public Integer findRemainTimeByUserNo(long uNo) throws Exception;
+
+    // 특정 사용자 총 남은 시간 
+    public Long getTotalRemainTime(Long userNo);
+    
 }

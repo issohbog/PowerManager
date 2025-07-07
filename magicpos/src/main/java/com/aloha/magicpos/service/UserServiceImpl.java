@@ -3,10 +3,12 @@ package com.aloha.magicpos.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.mapper.UserMapper;
+import com.aloha.magicpos.util.PasswordUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceImpl implements UserService {
 
     @Autowired private UserMapper userMapper;
+    @Autowired PasswordEncoder passwordEncoder;
 
     @Override
     public List<Users> selectAll() throws Exception {
@@ -46,9 +49,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean insert(Users user) throws Exception {
-        return userMapper.insert(user) > 0; 
+    public Users selectByNo(Long userNo) {
+        return userMapper.selectByNo(userNo);
     }
+
+
+    @Override
+    public Users insert(Users user) throws Exception {
+        // 임시 비밀번호 생성 
+        String tempPassword = PasswordUtil.generateTempPassword();
+
+        // 비밀번호 암호화 
+        String encoded = passwordEncoder.encode(tempPassword);
+        user.setPassword(encoded);
+
+        // 생성한 임시 비밀번호 반환
+        user.setTempPassword(tempPassword);
+
+        // DB에 저장 
+        userMapper.insert(user);
+        return user; 
+    }
+
+
 
     @Override
     public boolean update(Users user) throws Exception {
@@ -74,6 +97,7 @@ public class UserServiceImpl implements UserService {
     public List<Users> searchUsersByKeyword(String keyword) throws Exception {
         return userMapper.searchUsersByKeyword(keyword);
     }
+
 
 
 

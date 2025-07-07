@@ -19,12 +19,12 @@
             s.seat_name, 
             s.seat_status, 
             u.username, 
-            ut.remain_time AS reaminTime
+            ut.remain_time AS remainTime
         FROM seats s 
-        LEFT JOIN orders o ON s.seat_id = o.seat_id AND o.order_status = 1
-        LEFT JOIN users u ON o.u_no = u.no 
+        LEFT JOIN seats_reservations sr ON s.seat_id = sr.seat_id 
+        LEFT JOIN users u ON sr.u_no = u.no 
         LEFT JOIN user_tickets ut ON u.no = ut.u_no
-        ORDER BY seat_id
+        ORDER BY s.seat_id;
     </select>
 
 

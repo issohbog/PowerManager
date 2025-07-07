@@ -1,6 +1,8 @@
 package com.aloha.magicpos.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,11 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.magicpos.domain.Auths;
 import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.service.AuthService;
+import com.aloha.magicpos.service.SeatReservationService;
 import com.aloha.magicpos.service.UserService;
+import com.aloha.magicpos.service.UserTicketService;
 
 @Controller
 @RequestMapping("/users")
@@ -22,6 +27,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired 
+    private UserTicketService userTicketService;
+
+    @Autowired
+    private SeatReservationService seatReservationService;
 
     @Autowired
     private AuthService authService;
@@ -35,6 +46,15 @@ public class UserController {
         ) throws Exception {
 
         List<Users> userList = userService.searchUsers(type, keyword);
+        // 🔥 사용자별 사용시간/남은시간 계산
+        for (Users user : userList) {
+            Long remain = userTicketService.getTotalRemainTime(user.getNo());
+            Long used = seatReservationService.getTotalUsedTime(user.getNo());
+
+            user.setRemainMin(remain);  
+            user.setUsedMin(used);      
+        }
+
         model.addAttribute("users", userList);
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
@@ -51,8 +71,9 @@ public class UserController {
 
     // ✅ 회원 등록 처리
     @PostMapping("/save")
-    public String insert(Users user) throws Exception {
-        userService.insert(user);
+    public String insert(Users user, Model model) throws Exception {
+        // 임시비밀번호 생성 + 저장된 사용자 정보 반환
+        Users savedUser = userService.insert(user);
 
         // 기본 권한 부여 (예: ROLE_USER)
         Auths auth = new Auths();
@@ -60,15 +81,36 @@ public class UserController {
         auth.setAuth("ROLE_USER");
         authService.insert(auth);
 
-        return "redirect:/users/admin/userlist";
+        // 전체 회원 목록 가져오기 
+        List<Users> allUsers = userService.selectAll();
+
+        // 생성된 임시비밀번호 뷰에 전달 
+        model.addAttribute("users", allUsers);
+        model.addAttribute("savedUser", savedUser);
+        
+        // 기존 페이지에 임시 비번이 적힌 모달을 열기 위한 플래그 전달
+        model.addAttribute("showSuccessModal", true);
+        // 성공
+        return "pages/admin/admin_user_list";
     }
 
     // ✅ 회원 수정 폼
-    @GetMapping("/{no}/edit")
-    public String edit(@PathVariable Long no, Model model) throws Exception {
-        Users user = userService.selectById(no);
-        model.addAttribute("user", user);
-        return "user/form";
+    @GetMapping("/admin/{userNo}/info")
+    @ResponseBody
+    public Map<String, Object> getUserInfo(@PathVariable("userNo") Long userNo) throws Exception {
+        System.out.println("userNo: " + userNo);
+
+        Users user = userService.selectByNo(userNo);
+        System.out.println("user : " + user);
+        Long remainTime = userTicketService.getTotalRemainTime(userNo);
+        Long usedTime = seatReservationService.getTotalUsedTime(userNo);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("user", user);
+        result.put("remainTime", remainTime);
+        result.put("usedTime", usedTime);
+
+        return result;      // json응답
     }
 
     // ✅ 회원 수정 처리
