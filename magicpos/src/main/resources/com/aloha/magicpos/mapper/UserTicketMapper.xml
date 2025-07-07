@@ -39,5 +39,12 @@
         ORDER BY pay_at DESC
         LIMIT 1
     </select>
+    
+    <!-- 특정 사용자 전체 남은 시간 조회 -->
+    <select id="subRemainTimeByUser" resultType="long">
+        SELECT COALESCE(SUM(remain_time), 0)
+        FROM user_tickets
+        WHERE u_no = #{userNo}
+    </select>
 
 </mapper>

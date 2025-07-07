@@ -1,3 +1,38 @@
+/* 모달 서서히 기능 */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* 모달 상태용 클래스 */
+.modal.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+.modal.fade-out {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+/* ----------------------모달 클래스 정의 끝 ---------------------- */
+
+
+ /* 전체  */
 .content {
 position: absolute;
 top: 100px;
@@ -114,7 +149,7 @@ button.action:hover {
 }
 
 /* 모달 내용 상자 */
-.modal-content {
+.modal-content.large {
   width: 850px;
   height: 402px;
   background: #fff;
@@ -259,3 +294,83 @@ textarea#memo {
 }
 
 /* 모달끝  */
+
+
+/* ✅ 임시 비밀번호 안내 모달 전체 영역 */
+
+/* 임시비번 모달 */
+.modal-content.small {
+  width: 400px;
+}
+
+#temp-password-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6); /* 어두운 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999 !important; /* 항상 위에 뜨게 */
+}
+
+/* ✅ 모달 내용 상자 */
+#temp-password-modal .modal-content {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  min-width: 360px;
+  max-width: 90%;
+  text-align: center;
+}
+
+/* ✅ 모달 제목 영역 */
+#temp-password-modal .modal-header {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+/* ✅ 모달 본문 */
+#temp-password-modal .modal-body p {
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+/* ✅ 강조된 임시 비밀번호 */
+#temp-password-modal .modal-body span {
+  color: red;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* ✅ 모달 하단 버튼 */
+#temp-password-modal .modal-footer {
+  margin-top: 20px;
+}
+
+#temp-password-modal .modal-footer button {
+  padding: 8px 20px;
+  background-color: #5D6D7E;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#temp-password-modal .modal-footer button:hover {
+  background-color: #34495E;
+}
+
+/* 닫기 버튼 (오른쪽 상단 X 버튼이 있다면) */
+#temp-password-modal .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+}
+
