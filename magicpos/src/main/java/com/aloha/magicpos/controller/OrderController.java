@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.OrdersDetails;
@@ -90,8 +91,8 @@ public class OrderController {
     // 🔸 주문 상태/결제 상태 수정
     @PutMapping("/{no}/status")
     public String updateStatus(@PathVariable Long no,
-                               @RequestParam String orderStatus,
-                               @RequestParam int paymentStatus) 
+                               @RequestParam Long orderStatus,
+                               @RequestParam Long paymentStatus) 
         throws Exception{
         orderService.updateStatus(no, orderStatus, paymentStatus);
         return "order_status_updated";
@@ -149,5 +150,31 @@ public class OrderController {
     public String deleteOrderDetail(@PathVariable Long oNo, @PathVariable Long pNo) throws Exception{
         orderService.deleteOrderDetail(oNo, pNo);
         return "order_detail_deleted";
+    }
+
+    // 주문 상태 변경
+    @PutMapping("/{no}/status/update")
+    public String updateOrderStatus(@PathVariable Long no,
+                                    @RequestParam Long orderStatus,
+                                    @RequestParam Long paymentStatus) 
+        throws Exception {
+        orderService.updateStatus(no, orderStatus, paymentStatus);
+        return "order_status_updated";
+    }
+
+    // 주문 상태 변경(AJAX)
+    @PostMapping("/status")
+    @ResponseBody
+    public String updateOrderStatusAjax(@RequestParam Long no,
+                                        @RequestParam Long orderStatus) {
+        try {
+            Orders order = orderService.findOrderByNo(no);
+            Long paymentStatus = order.getPaymentStatus();
+
+            orderService.updateStatus(no, orderStatus, paymentStatus);
+            return "ok";
+        } catch (Exception e) {
+            return "fail";
+        }
     }
 }

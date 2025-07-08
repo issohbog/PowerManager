@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public boolean updateStatus(Long no, String orderStatus, int paymentStatus) throws Exception {
+    public boolean updateStatus(Long no, Long orderStatus, Long paymentStatus) throws Exception {
         return orderMapper.updateStatus(no, orderStatus, paymentStatus) >0;
     }
 

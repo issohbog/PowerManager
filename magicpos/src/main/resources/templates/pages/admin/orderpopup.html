@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/admin/main_layout}">
+
+<div layout:fragment="content">
+    <div class="order-status-container">
+        <!-- 헤더 -->
+        <div class="order-status-header">
+            <span>주문현황 <span th:text="${#numbers.formatInteger(orderCount, 2)}">00</span></span>
+            <span class="active-tab">
+                준비중 <span th:text="${#numbers.formatInteger(preparingCount, 2)}">02</span>
+            </span>
+        </div>
+
+        <!-- 주문 리스트 -->
+        <div class="order-list">
+            <!-- 주문 없을 때 -->
+            <div th:if="${#lists.isEmpty(orderList)}">주문이 없습니다.</div>
+
+            <!-- 주문 있을 때 -->
+            <div th:each="order : ${orderList}" class="order-card">
+              <!-- 주문 카드 내부 -->
+              <div class="order-card-inner">
+                <!-- 좌측 좌석 정보 -->
+                <div class="order-time-box">
+                    <div class="seat-no" th:text="${order.seatId}">17</div>
+                    <div class="action-btn">판매하기</div>
+
+                </div>
+
+                <!-- 우측 주문 상세 -->
+              <div class="order-detail-box">
+                <span class="menu-names" th:text="${menuNamesMap[order.no]}">치킨마요 덮밥, 돈까스 김치나베</span>
+
+                <div class="status-row1">
+                  <div class="memo" th:text="${order.message}">맛있게 만들어주세요~</div>
+                  <span class="sell-cancel">판매취소</span>
+                </div>
+                <div class="status-row2">
+                <div class="price-box">
+                  <span class="price" th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')} + '원'">0원</span>
+                  <span class="paytype" th:text="'(' + ${order.payment} + ')'">(card)</span>
+                </div>
+                  <div class="status-badges">
+                    <span class="badge preparing"
+                          th:classappend="${order.orderStatus == 1} ? ' active'"
+                          onclick="updateStatus([[${order.no}]], 1, this)">
+                      준비중
+                    </span>
+                    <span class="badge complete"
+                          th:classappend="${order.orderStatus == 2} ? ' active'"
+                          onclick="updateStatus([[${order.no}]], 2, this)">
+                      전달완료
+                    </span>
+                  </div>
+                </div>
+              </div>
+              </div>
+              <div class="order-card-footer">
+                <div class="wait-time" th:if="${waitTime[order.no] != null}" th:classappend="${waitTime[order.no] > 30} ? ' red-text'">
+                  <span th:text="'⏱ ' + ${waitTime[order.no]} + '분 경과'">00분 경과</span>
+                </div>
+                <span class="time" th:text="${#dates.format(order.orderTime, 'MM/dd HH:mm')}">07/01 16:50</span>
+              </div>
+        </div>
+    </div>
+</div>
