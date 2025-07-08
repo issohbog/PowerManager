@@ -209,8 +209,61 @@ button.action:hover {
   border: 1px solid #ccc;
 }
 
+/* 아이디 input + 중복체크 */
+
+/* 아이디 input + 중복확인 버튼 정렬용 */
+.inline-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+      width: 189px;
+}
+
+/* input은 너비를 꽉 차게 */
+.inline-field input {
+  flex: 1;
+  width: 125px;
+  height: 30px;
+}
+
+/* 버튼은 크기 고정 + 줄바꿈 방지 */
+.inline-field button {
+  flex-shrink: 0;
+  padding: 3px 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  height: 100%;
+  background-color: #ddd;
+  color: #333;
+  border: none;
+  border-radius: 2px;
+}
+
+.form-message {
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
+.form-message.error {
+  color: red;
+}
+
+.form-message.success {
+  color: green;
+}
+
+.id-row {
+  position: relative;
+}
+
+#id-check-message{
+      position: absolute;
+    top: 26px;
+    left: 91px;
+}
+
 textarea#memo {
-    width: 65%;
+    width: 67%;
     height: 100px;
     resize: none;
 }

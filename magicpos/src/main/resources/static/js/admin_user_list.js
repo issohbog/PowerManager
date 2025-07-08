@@ -3,7 +3,10 @@
   const submitBtn = document.getElementById("modal-submit-btn");
   const modeInput = document.getElementById("form-mode");
   const userNoInput = document.getElementById("user-no");
-
+  const idWrapper = document.getElementById("id-input-wrapper");
+  const idCheckBtn = document.getElementById("id-check-btn");
+  const idInput = document.getElementById("user-id");
+  const idMessage = document.getElementById("id-check-message");
 
   // 회원등록 버튼
   document.querySelector('.button-group .action:nth-child(1)').addEventListener('click', () => {
@@ -12,8 +15,50 @@
     modeInput.value = "register";
     userNoInput.value = "";
     document.getElementById("user-form").reset();
+    idWrapper.classList.add("inline-field");
+    idCheckBtn.style.display = "inline-block"; 
     modal.style.display = "flex";
   });
+
+  // 아이디 중복체크 
+  idCheckBtn.addEventListener("click", async () => {
+  const userId = idInput.value.trim();
+  idMessage.textContent = ""; // 초기화
+  idMessage.classList.remove("success", "error");
+
+  if (!userId) {
+    idMessage.textContent = "아이디를 입력해주세요.";
+    idMessage.classList.add("error");
+    return;
+  }
+
+  try {
+    const response = await fetch(`/users/admin/check-id?id=${encodeURIComponent(userId)}`);
+    
+    console.log("response.ok:", response.ok);
+    console.log("response.status:", response.status);
+    
+    if (!response.ok) throw new Error("서버 오류");
+
+    
+
+    const result = await response.json();
+    console.log("result: ", result); // <-- 중복 여부 확인용 응답 데이터!
+    if (result.exists) {
+      idMessage.textContent = "이미 사용 중인 아이디입니다.";
+      idMessage.classList.add("error");
+    } else {
+      idMessage.textContent = "사용 가능한 아이디입니다.";
+      idMessage.classList.add("success");
+    }
+  } catch (err) {
+    console.error(err);
+    idMessage.textContent = "중복확인 중 오류 발생";
+    idMessage.classList.add("error");
+  }
+  });
+
+
 
   // 회원수정 버튼
   document.querySelector('.button-group .action:nth-child(2)').addEventListener('click', async () => {
@@ -71,6 +116,8 @@
     submitBtn.textContent = "수정";
     modeInput.value = "edit";
     document.getElementById("user-form").action = `/users/update`; 
+    idWrapper.classList.remove("inline-field");
+    idCheckBtn.style.display = "none";
     modal.style.display = "flex";
 
 

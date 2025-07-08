@@ -18,11 +18,11 @@ public interface UserMapper {
     // 단일 회원 조회 (번호 기준)
     Users selectByNo(@Param("no") long no);
 
-    // 아이디로 회원 조회
+    // 아이디로 회원 조회 - 아이디 중복체크시 사용
     Users findById(@Param("id") String id);
 
     // userNo로 회원 조회 
-    Users selectByNo(Long userNo);
+    Users findByNo(Long userNo);
 
     // 회원 등록
     int insert(Users user);
