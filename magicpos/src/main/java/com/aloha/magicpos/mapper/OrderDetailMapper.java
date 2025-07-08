@@ -14,7 +14,7 @@ public interface OrderDetailMapper {
     int insert(OrdersDetails orderDetail);
 
     // 수량 수정
-    int updateQuantity(@Param("oNo") Long oNo, @Param("pNo") Long pNo, @Param("quantity") int quantity);
+    int updateQuantity(@Param("oNo") Long oNo, @Param("pNo") Long pNo, @Param("quantity") Long quantity);
 
     // 주문 상세 삭제 (주문 번호 + 상품 번호)
     int delete(@Param("oNo") Long oNo, @Param("pNo") Long pNo);

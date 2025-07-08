@@ -1,3 +1,4 @@
+  console.log("loaded")
   const modal = document.getElementById("user-modal");
   const modalTitle = document.getElementById("modal-title");
   const submitBtn = document.getElementById("modal-submit-btn");
@@ -133,19 +134,26 @@
     modal.style.display = "none";
   }
 
-
+// 페이지 로딩 시 수량 나옴
+document.addEventListener("DOMContentLoaded", () => {
+  refreshCounts(); // 상태 숫자 최신화
+});
 
 // 준비중, 전달완료 상태 변경
 function updateStatus(orderNo, status, el) {
+  console.log('orderNo:', orderNo, 'status:', status);
+  const formData = new FormData();    // Content-Type: multipart/form-data
+  formData.append("no", orderNo);
+  formData.append("orderStatus", status);
   fetch('/orders/status', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `no=${orderNo}&orderStatus=${status}`
+    body: formData
   })
   .then(res => res.text())
   .then(data => {
     if (data === 'ok') {
-      if (status === 2) {
+      refreshCounts();
+      if (status == 2) {
         // 전달완료 → 카드 제거
         el.closest('.order-card').style.display = 'none';
       } else {
@@ -159,11 +167,30 @@ function updateStatus(orderNo, status, el) {
     }
   });
 }
+// 주문현황 수량 갱신
+function refreshCounts() {
+  fetch('/orders/status/counts')
+    .then(res => res.json())
+    .then(data => {
+      document.querySelector('.number-tab1 span').textContent =
+        data.orderCount.toString().padStart(2, '0');
+      document.querySelector('.number-tab2 span').textContent =
+        data.prepareCount.toString().padStart(2, '0');
+    });
+}
+
+
 
 // 임시 비밀번호 모달 닫기
 function closeTempPasswordModal() {
   const tempModal = document.getElementById("temp-password-modal");
   tempModal.style.display = "none";
 }
+
+
+
+
+
+
 
 

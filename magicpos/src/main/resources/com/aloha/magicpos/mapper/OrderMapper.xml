@@ -47,11 +47,35 @@
         ORDER BY order_time DESC
     </select>
 
+
+    <resultMap id="ordersMap" type="Orders">
+        <id property="no" column="no"/>
+        <result property="uNo" column="u_no"/>
+        <result property="seatId" column="seat_id"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="orderTime" column="order_time"/>
+        <result property="payment" column="payment"/>
+        <result property="message" column="message"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="paymentStatus" column="payment_status"/>
+    </resultMap>
+
     <!-- 단일 주문 조회 -->
-    <select id="findByNo" resultType="Orders">
+    <select id="findByNo" resultMap="ordersMap">
         SELECT *
         FROM orders
         WHERE no = #{no}
+    </select>
+
+    <!-- 상태별 목록 조회 -->
+    <select id="findOrdersByStatus" resultType="Orders">
+        SELECT *
+        FROM orders
+        WHERE order_status IN
+        <foreach item="status" collection="orderStatus" open="(" separator="," close=")">
+            #{status}
+        </foreach>
+        ORDER BY order_time DESC
     </select>
 
 </mapper>
