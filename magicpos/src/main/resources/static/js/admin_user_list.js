@@ -2,12 +2,6 @@
   const modalTitle = document.getElementById("modal-title");
   const submitBtn = document.getElementById("modal-submit-btn");
   const modeInput = document.getElementById("form-mode");
-
-
-  const userNo = row.getAttribute("data-user-no");
-  
-
-
   const userNoInput = document.getElementById("user-no");
   const idWrapper = document.getElementById("id-input-wrapper");
   const idCheckBtn = document.getElementById("id-check-btn");
