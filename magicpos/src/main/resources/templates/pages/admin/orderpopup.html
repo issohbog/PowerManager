@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/admin/main_layout}">
+      layout:decorate="~{/layouts/admin/main_layout}"
+      th:inline="javascript">
 
 <div layout:fragment="content">
     <div class="order-status-container">
         <!-- 헤더 -->
-        <div class="order-status-header">
-            <span>주문현황 <span th:text="${#numbers.formatInteger(orderCount, 2)}">00</span></span>
-            <span class="active-tab">
-                준비중 <span th:text="${#numbers.formatInteger(preparingCount, 2)}">02</span>
-            </span>
-        </div>
+      <div class="order-status-header">
+      <a href="/admin/orderpopup" class="number-tab1"
+        th:classappend="${requestURI == '/admin/orderpopup'} ? 'active-tab'">
+          주문현황 <span th:text="${#numbers.formatInteger(orderCount, 2)}">00</span>
+      </a>
+
+      <a href="/admin/orderpopup/preparing" class="number-tab2"
+        th:classappend="${requestURI == '/admin/orderpopup/preparing'} ? 'active-tab'">
+          준비중 <span th:text="${#numbers.formatInteger(preparingCount, 2)}">00</span>
+      </a>
+      </div>
 
         <!-- 주문 리스트 -->
         <div class="order-list">
             <!-- 주문 없을 때 -->
-            <div th:if="${#lists.isEmpty(orderList)}">주문이 없습니다.</div>
+            <div th:if="${#lists.isEmpty(orderList)}" class="no-orders">주문이 없습니다.</div>
 
             <!-- 주문 있을 때 -->
             <div th:each="order : ${orderList}" class="order-card">
@@ -44,13 +50,13 @@
                 </div>
                   <div class="status-badges">
                     <span class="badge preparing"
-                          th:classappend="${order.orderStatus == 1} ? ' active'"
-                          onclick="updateStatus([[${order.no}]], 1, this)">
+                          th:onclick="'updateStatus(' + ${order.no} + ', 1, this)'"
+                          th:classappend="${order.orderStatus == 1} ? ' active'">
                       준비중
                     </span>
                     <span class="badge complete"
                           th:classappend="${order.orderStatus == 2} ? ' active'"
-                          onclick="updateStatus([[${order.no}]], 2, this)">
+                          th:onclick="'updateStatus(' + ${order.no} + ', 2, this)'">
                       전달완료
                     </span>
                   </div>

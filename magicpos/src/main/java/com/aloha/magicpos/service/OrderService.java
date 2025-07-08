@@ -13,9 +13,11 @@ public interface OrderService {
     public boolean deleteOrder(Long no) throws Exception;
     public List<Orders> findAllOrders() throws Exception;
     public List<Orders> findOrdersByUser(Long uNo) throws Exception;
+    public List<Orders> findOrdersByStatus(List<Long> orderStatus) throws Exception;
+    public Long countByStatus(List<Long> orderStatus) throws Exception;
     public Orders findOrderByNo(Long no) throws Exception;
     public List<OrdersDetails> findOrderDetails(Long oNo) throws Exception;
     public List<Map<String, Object>> findDetailsWithProductNames(Long oNo) throws Exception;
-    public boolean updateOrderDetailQuantity(Long oNo, Long pNo, int quantity) throws Exception;
+    public boolean updateOrderDetailQuantity(Long oNo, Long pNo, Long quantity) throws Exception;
     public boolean deleteOrderDetail(Long oNo, Long pNo) throws Exception;
 }

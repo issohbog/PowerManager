@@ -71,7 +71,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public boolean updateOrderDetailQuantity(Long oNo, Long pNo, int quantity) throws Exception {
+    public boolean updateOrderDetailQuantity(Long oNo, Long pNo, Long quantity) throws Exception {
         return orderDetailMapper.updateQuantity(oNo, pNo, quantity) >0;
     }
 
@@ -79,5 +79,23 @@ public class OrderServiceImpl implements OrderService{
     public boolean deleteOrderDetail(Long oNo, Long pNo) throws Exception {
         return orderDetailMapper.delete(oNo, pNo) > 0;
     }
-    
+
+    @Override
+    public List<Orders> findOrdersByStatus(List<Long> orderStatus) throws Exception {
+        if (orderStatus == null || orderStatus.isEmpty()) {
+            log.warn("❗ 주문 상태 목록이 비어있음");
+            return List.of(); // 빈 리스트 반환
+        }
+        return orderMapper.findOrdersByStatus(orderStatus);
+    }
+
+    @Override
+    public Long countByStatus(List<Long> orderStatus) throws Exception {
+        if (orderStatus == null || orderStatus.isEmpty()) {
+            log.warn("❗ 주문 상태 목록이 비어있음");
+            return 0L;
+        }
+        // findOrdersByStatus를 재사용해서 크기만 가져옴
+        return (long) findOrdersByStatus(orderStatus).size();
+    }
 }

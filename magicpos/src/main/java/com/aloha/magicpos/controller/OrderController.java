@@ -1,5 +1,6 @@
 package com.aloha.magicpos.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,13 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
-
+    
     @Autowired
     private OrderService orderService;
-
+    
     @Autowired
     private CartService cartService;
-
+    
     // 🔸 주문 등록
     @PostMapping("/create")
     public String insertOrder(
@@ -45,29 +46,29 @@ public class OrderController {
         @RequestParam("quantityList") List<Long> quantityList,
         RedirectAttributes rttr, // 리다이렉트 시 플래시 속성 사용
         HttpSession session // 세션에서 사용자 정보 가져오기
-    ) throws Exception {
-        // ✅ 1. 세션에서 userNo 가져오기
-        Long userNo = (Long) session.getAttribute("userNo");
+        ) throws Exception {
+            // ✅ 1. 세션에서 userNo 가져오기
+            Long userNo = (Long) session.getAttribute("userNo");
+            
+            // ✅ 2. 세션에 없으면 임시 userNo로 설정
+            if (userNo == null) {
+                userNo = 1L; // 임시 유저 번호
+                session.setAttribute("userNo", userNo);
+            }
+            // 🔽 여기서 seatId 로그 확인
+            log.debug("넘어온 seatId: {}", order.getSeatId());
+            order.setUNo(userNo); // 주문에 사용자 번호 설정
+            order.setOrderStatus(0L); // 기본 주문 상태 설정
+            order.setPaymentStatus(0L); // 기본 결제 상태 설정
+            order.setSeatId(seatId);
+            boolean inserted = orderService.insertOrder(order);
+            if (!inserted) return "redirect:/orders/fail";
+            
+            Long oNo = order.getNo(); // insert 후에 받아온 주문 번호
 
-        // ✅ 2. 세션에 없으면 임시 userNo로 설정
-        if (userNo == null) {
-            userNo = 1L; // 임시 유저 번호
-            session.setAttribute("userNo", userNo);
-        }
-        // 🔽 여기서 seatId 로그 확인
-        log.debug("넘어온 seatId: {}", order.getSeatId());
-        order.setUNo(userNo); // 주문에 사용자 번호 설정
-        order.setOrderStatus(0L); // 기본 주문 상태 설정
-        order.setPaymentStatus(0L); // 기본 결제 상태 설정
-        order.setSeatId(seatId);
-        boolean inserted = orderService.insertOrder(order);
-        if (!inserted) return "redirect:/orders/fail";
-
-        Long oNo = order.getNo(); // insert 후에 받아온 주문 번호
-
-        // 상품별 주문 상세 넣기
-        for (int i = 0; i < pNoList.size(); i++) {
-            OrdersDetails detail = new OrdersDetails();
+            // 상품별 주문 상세 넣기
+            for (int i = 0; i < pNoList.size(); i++) {
+                OrdersDetails detail = new OrdersDetails();
             detail.setONo(oNo);
             detail.setPNo(pNoList.get(i));
             detail.setQuantity(quantityList.get(i));
@@ -75,7 +76,7 @@ public class OrderController {
         }
         // 장바구니 비우기
         cartService.deleteAllByUserNo(userNo);
-
+        
         rttr.addFlashAttribute("orderSuccess", true);
         return "redirect:/menu";
     }
@@ -99,10 +100,10 @@ public class OrderController {
     }
 
     // 🔸 주문 삭제 (주문 + 상세 함께 삭제)
-    @DeleteMapping("/{no}")
-    public String deleteOrder(@PathVariable Long no) throws Exception{
-        orderService.deleteOrder(no);
-        return "order_deleted";
+    @PostMapping("/delete")
+    public String deleteOrder(@RequestParam Long orderNo) throws Exception {
+        orderService.deleteOrder(orderNo);
+        return "redirect:/admin/orderpopup";
     }
 
     // 🔸 모든 주문 조회
@@ -136,14 +137,14 @@ public class OrderController {
     }
 
     // 🔸 주문 상세 수량 수정
-    @PutMapping("/{oNo}/details/{pNo}/quantity")
-    public String updateOrderDetailQuantity(@PathVariable Long oNo,
-                                            @PathVariable Long pNo,
-                                            @RequestParam int quantity) 
-        throws Exception{
-        orderService.updateOrderDetailQuantity(oNo, pNo, quantity);
-        return "order_detail_quantity_updated";
+    @PostMapping("/admin/orders/updateQuantity")
+    public String updateOrderDetailQuantity(@RequestParam Long orderNo,
+                                            @RequestParam Long productNo,
+                                            @RequestParam Long quantity) throws Exception {
+        orderService.updateOrderDetailQuantity(orderNo, productNo, quantity);
+        return "redirect:/admin/orderpopup";
     }
+
 
     // 🔸 주문 상세 삭제 (단일 상품)
     @DeleteMapping("/{oNo}/details/{pNo}")
@@ -165,16 +166,43 @@ public class OrderController {
     // 주문 상태 변경(AJAX)
     @PostMapping("/status")
     @ResponseBody
-    public String updateOrderStatusAjax(@RequestParam Long no,
-                                        @RequestParam Long orderStatus) {
+    // public String updateOrderStatusAjax(@RequestParam("no") Long no,
+    //                                     @RequestParam("orderStatus") Long orderStatus) {
+    public String updateOrderStatusAjax(@RequestParam Map<String, String> params) {
         try {
+            Long no = Long.parseLong(params.get("no"));
+            Long orderStatus = Long.parseLong(params.get("orderStatus"));
+            log.info("🔥 상태 변경 요청: no={}, status={}", no, orderStatus);
+
             Orders order = orderService.findOrderByNo(no);
+            if (order == null) {
+                log.warn("❗ 주문 없음: no={}", no);
+                return "fail";
+            }
+
             Long paymentStatus = order.getPaymentStatus();
+            if (paymentStatus == null) {
+                log.warn("❗ 결제 상태 없음: orderNo={}", no);
+                return "fail";
+            }
 
             orderService.updateStatus(no, orderStatus, paymentStatus);
             return "ok";
         } catch (Exception e) {
+            log.error("❗ 상태 변경 중 오류 발생", e);
             return "fail";
         }
     }
-}
+
+    // 주문 상태 카운트 조회 (AJAX)
+    @GetMapping("/status/counts")
+    @ResponseBody
+    public Map<String, Long> getOrderCounts() throws Exception {
+        Map<String, Long> counts = new HashMap<>();
+        counts.put("orderCount", orderService.countByStatus(List.of(0L, 1L)));
+        counts.put("prepareCount", orderService.countByStatus(List.of(1L)));
+        return counts;
+    }
+
+
+    }
