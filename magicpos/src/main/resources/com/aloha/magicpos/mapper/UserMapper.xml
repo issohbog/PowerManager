@@ -46,15 +46,17 @@
         SELECT * FROM users WHERE no = #{no}
     </select>
 
-    <!-- 아이디로 회원 조회 -->
+    <!-- 아이디로 회원 조회 - 아이디 중복체크시 사용 -->
     <select id="findById" parameterType="String" resultType="com.aloha.magicpos.domain.Users">
         SELECT * FROM users WHERE id = #{id}
     </select>
 
     <!-- userNo로 회원 조회 -->
-    <select id="selectByNo" parameterType="long" resultType="Users">
+    <select id="findByNo" parameterType="long" resultType="Users">
         SELECT * FROM users WHERE no = #{userNo}
     </select>
+
+
 
     <!-- 회원가입 -->
     <insert id="insert" parameterType="com.aloha.magicpos.domain.Users" useGeneratedKeys="true" keyProperty="no">

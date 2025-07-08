@@ -48,8 +48,14 @@ public class UserServiceImpl implements UserService {
         return userMapper.findById(id);
     }
 
+    @Override 
+    public boolean isIdExist(String id) {
+        return userMapper.findById(id) != null;
+    }
+
+
     @Override
-    public Users selectByNo(Long userNo) {
+    public Users findByNo(Long userNo) {
         return userMapper.selectByNo(userNo);
     }
 
@@ -97,6 +103,8 @@ public class UserServiceImpl implements UserService {
     public List<Users> searchUsersByKeyword(String keyword) throws Exception {
         return userMapper.searchUsersByKeyword(keyword);
     }
+
+
 
 
 

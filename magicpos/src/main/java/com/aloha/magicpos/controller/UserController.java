@@ -1,5 +1,6 @@
 package com.aloha.magicpos.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,16 @@ public class UserController {
         return "user/form";
     }
 
-    // ✅ 회원 등록 처리
+
+    // 아이디 중복 체크 
+    @GetMapping("/admin/check-id")
+    @ResponseBody                           // 컨트롤러 메소드의 반환값을 HTTP응답 body로 직접 전송 한다는 의미(뷰 이름 X)
+    public Map<String, Boolean> getMethodName(@RequestParam("id") String id) {
+        boolean exists = userService.isIdExist(id);
+        return Collections.singletonMap("exists", exists);          // key, value 가 1쌍인 map
+    }
+    
+    // 회원 등록 처리
     @PostMapping("/save")
     public String insert(Users user, Model model) throws Exception {
         // 임시비밀번호 생성 + 저장된 사용자 정보 반환
@@ -101,7 +111,7 @@ public class UserController {
     public Map<String, Object> getUserInfo(@PathVariable("userNo") Long userNo) throws Exception {
         System.out.println("userNo: " + userNo);
 
-        Users user = userService.selectByNo(userNo);
+        Users user = userService.findByNo(userNo);
         System.out.println("user : " + user);
         Long remainTime = userTicketService.getTotalRemainTime(userNo);
         Long usedTime = seatReservationService.getTotalUsedTime(userNo);
