@@ -36,5 +36,10 @@ public class UserTicketServiceImpl implements UserTicketService {
     public Integer findRemainTimeByUserNo(long uNo) throws Exception {
         return userTicketMapper.findRemainTimeByUserNo(uNo);
     }
+
+    @Override
+    public Long getTotalRemainTime(Long userNo) {
+        return userTicketMapper.subRemainTimeByUser(userNo);
+    }
     
 }

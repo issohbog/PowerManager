@@ -21,6 +21,9 @@ public interface UserMapper {
     // 아이디로 회원 조회
     Users findById(@Param("id") String id);
 
+    // userNo로 회원 조회 
+    Users selectByNo(Long userNo);
+
     // 회원 등록
     int insert(Users user);
 

@@ -21,4 +21,8 @@ public interface UserTicketMapper {
 
     // 특정 사용자 최근 남은 시간 조회
     Integer findRemainTimeByUserNo(@Param("uNo") long uNo);
+
+    // 특정 사용자 남은 시간 조회(모든 이용권 합산)
+    Long subRemainTimeByUser(Long userNo);
+    
 }

@@ -48,7 +48,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr th:each="user, iterStat : ${users}">
+      <tr th:each="user, iterStat : ${users}" th:attr="data-user-no=${user.no}">
         <td><input type="checkbox" /></td>
         <td th:text="${iterStat.index + 1}"></td>
         <td th:text="${user.username}"></td>
@@ -56,22 +56,21 @@
         <td th:text="${#dates.format(user.birth, 'yyyy.MM.dd')}"></td>
         <td th:text="${user.phone}"></td>
         <td th:text="${user.email}"></td>
-        <!-- <td th:text="${남은시간}"></td> -->
-        <td>123분</td>
-        <!-- <td th:text="${사용시간}"></td> -->
-        <td>456분</td>
+        <td th:text="${user.remainMin} + '분'"></td>
+        <td th:text="${user.usedMin} + '분'"></td>
         <td th:text="${#temporals.format(user.createdAt, 'yyyy.MM.dd')}"></td>
       </tr>
-      <tr th:each="user, iterStat : ${users}" th:attr="data-user-no=${user.no}"></tr>
     </tbody>
   </table>
 
   </div>
 
 
+
+
  <!-- 회원 등록/수정 모달 -->
 <div id="user-modal" class="modal" style="display: none;">
-  <div class="modal-content">
+  <div class="modal-content large">
     <div class="modal-header">
       <span id="modal-title">회원등록</span>
       <span class="close-btn" onclick="closeModal()">×</span>
@@ -156,7 +155,32 @@
   </div>
 </div>
 
-<!-- 모달 끝 -->
+<!-- 회원 등록/수정 모달 끝 -->
+
+<!-- 임시비밀번호 안내 모달 -->
+<!-- ✅ 임시비밀번호 안내 모달 -->
+<div id="temp-password-modal" class="modal" 
+     th:if="${showSuccessModal}" 
+     style="display: flex;">
+  <div class="modal-content small">
+    <div class="modal-header">
+      <span>회원 등록 완료</span>
+      <span class="close-btn" onclick="closeTempPasswordModal()">×</span>
+    </div>
+    <div class="modal-body">
+      <p><strong th:text="${savedUser.username}">사용자이름</strong> 님의 회원 등록이 완료되었습니다.</p>
+      <p>임시 비밀번호: 
+        <span style="color: red; font-weight: bold;" th:text="${savedUser.tempPassword}">Abc12345</span>
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeTempPasswordModal()">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 임시비밀번호 안내 모달 끝 -->
+
 
 
 </body>

@@ -3,10 +3,13 @@
   const submitBtn = document.getElementById("modal-submit-btn");
   const modeInput = document.getElementById("form-mode");
 
+
   const userNo = row.getAttribute("data-user-no");
   
+
+
   const userNoInput = document.getElementById("user-no");
-  userNoInput.value = userNo;
+
 
   // 회원등록 버튼
   document.querySelector('.button-group .action:nth-child(1)').addEventListener('click', () => {
@@ -19,40 +22,76 @@
   });
 
   // 회원수정 버튼
-  document.querySelector('.button-group .action:nth-child(2)').addEventListener('click', () => {
-    const checked = document.querySelector("tbody input[type='checkbox']:checked");
-    if (!checked) {
-      alert("수정할 회원을 선택하세요.");
-      return;
+  document.querySelector('.button-group .action:nth-child(2)').addEventListener('click', async () => {
+  const checkedBoxes = document.querySelectorAll("tbody input[type='checkbox']:checked");
+
+  if (checkedBoxes.length === 0) {
+    alert("수정할 회원을 선택하세요.");
+    return;
+  }
+
+  if (checkedBoxes.length > 1) {
+    alert("회원 한 명만 선택해주세요.");
+    return;
+  }
+
+  const checked = checkedBoxes[0];
+  const row = checked.closest("tr");
+  const userNo = row.getAttribute("data-user-no");
+
+  try {
+    // 서버에서 사용자정보 + 사용시간/남은시간 가져오기 
+    const url = `/users/admin/${userNo}/info`;
+    const response = await fetch(url);
+
+    console.log("fetch url:", url);
+    console.log("response.ok:", response.ok);
+    console.log("response status:", response.status);
+
+    if( !response.ok){
+      throw new Error(`서버응답오류 : ${response.status}`);
     }
 
-    const row = checked.closest("tr");
-    const cells = row.querySelectorAll("td");
+    const data = await response.json();
+    console.log("data: ", data);
 
-    // 예시: 각 필드를 모달에 채우기
-    document.getElementById("username").value = cells[2].innerText;
-    document.getElementById("user-id").value = cells[3].innerText;
-    document.getElementById("birth").value = cells[4].innerText.replace(/\./g, '-'); // yyyy.MM.dd -> yyyy-MM-dd
-    document.getElementById("phone").value = cells[5].innerText;
-    document.getElementById("email").value = cells[6].innerText;
-    document.getElementById("remainMin").value = parseInt(cells[7].innerText); // "123분" -> 123
-    document.getElementById("usedMin").value = parseInt(cells[8].innerText); // "456분" -> 456
+    const user = data.user;
+    if (!user) {
+    console.error("user 정보 없음", data);
+    alert("사용자 정보가 없습니다.");
+    return;
+    }
 
-    // gender 등 추가 값은 서버에서 직접 가져오거나 hidden field로 넘기도록 처리
-    
-    const userNo = row.getAttribute("data-user-no");
-    userNoInput.value = userNo;
+    // input 요소 채우기 
+    document.getElementById("username").value = user.username;
+    document.getElementById("user-id").value = user.id;
+    document.getElementById("birth").value = user.birth?.substring(0, 10);
+    document.getElementById("phone").value = user.phone;
+    document.getElementById("email").value = user.email;
+    document.getElementById("memo").value = user.memo; 
+    document.getElementById("remainMin").value = data.remainTime;
+    document.getElementById("usedMin").value = data.usedTime;
 
+    userNoInput.value = user.no;
     modalTitle.textContent = "회원수정";
     submitBtn.textContent = "수정";
     modeInput.value = "edit";
     document.getElementById("user-form").action = `/users/update`; 
     modal.style.display = "flex";
-  });
 
+
+  } catch (error) {
+    console.error("회원정보 불러오기 실패", error);
+    alert("회원 정보를 불러오지 못했습니다.");
+  }
+
+    
+  });
+  // 모달 닫기 
   function closeModal() {
     modal.style.display = "none";
   }
+
 
 
 // 준비중, 전달완료 상태 변경
@@ -79,3 +118,11 @@ function updateStatus(orderNo, status, el) {
     }
   });
 }
+
+// 임시 비밀번호 모달 닫기
+function closeTempPasswordModal() {
+  const tempModal = document.getElementById("temp-password-modal");
+  tempModal.style.display = "none";
+}
+
+

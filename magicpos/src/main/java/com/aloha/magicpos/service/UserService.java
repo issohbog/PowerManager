@@ -17,8 +17,11 @@ public interface UserService {
     // 아이디로 회원 조회
     public Users findById(String id) throws Exception;
 
+    // userNo로 회원 조회 
+    public Users selectByNo(Long userNo);
+
     // 회원 등록
-    public boolean insert(Users user) throws Exception;
+    public Users insert(Users user) throws Exception;
 
     // 관리자용 회원 정보 수정
     public boolean update(Users user) throws Exception;
