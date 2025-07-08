@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/admin/main_layout}">
+
+<body>
+<!-- body X, content block만 작성 -->
+<div layout:fragment="content">
+    <div class="order-status-container">
+        <div class="order-status-header">
+            <span>주문현황 05</span>
+            <span class="active-tab">준비중</span>
+        </div>
+
+        <div class="order-list">
+            <div th:each="order : ${orderList}">
+            <div class="seat-no" th:text="${order.seatId}">17</div>
+            
+            <div class="order-details" th:each="detail : ${orderDetailsMap[order.no]}">
+                  <span th:text="${detail['p_name']}">상품명</span>
+                  <span th:text="${detail['quantity']}">수량</span>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>

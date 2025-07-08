@@ -9,7 +9,7 @@ import com.aloha.magicpos.domain.OrdersDetails;
 public interface OrderService {
     public boolean insertOrder(Orders order) throws Exception;
     public boolean insertOrderDetail(Long oNo, OrdersDetails detail) throws Exception;
-    public boolean updateStatus(Long no, String orderStatus, int paymentStatus) throws Exception;
+    public boolean updateStatus(Long no, Long orderStatus, Long paymentStatus) throws Exception;
     public boolean deleteOrder(Long no) throws Exception;
     public List<Orders> findAllOrders() throws Exception;
     public List<Orders> findOrdersByUser(Long uNo) throws Exception;

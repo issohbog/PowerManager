@@ -1,0 +1,188 @@
+.order-status-container{
+  top: 100px;
+  right: 70px;
+  position: absolute;
+  z-index: 10;
+  width: 875px;
+  height: calc(100vh - 100px);
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  background-color: #ECEFF1;
+}
+
+.order-status-header {
+    display: flex;
+    width: 100%;
+    height: 60px;
+    justify-content: start;
+    align-items: center;
+    padding: 0 20px;
+    gap: 20px;
+    background-color: #5D6D7E;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.active-tab {
+    color: #333;
+}
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-card-inner{
+    display: flex;
+    flex-direction: row;
+    width: 831px;
+    height: 140px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    margin: 0 10px;
+    overflow: hidden;
+  }
+  .order-card-footer{
+    width: 831px;
+    height: 25px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 10px;
+  align-items: center;
+  border-top: 1px solid #eee;
+  text-align: center;
+  line-height: 1;
+}
+
+.order-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.order-time-box {
+  color:white;
+    width: 80px;
+    background-color: #f4c542;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+.seat-no {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.action-btn {
+    margin-top: 8px;
+    padding: 3px 4px;
+    font-size: 12px;
+    border-bottom: 1px solid #fff;
+}
+
+.order-detail-box {
+    flex: 1;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.menu-names {
+    font-size: 20px;
+}
+
+.memo {
+    color: #666;
+    font-size: 15px;
+}
+.price{
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+.paytype{
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+.badge {
+    padding: 4px 20px;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+/* 클릭시 효과 */
+.badge.active {
+  background-color: #f1c40f;
+  color: black;
+  font-weight: bold;
+}
+
+.status-badges {
+    margin-top: 5px;
+    display: flex;
+    gap: 5px;
+}
+.badge.preparing {
+    background-color: #d1d3d4;
+    color: #444;
+    cursor: pointer;
+}
+
+.badge.complete {
+    background-color: #e0e0e0;
+    color: #333;
+    cursor: pointer;
+}
+
+.sell-cancel {
+    color: #aaa;
+    font-size: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #aaa;
+}
+.status-row1{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.status-row2 {
+  border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 10px 5px;
+    font-size: 20px;
+}
+
+.time {
+    margin-left: auto;
+    color: #888;
+    font-size: 12px;
+}
+
+.wait-time {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #555;
+}
+
+.red-text {
+    color: red;
+    font-weight: bold;
+}
+

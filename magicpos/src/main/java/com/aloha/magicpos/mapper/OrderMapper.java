@@ -14,8 +14,8 @@ public interface OrderMapper {
 
     // 주문 상태 / 결제 상태 수정
     int updateStatus(@Param("no") Long no,
-                     @Param("orderStatus") String orderStatus,
-                     @Param("paymentStatus") int paymentStatus);
+                     @Param("orderStatus") Long orderStatus,
+                     @Param("paymentStatus") Long paymentStatus);
 
     // 주문 삭제
     int delete(@Param("no") Long no);

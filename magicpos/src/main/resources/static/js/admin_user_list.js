@@ -2,6 +2,12 @@
   const modalTitle = document.getElementById("modal-title");
   const submitBtn = document.getElementById("modal-submit-btn");
   const modeInput = document.getElementById("form-mode");
+
+
+  const userNo = row.getAttribute("data-user-no");
+  
+
+
   const userNoInput = document.getElementById("user-no");
 
 
@@ -87,9 +93,36 @@
   }
 
 
+
+// 준비중, 전달완료 상태 변경
+function updateStatus(orderNo, status, el) {
+  fetch('/orders/status', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `no=${orderNo}&orderStatus=${status}`
+  })
+  .then(res => res.text())
+  .then(data => {
+    if (data === 'ok') {
+      if (status === 2) {
+        // 전달완료 → 카드 제거
+        el.closest('.order-card').style.display = 'none';
+      } else {
+        // 준비중 → 강조 표시
+        const badges = el.parentElement.querySelectorAll('.badge');
+        badges.forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+      }
+    } else {
+      alert("상태 변경 실패!");
+    }
+  });
+}
+
 // 임시 비밀번호 모달 닫기
 function closeTempPasswordModal() {
   const tempModal = document.getElementById("temp-password-modal");
   tempModal.style.display = "none";
 }
+
 
