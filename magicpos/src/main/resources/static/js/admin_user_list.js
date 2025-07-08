@@ -43,7 +43,7 @@
     
 
     const result = await response.json();
-    console.log("result: ", result); // <-- 중복 여부 확인용 응답 데이터!
+    console.log("result: ", result); 
     if (result.exists) {
       idMessage.textContent = "이미 사용 중인 아이디입니다.";
       idMessage.classList.add("error");
