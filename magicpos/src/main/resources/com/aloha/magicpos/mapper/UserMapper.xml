@@ -67,7 +67,10 @@
     <!-- 관리자용 회원 정보 수정(생년월일, 이메일, 전화번호, 메모) -->
     <update id="update" parameterType="com.aloha.magicpos.domain.Users">
         UPDATE users
-        SET birth = #{birth},
+        SET 
+            username = #{username},
+            gender = #{gender},
+            birth = #{birth},
             email = #{email},
             phone = #{phone},
             memo = #{memo}
@@ -77,7 +80,7 @@
     <!-- 관리자용 비밀번호 초기화 -->
     <update id="resetPassword">
         UPDATE users
-        SET password = #{defaultPassword}
+        SET password = #{password}
         WHERE no = #{no}
     </update>
 

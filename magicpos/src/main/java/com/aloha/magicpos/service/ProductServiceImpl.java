@@ -1,6 +1,8 @@
 package com.aloha.magicpos.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,6 +67,16 @@ public class ProductServiceImpl implements ProductService  {
     @Override
     public List<Products> searchProductsAll(String keyword) throws Exception {
         return productMapper.searchProductsAll(keyword);
+    }
+
+    @Override
+    public Map<Long, Long> findTodaySalesMap() {
+         List<Map<String, Object>> list = productMapper.findTodaySalesMap();
+        return list.stream()
+            .collect(Collectors.toMap(
+                m -> ((Number) m.get("productNo")).longValue(),
+                m -> ((Number) m.get("todaySales")).longValue()
+            ));
     }   
     
 }

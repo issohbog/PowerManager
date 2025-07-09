@@ -31,7 +31,7 @@ public interface UserMapper {
     int update(Users user);
 
     // 관리자용 비밀번호 초기화
-    int resetPassword(@Param("no") long no, @Param("defaultPassword") String defaultPassword);
+    int resetPassword(@Param("no") long no, @Param("password") String password);
 
     // 사용자용 회원 정보 수정
     int updateUserProfile(Users user);

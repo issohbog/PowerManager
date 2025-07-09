@@ -6,14 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aloha.magicpos.domain.Auths;
 import com.aloha.magicpos.domain.Users;
@@ -21,7 +25,12 @@ import com.aloha.magicpos.service.AuthService;
 import com.aloha.magicpos.service.SeatReservationService;
 import com.aloha.magicpos.service.UserService;
 import com.aloha.magicpos.service.UserTicketService;
+import com.aloha.magicpos.util.PasswordUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -37,12 +46,16 @@ public class UserController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     // ✅ 전체 회원 목록
     @GetMapping("/admin/userlist")
     public String list(
         @RequestParam(value = "type", required = false) String type, 
         @RequestParam(value = "keyword", required = false) String keyword, 
+        @ModelAttribute("savedUser") Users savedUser,
         Model model
         ) throws Exception {
 
@@ -81,7 +94,9 @@ public class UserController {
     
     // 회원 등록 처리
     @PostMapping("/save")
-    public String insert(Users user, Model model) throws Exception {
+    public String insert(Users user, 
+                        RedirectAttributes redirectAttributes             
+    ) throws Exception {
         // 임시비밀번호 생성 + 저장된 사용자 정보 반환
         Users savedUser = userService.insert(user);
 
@@ -91,21 +106,15 @@ public class UserController {
         auth.setAuth("ROLE_USER");
         authService.insert(auth);
 
-        // 전체 회원 목록 가져오기 
-        List<Users> allUsers = userService.selectAll();
-
-        // 생성된 임시비밀번호 뷰에 전달 
-        model.addAttribute("users", allUsers);
-        model.addAttribute("savedUser", savedUser);
+        // FlashAttributes로 임시 비번과 플래그 전달 
+        redirectAttributes.addFlashAttribute("modalTitle", "회원 등록 완료");
+        redirectAttributes.addFlashAttribute("savedUser", savedUser);
+        redirectAttributes.addFlashAttribute("showSuccessModal", true);
         
-        // 기존 페이지에 임시 비번이 적힌 모달을 열기 위한 플래그 전달
-        model.addAttribute("showSuccessModal", true);
-        // 성공
-        return "pages/admin/admin_user_list";
+        return "redirect:/users/admin/userlist";
     }
 
     // ✅ 회원 수정 폼
-
     @GetMapping("/admin/{userNo}/info")
     @ResponseBody
     public Map<String, Object> getUserInfo(@PathVariable("userNo") Long userNo) throws Exception {
@@ -126,27 +135,61 @@ public class UserController {
     }
 
     // ✅ 회원 수정 처리
-    @PostMapping("/update")
-    public String update(Users user) throws Exception {
+    @PostMapping("/admin/update")
+    public String update(Users user, RedirectAttributes redirectAttributes) throws Exception {
         
         userService.update(user);
+        // 수정 성공 메시지 flash로 전달
+        redirectAttributes.addFlashAttribute("updateSuccess", true);
         return "redirect:/users/admin/userlist";
     }
 
-    // ✅ 회원 삭제
-    @PostMapping("/{no}/delete")
-    public String delete(@PathVariable Long no) throws Exception {
+    // 단건 회원 삭제
+    @PostMapping("/admin/{no}/delete")
+    @ResponseBody
+    public ResponseEntity<String> delete(@PathVariable("no") Long no) throws Exception {
         userService.delete(no);
-        return "redirect:/users";
+        return ResponseEntity.ok("ok");
     }
 
-    // ✅ 비밀번호 초기화 (관리자용)
-    @PostMapping("/{no}/reset")
-    public String resetPassword(@PathVariable Long no) throws Exception {
-        String defaultPassword = "a123456789"; // ※ 필요시 암호화해서 넣기
-        userService.resetPassword(no, defaultPassword);
-        return "redirect:/users";
+    // 체크된 회원 모두 삭제 
+    @PostMapping("/admin/deleteAll")
+    @ResponseBody
+    public ResponseEntity<String> deleteAll(@RequestParam("userNos") List<Long> userNos) throws Exception {
+        for (Long no : userNos) {
+            userService.delete(no);
+        }
+        return ResponseEntity.ok("ok");
     }
+
+    // 비밀번호 초기화 (관리자용)
+    @PostMapping("/admin/{no}/reset")
+    @ResponseBody
+    public Map<String, Object> resetPassword(@PathVariable("no") Long no,
+                            RedirectAttributes redirectAttributes) throws Exception {
+
+    Map<String, Object> result = new HashMap<>();
+
+    // 1. 임시 비밀번호 생성 (보안 위해 무작위로)
+    String tempPassword = PasswordUtil.generateTempPassword(); 
+    String encodedPassword = passwordEncoder.encode(tempPassword);
+
+
+    // 2. 비밀번호 업데이트 
+    boolean updated = userService.resetPassword(no, encodedPassword);
+
+    if (updated) {
+        Users user = userService.findByNo(no);  // 사용자 정보 다시 조회
+        result.put("success", true);
+        result.put("tempPassword", tempPassword);
+        result.put("username",user.getUsername());
+    } else {
+        result.put("success", false);
+        result.put("message", "비밀번호 초기화에 실패했습니다. ");
+    }
+
+    return result;
+}
 
     // ✅ 회원 검색
     @GetMapping("/search")

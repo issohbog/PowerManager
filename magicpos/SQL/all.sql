@@ -8,10 +8,12 @@ CREATE TABLE users (
   username VARCHAR(100) NOT NULL COMMENT '사용자 이름',
   password VARCHAR(255) NOT NULL COMMENT '비밀번호(암호화저장)',
   birth DATE NOT NULL COMMENT '생년월일',
+  gender CHAR(1) NOT NULL DEFAULT 'M' COMMENT '성별(M/F)',     -- ✅ 성별 추가
   email VARCHAR(100) NOT NULL COMMENT '이메일',
   phone VARCHAR(20) NOT NULL COMMENT '핸드폰 번호',
   memo VARCHAR(255) NULL COMMENT '사용자 메모',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '가입일자',
+  
   PRIMARY KEY (no),
   UNIQUE KEY UK_users_id (id)
 );
