@@ -25,7 +25,11 @@ public interface OrderMapper {
 
     // 특정 사용자 주문 목록 조회
     List<Orders> findByUser(@Param("uNo") Long uNo);
-
+    
     // 단일 주문 조회
     Orders findByNo(@Param("no") Long no);
+
+
+    // 특정 사용자 주문 목록 조회
+    List<Orders> findOrdersByStatus(@Param("orderStatus") List<Long> orderStatus);
 }
