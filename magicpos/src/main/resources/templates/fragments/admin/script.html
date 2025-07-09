@@ -1,6 +1,10 @@
-<th:block>
+<th:block th:fragment="script">
   <!-- 페이지별 JS (예: 회원 목록용) -->
-  <script src="/js/admin_user_list.js"></script>
+
+  <!-- <script src="/js/admin_user_list.js"></script> -->
+  <!-- 상품목록용 -->
+  <!-- <script src="/js/admin_product_list.js"></script> -->
+
   
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -19,4 +23,5 @@
         document.getElementById("cancel-modal").style.display = "none";
     }
 </script>
+
 </th:block>

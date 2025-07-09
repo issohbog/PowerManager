@@ -1,6 +1,7 @@
 package com.aloha.magicpos.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,6 +27,9 @@ public interface ProductMapper {
 
     // 카테고리로 조회
     List<Products> findByCategory(@Param("cNo") Long cNo);
+
+    // 상품 단건에 대해 당일 판매량 조회 
+    List<Map<String, Object>> findTodaySalesMap();
 
     // 재고 감소
     int decreaseStock(@Param("pNo") Long pNo, @Param("quantity") int quantity);

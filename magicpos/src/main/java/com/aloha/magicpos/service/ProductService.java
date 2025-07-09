@@ -1,6 +1,7 @@
 package com.aloha.magicpos.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.aloha.magicpos.domain.Products;
 
@@ -22,6 +23,9 @@ public interface ProductService {
 
     // 카테고리로 조회
     public List<Products> findByCategory(Long cNo) throws Exception;
+
+    // 상품 단건에 대해 당일 판매량 조회 
+    public Map<Long, Long> findTodaySalesMap();
 
     // 재고 감소
     public boolean decreaseStock(Long pNo, int quantity) throws Exception;

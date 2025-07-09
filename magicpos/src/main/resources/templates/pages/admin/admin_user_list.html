@@ -24,8 +24,8 @@
             </button>
           </div>
         </form>
-
       </div>
+      
     <div class="button-group">
       <button class="action">회원등록</button>
       <button class="action">회원수정</button>
@@ -47,7 +47,7 @@
         <th>가입일자</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="user-tbody">
       <tr th:each="user, iterStat : ${users}" th:attr="data-user-no=${user.no}">
         <td><input type="checkbox" /></td>
         <td th:text="${iterStat.index + 1}"></td>
@@ -68,7 +68,7 @@
 
 
 
- <!-- 회원 등록/수정 모달 -->
+ <!-- 회원 등록/수정/조회 모달 -->
 <div id="user-modal" class="modal" style="display: none;">
   <div class="modal-content large">
     <div class="modal-header">
@@ -76,10 +76,12 @@
       <span class="close-btn" onclick="closeModal()">×</span>
     </div>
     <form id="user-form" method="post" th:action="@{/users/save}">
-        <!-- ✅ 등록/수정 구분용 hidden -->
+        <!-- ✅ 등록/수정/조회 구분용 hidden -->
         <input type="hidden" name="mode" id="form-mode" value="register" />
         <!-- ✅ 회원번호 (수정 시 필요) -->
-        <input type="hidden" name="userNo" id="user-no" value="" />
+        <input type="hidden" name="no" id="user-no" value="" />
+        <input type="hidden" name="hidden-id" id="hidden-id" value="" />
+
 
         <div class="modal-body two-columns with-divider">
           <!-- 왼쪽 -->
@@ -148,13 +150,12 @@
           <div class="divider"></div>
         </div>
 
-        <div class="modal-footer">
+        <div class="modal-footer" id="modal-footer">
           <button type="button" onclick="closeModal()">취소</button>
           <button type="submit" id="modal-submit-btn">저장</button>
         </div>
 
-        <!-- 회원번호 hidden: 수정 시만 사용됨 -->
-        <input type="hidden" name="no" id="user-no" />
+
     </form>
   </div>
 </div>
@@ -164,11 +165,12 @@
 <!-- 임시비밀번호 안내 모달 -->
 <!-- ✅ 임시비밀번호 안내 모달 -->
 <div id="temp-password-modal" class="modal" 
-     th:if="${showSuccessModal}" 
-     style="display: flex;">
+     style="display: none;"
+     th:if="${showSuccessModal}" >
+          
   <div class="modal-content small">
     <div class="modal-header">
-      <span>회원 등록 완료</span>
+      <span class="modal-title" th:text="${modalTitle} ?: '회원 등록 완료'">회원 등록 완료</span>
       <span class="close-btn" onclick="closeTempPasswordModal()">×</span>
     </div>
     <div class="modal-body">
@@ -183,9 +185,16 @@
   </div>
 </div>
 
+<script src="/js/admin_user_list.js"></script>
 <!-- 임시비밀번호 안내 모달 끝 -->
-
-
-
+ 
+<script th:inline="javascript">
+  const savedUser = [[${savedUser}]]
+  if( savedUser != null ) {
+    const tempPasswordModal = document.getElementById('temp-password-modal')
+    if( tempPasswordModal )
+      document.getElementById('temp-password-modal').style.display = 'flex'
+  }
+</script>
 </body>
 </html>
