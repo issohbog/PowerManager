@@ -71,6 +71,7 @@ CREATE TABLE orders (
   message VARCHAR(100) NULL COMMENT '주문요청 메시지',
   order_status BIGINT NOT NULL DEFAULT 0 COMMENT '상태(주문접수:0, 준비중:1, 전달완료:2)',
   payment_status BIGINT NOT NULL DEFAULT 0 COMMENT '상태(결제전:0, 결제완료:1)',
+  pay_at TIMESTAMP NULL COMMENT '결제 시각',
   PRIMARY KEY (no),
   FOREIGN KEY (u_no) REFERENCES users(no)
     ON DELETE CASCADE ON UPDATE CASCADE,

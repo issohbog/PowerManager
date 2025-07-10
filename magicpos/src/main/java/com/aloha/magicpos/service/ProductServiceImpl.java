@@ -50,12 +50,12 @@ public class ProductServiceImpl implements ProductService  {
     }
 
     @Override
-    public boolean decreaseStock(Long pNo, int quantity) throws Exception {
+    public boolean decreaseStock(Long pNo, Long quantity) throws Exception {
         return productMapper.decreaseStock(pNo, quantity) > 0;
     }
 
     @Override
-    public boolean increaseStock(Long pNo, int quantity) throws Exception {
+    public boolean increaseStock(Long pNo, Long quantity) throws Exception {
         return productMapper.increaseStock(pNo, quantity) > 0;
     }
 
@@ -91,6 +91,10 @@ public class ProductServiceImpl implements ProductService  {
     }
 
 
-
+    @Override
+    public Long selectStockByPNo(Long pNo) throws Exception {
+        return productMapper.selectStockByPNo(pNo);
+    }   
+    
 
 }

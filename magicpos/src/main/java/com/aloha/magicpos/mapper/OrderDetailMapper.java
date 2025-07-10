@@ -16,6 +16,12 @@ public interface OrderDetailMapper {
     // 수량 수정
     int updateQuantity(@Param("oNo") Long oNo, @Param("pNo") Long pNo, @Param("quantity") Long quantity);
 
+    // 수량 증가
+    int increaseQuantity(@Param("oNo") Long oNo, @Param("pNo") Long pNo);
+    
+    // 수량 감소
+    int decreaseQuantity(@Param("oNo") Long oNo, @Param("pNo") Long pNo);
+
     // 주문 상세 삭제 (주문 번호 + 상품 번호)
     int delete(@Param("oNo") Long oNo, @Param("pNo") Long pNo);
 
@@ -27,4 +33,10 @@ public interface OrderDetailMapper {
 
     // 주문 번호 기준 상세 목록 + 상품명/가격 조인 조회
     List<Map<String, Object>> findDetailsWithProductNamesByOrderNo(@Param("oNo") Long oNo);
+
+    // 상품 재고 감소
+    int decreaseProductStock(@Param("pNo") Long pNo, @Param("quantity") Long quantity);
+
+    // 상품 재고 증가
+    int increaseProductStock(@Param("pNo") Long pNo, @Param("quantity") Long quantity);
 }

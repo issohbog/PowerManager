@@ -28,10 +28,10 @@ public interface ProductService {
     public Map<Long, Long> findTodaySalesMap();
 
     // 재고 감소
-    public boolean decreaseStock(Long pNo, int quantity) throws Exception;
+    public boolean decreaseStock(Long pNo, Long quantity) throws Exception;
 
     // 재고 증가
-    public boolean increaseStock(Long pNo, int quantity) throws Exception;
+    public boolean increaseStock(Long pNo, Long quantity) throws Exception;
 
     // 재고 수정 
     public boolean updateStock(Long pNo, int newStock) throws Exception;
@@ -41,4 +41,7 @@ public interface ProductService {
 
     // 🔍 상품 통합 검색
     public List<Products> searchProductsAll(String keyword) throws Exception;
+
+    // 상품 재고 조회
+    public Long selectStockByPNo(Long pNo) throws Exception;
 }

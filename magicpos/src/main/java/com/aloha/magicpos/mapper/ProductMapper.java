@@ -32,10 +32,10 @@ public interface ProductMapper {
     List<Map<String, Object>> findTodaySalesMap();
 
     // 재고 감소
-    int decreaseStock(@Param("pNo") Long pNo, @Param("quantity") int quantity);
+    int decreaseStock(@Param("pNo") Long pNo, @Param("quantity") Long quantity);
 
     // 재고 증가
-    int increaseStock(@Param("pNo") Long pNo, @Param("quantity") int quantity);
+    int increaseStock(@Param("pNo") Long pNo, @Param("quantity") Long quantity);
 
     // 재고 수정 
     int updateStock(@Param("pNo") Long pNo, @Param("stock") int stock);
@@ -45,4 +45,7 @@ public interface ProductMapper {
 
     // 🔍 상품 통합 검색
     List<Products> searchProductsAll(@Param("keyword") String keyword);
+
+    // 상품 재고 조회
+    Long selectStockByPNo(@Param("pNo") Long pNo);
 }

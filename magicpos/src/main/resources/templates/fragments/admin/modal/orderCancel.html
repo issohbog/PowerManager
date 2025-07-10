@@ -1,71 +1,64 @@
-<th:block th:fragment="orderCancel">
+<th:block th:fragment="orderCancel" th:inline="javascript">
   <!-- 상품취소 모달 -->
-  <div id="cancel-modal">
+  <div th:id="'cancel-modal-' + ${order.no}" class="cancel-modal">
     <div class="cancel-modal-box">
-      
+
       <!-- 모달 상단 -->
       <div class="cancel-modal-header">
         <span class="cancel-modal-title">상품취소</span>
-        <button onclick="closeCancelModal()" class="cancel-modal-close">X</button>
+        <button class="cancel-modal-close" th:attr="onclick=|closeCancelModal(${order.no})|">X</button>
       </div>
 
       <!-- 상품 취소 목록 -->
-      <div class="cart-section">
-        <div class="cart-items">
-          <div class="cart-item">
-            <div class="cart-item-left">
-              <ul>
-                <li th:each="menu : ${menuNameList}" th:text="${menu}">메뉴명</li>
-                </ul>
-
-              <!-- 🔁 주문 상세 반복문 시작 -->
-              <div th:each="orderDetail : ${orderDetailsMap[order.no]}" class="quantity-control">
-
-                <!-- 수량 감소 -->
-                <form action="/admin/orders/updateQuantity" method="post">
-                  <input type="hidden" name="orderDetailNo" th:value="${orderDetail['no']}" />
-                  <input type="hidden" name="quantity" th:value="${orderDetail['quantity']}" class="quantity-input" />
-                  <button type="submit" class="cartcontrolBtn"
-                          onclick="event.target.closest('form').querySelector('.quantity-input').value = [[${orderDetail['quantity']} - 1]];">
-                    <img th:src="@{/images/마이너스 하얀색.png}" alt="감소" />
-                  </button>
-                </form>
-
-                <!-- 현재 수량 표시 -->
-                <span th:text="${orderDetail['quantity']}">1</span>
-
-                <!-- 수량 증가 -->
-                <form action="/admin/orders/updateQuantity" method="post">
-                  <input type="hidden" name="orderDetailNo" th:value="${orderDetail['no']}" />
-                  <input type="hidden" name="quantity" th:value="${orderDetail['quantity']}" class="quantity-input" />
-                  <button type="submit" class="cartcontrolBtn"
-                          onclick="event.target.closest('form').querySelector('.quantity-input').value = [[${orderDetail['quantity']} + 1]];">
-                    <img th:src="@{/images/플러스 노란색.png}" alt="증가" />
-                  </button>
-                </form>
-              </div>
-              <!-- 🔁 주문 상세 반복문 끝 -->
-
+      <div class="cart-section-box">
+          <div class="cart-section">
+            <div class="cart-items">
+                <div th:each="orderDetail : ${orderDetails}" class="cart-item">
+                    <div class="cart-item-left">
+                        <div th:text="${orderDetail['p_name']} ?: '이름없음'" style="color: white;">상품이름</div>
+                        <div class="quantity-control">
+                            <!-- 수량 감소/증가/삭제 form은 주문 form 밖에 위치 -->
+                            <form action="/orders/decreaseQuantity" method="post">
+                                <input type="hidden" name="oNo" th:value="${orderDetail['o_no']}" />
+                                <input type="hidden" name="pNo" th:value="${orderDetail['p_no']}" />
+                                <button type="submit" class="cartcontrolBtn">
+                                  <img th:src="@{/images/마이너스 하얀색.png}" alt="감소">
+                                </button>
+                              </form>
+                              <span th:text="${orderDetail['quantity']}" style="color: white;">1</span>
+                              <form action="/orders/increaseQuantity" method="post">
+                              <input type="hidden" name="oNo" th:value="${orderDetail['o_no']}" />
+                                <input type="hidden" name="pNo" th:value="${orderDetail['p_no']}" />
+                                <button type="submit" class="cartcontrolBtn">
+                                    <img th:src="@{/images/플러스 노란색.png}" alt="증가">
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="cart-item-right">
+                        <div th:text="${(orderDetail['p_price'] != null and orderDetail['quantity'] != null) ? #numbers.formatInteger(orderDetail['p_price'] * orderDetail['quantity'], 3, 'COMMA') + '원' : '0원'}">가격</div>
+                        <form action="/orders/delete/detail" method="post">
+                            <input type="hidden" name="oNo" th:value="${orderDetail['o_no']}" />
+                            <input type="hidden" name="pNo" th:value="${orderDetail['p_no']}" />
+                            <button class="deleteBtn">✕</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-            <div class="cart-item-right">
-              <div th:text="${order.totalPrice != null ? #numbers.formatInteger(order.totalPrice, 3, 'COMMA') + '원' : '0원'}">가격</div>
-              <form action="/admin/orders/delete" method="post">
-                <input type="hidden" name="oNo" th:value="${order.no}" />
-                <button class="deleteBtn">✕</button>
-              </form>
+            <div class="total-price">
+                총 주문금액 <span th:text="${order.totalPrice != null ? #numbers.formatInteger(order.totalPrice, 3, 'COMMA') + '원' : '0원'}" style="font-weight: bold;">16,000원</span>
             </div>
-          </div>
         </div>
-        <div class="total-price">
-          총 주문금액 <span th:text="${totalPrice}" style="font-weight: bold;">0원</span>
         </div>
-      </div>
 
-      <!-- 하단 버튼 -->
-      <div class="cancel-modal-footer">
-        <button>전체 주문 취소</button>
-        <button>수정</button>
+        <!-- 하단 버튼 -->
+        <div class="cancel-modal-footer">
+          <form action="/orders/delete" method="post">
+              <input type="hidden" name="orderNo" th:value="${order.no}" />
+              <button class="allCancel">전체 주문 취소</button>
+          </form>
+          <button class="selectCancel">수정</button>
+        </div>
       </div>
     </div>
   </div>

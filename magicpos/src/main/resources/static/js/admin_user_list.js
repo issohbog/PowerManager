@@ -1,4 +1,3 @@
-
 // ✅ 회원 정보 모달 확장 통합 버전 with 클래스 기반 버튼 렌더링
 
 const modal = document.getElementById("user-modal");
@@ -322,50 +321,6 @@ function closeTempPasswordModal() {
 }
 
 
-// 페이지 로딩 시 수량 나옴
-document.addEventListener("DOMContentLoaded", () => {
-  refreshCounts(); // 상태 숫자 최신화
-});
-
-// 준비중, 전달완료 상태 변경
-function updateStatus(orderNo, status, el) {
-  console.log('orderNo:', orderNo, 'status:', status);
-  const formData = new FormData();    // Content-Type: multipart/form-data
-  formData.append("no", orderNo);
-  formData.append("orderStatus", status);
-  fetch('/orders/status', {
-    method: 'POST',
-    body: formData
-  })
-  .then(res => res.text())
-  .then(data => {
-    if (data === 'ok') {
-      refreshCounts();
-      if (status == 2) {
-        // 전달완료 → 카드 제거
-        el.closest('.order-card').style.display = 'none';
-      } else {
-        // 준비중 → 강조 표시
-        const badges = el.parentElement.querySelectorAll('.badge');
-        badges.forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
-      }
-    } else {
-      alert("상태 변경 실패!");
-    }
-  });
-}
-// 주문현황 수량 갱신
-function refreshCounts() {
-  fetch('/orders/status/counts')
-    .then(res => res.json())
-    .then(data => {
-      document.querySelector('.number-tab1 span').textContent =
-        data.orderCount.toString().padStart(2, '0');
-      document.querySelector('.number-tab2 span').textContent =
-        data.prepareCount.toString().padStart(2, '0');
-    });
-}
 
 
 
