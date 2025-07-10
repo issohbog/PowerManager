@@ -52,6 +52,18 @@
         ORDER BY no DESC
     </select>
 
+    <!-- 상품 단건에 대해 당일 판매량 계산   -->
+    <select id="findTodaySalesMap" resultType="map">
+        SELECT 
+            p.no AS productNo,
+            IFNULL(SUM(od.quantity), 0) AS todaySales
+        FROM 
+            products p
+        LEFT JOIN orders_details od ON p.no = od.p_no
+        LEFT JOIN orders o ON od.o_no = o.no AND DATE(o.order_time) = CURDATE()
+        GROUP BY p.no
+    </select>
+
     <!-- 상품 재고 감소 (예: 주문 시) -->
     <update id="decreaseStock">
         UPDATE products
