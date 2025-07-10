@@ -34,7 +34,7 @@ public class AdminController {
     private OrderService orderService;
 
     @GetMapping("/admin")
-    public String findAllSeat(Model model) {
+    public String findAllSeat(Model model) throws Exception {
         
         Map<String, List<Seats>> seatMap = seatService.getSeatSections();
 

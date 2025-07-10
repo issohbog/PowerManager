@@ -81,4 +81,10 @@
         LIMIT 1
     </select>
 
+    <!-- 사용 중인 좌석 개수 조회 - header 사용현황 용 -->
+    <select id="countUsingSeats" resultType="int">
+        SELECT COUNT(*) 
+        FROM seats 
+        WHERE seat_status = 1
+    </select>
 </mapper>

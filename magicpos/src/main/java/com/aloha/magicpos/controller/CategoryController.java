@@ -1,11 +1,15 @@
 package com.aloha.magicpos.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,27 +28,27 @@ public class CategoryController {
     private CategoryService categoryService;
 
     // 카테고리 등록
-    @PostMapping
+    @PostMapping("/admin/create")
     @ResponseBody
-    public String create(@RequestBody Categories category) throws Exception{
+    public String insertCategory(@ModelAttribute Categories category) throws Exception {
         categoryService.create(category);
-        return "created";
+        return "ok";
     }
 
     // 카테고리 수정
-    @PutMapping("/{no}")
+    @PostMapping("/admin/update")
     @ResponseBody
-    public String update(@PathVariable Long no, @RequestBody Categories category)  throws Exception{
-        categoryService.update(no, category);
-        return "updated";
+    public String update(@ModelAttribute Categories category)  throws Exception{
+        categoryService.update(category.getNo(), category);
+        return "ok";
     }
 
     // 카테고리 삭제
-    @DeleteMapping("/{no}")
+    @PostMapping("/admin/delete")
     @ResponseBody
-    public String delete(@PathVariable Long no)  throws Exception{
-        categoryService.delete(no);
-        return "deleted";
+    public String delete(@ModelAttribute Categories category)  throws Exception{
+        categoryService.delete(category.getNo());
+        return "ok";
     }
 
     // 전체 조회

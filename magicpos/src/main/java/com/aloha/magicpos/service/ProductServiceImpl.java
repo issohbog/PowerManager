@@ -59,6 +59,13 @@ public class ProductServiceImpl implements ProductService  {
         return productMapper.increaseStock(pNo, quantity) > 0;
     }
 
+
+    @Override
+    public boolean updateStock(Long pNo, int newStock) throws Exception {
+        return productMapper.updateStock(pNo, newStock) > 0;
+    }   
+    
+
     @Override
     public List<Products> searchProducts(Long cNo, String keyword) throws Exception {
         return productMapper.searchProducts(cNo, keyword);
@@ -71,12 +78,19 @@ public class ProductServiceImpl implements ProductService  {
 
     @Override
     public Map<Long, Long> findTodaySalesMap() {
-         List<Map<String, Object>> list = productMapper.findTodaySalesMap();
+        List<Map<String, Object>> list = productMapper.findTodaySalesMap();
         return list.stream()
+            .filter(m -> m.get("productNo") != null) 
             .collect(Collectors.toMap(
                 m -> ((Number) m.get("productNo")).longValue(),
-                m -> ((Number) m.get("todaySales")).longValue()
+                m -> {
+                    Object val = m.get("todaySales");
+                    return val != null ? ((Number) val).longValue() : 0L;
+                }
             ));
-    }   
-    
+    }
+
+
+
+
 }

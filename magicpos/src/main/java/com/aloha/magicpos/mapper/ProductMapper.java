@@ -37,6 +37,9 @@ public interface ProductMapper {
     // 재고 증가
     int increaseStock(@Param("pNo") Long pNo, @Param("quantity") int quantity);
 
+    // 재고 수정 
+    int updateStock(@Param("pNo") Long pNo, @Param("stock") int stock);
+
     // 🔍 상품 검색 (분류 + 키워드)
     List<Products> searchProducts(@Param("cNo") Long cNo, @Param("keyword") String keyword);
 
