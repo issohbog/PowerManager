@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +20,8 @@ import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.OrdersDetails;
 import com.aloha.magicpos.service.CartService;
 import com.aloha.magicpos.service.OrderService;
+import com.aloha.magicpos.service.ProductService;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -37,6 +38,9 @@ public class OrderController {
     
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private ProductService productService;
     
     // 🔸 주문 등록
     @PostMapping("/create")
@@ -45,6 +49,7 @@ public class OrderController {
         @RequestParam("seatId") String seatId,
         @RequestParam("pNoList") List<Long> pNoList,
         @RequestParam("quantityList") List<Long> quantityList,
+        @RequestParam("pNameList") List<String> pNameList, // 상품 이름 리스트 추가
         RedirectAttributes rttr, // 리다이렉트 시 플래시 속성 사용
         HttpSession session // 세션에서 사용자 정보 가져오기
         ) throws Exception {
@@ -55,6 +60,20 @@ public class OrderController {
             if (userNo == null) {
                 userNo = 1L; // 임시 유저 번호
                 session.setAttribute("userNo", userNo);
+            }
+            // ✅ 3. 주문 전 재고 체크
+            for (int i = 0; i < pNoList.size(); i++) {
+                Long pNo = pNoList.get(i);
+                Long quantity = quantityList.get(i);
+                String pName = pNameList.get(i);
+
+                // 이 메서드에서 재고 수량 조회
+                Long currentStock = productService.selectStockByPNo(pNo);  // 아래에 구현 설명 있음
+
+                if (currentStock == null || currentStock < quantity) {
+                    rttr.addFlashAttribute("error", pName + "의 재고가 부족합니다.");
+                    return "redirect:/menu";
+                }
             }
             // 🔽 여기서 seatId 로그 확인
             log.debug("넘어온 seatId: {}", order.getSeatId());
@@ -74,6 +93,8 @@ public class OrderController {
             detail.setPNo(pNoList.get(i));
             detail.setQuantity(quantityList.get(i));
             orderService.insertOrderDetail(oNo, detail);
+            // 상품 재고 감소
+            productService.decreaseStock(pNoList.get(i), quantityList.get(i));
         }
         // 장바구니 비우기
         cartService.deleteAllByUserNo(userNo);

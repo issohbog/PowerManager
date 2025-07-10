@@ -33,4 +33,10 @@ public interface OrderDetailMapper {
 
     // 주문 번호 기준 상세 목록 + 상품명/가격 조인 조회
     List<Map<String, Object>> findDetailsWithProductNamesByOrderNo(@Param("oNo") Long oNo);
+
+    // 상품 재고 감소
+    int decreaseProductStock(@Param("pNo") Long pNo, @Param("quantity") Long quantity);
+
+    // 상품 재고 증가
+    int increaseProductStock(@Param("pNo") Long pNo, @Param("quantity") Long quantity);
 }

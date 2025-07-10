@@ -60,4 +60,19 @@
         WHERE od.o_no = #{oNo}
     </select>
 
+    <!-- 상품 재고 감소 -->
+    <update id="decreaseProductStock">
+        UPDATE products
+        SET stock = stock - #{quantity}
+        WHERE no = #{pNo}
+        AND stock >= #{quantity}
+    </update>
+
+    <!-- 상품 재고 증가 -->
+    <update id="increaseProductStock">
+        UPDATE products
+        SET stock = stock + #{quantity}
+        WHERE no = #{pNo}
+    </update>
+
 </mapper>
