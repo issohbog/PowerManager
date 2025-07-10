@@ -166,7 +166,7 @@
 <!-- ✅ 임시비밀번호 안내 모달 -->
 <div id="temp-password-modal" class="modal" 
      style="display: none;"
-     th:if="${showSuccessModal}" >
+     th:style="${showSuccessModal} ? 'display: flex;' : 'display: none;'" >
           
   <div class="modal-content small">
     <div class="modal-header">
@@ -190,7 +190,8 @@
  
 <script th:inline="javascript">
   const savedUser = [[${savedUser}]]
-  if( savedUser != null ) {
+  const username =  [[${savedUser.username}]]
+  if( savedUser != null && username != null ) {
     const tempPasswordModal = document.getElementById('temp-password-modal')
     if( tempPasswordModal )
       document.getElementById('temp-password-modal').style.display = 'flex'

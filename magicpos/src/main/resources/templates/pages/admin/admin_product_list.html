@@ -12,9 +12,10 @@
         <form th:action="@{/products/admin/productlist}" method="get" class="search-box">
           <select name="type" class="admin_product_category" >
             <option value="" th:selected="${type == null or type == ''}">상품 분류 전체</option>
-            <option value="pname" th:selected="${type == 'pname'}">상품명</option>
-            <option value="desc" th:selected="${type == 'desc'}">상품설명</option>
-            <option value="price" th:selected="${type == 'price'}">상품가격</option>
+              <option th:each="entry : ${categoryMap}"
+                      th:value="${entry.key}"
+                      th:text="${entry.value}"
+                      th:selected="${type == entry.key}">카테고리</option>
           </select>
   
           <div class="search-box">
@@ -30,10 +31,10 @@
       <button class="action category-add-btn">상품분류등록</button>
       <button class="action product-add-btn">상품등록</button>
       <button class="action product-update-btn">상품수정</button>
-      <button class="action">상품삭제</button>
+      <button class="action product-delete-btn">상품삭제</button>
     </div>
 
-  <table>
+  <table class="product_table">
     <thead>
       <tr>
         <th><input type="checkbox" /></th>
@@ -51,19 +52,29 @@
       <tr th:each="product, iterStat : ${products}" 
           th:attr="data-product-no=${product.no},
                   data-category-no=${product.cNo},
+                  data-category-name=${categoryMap[product.cNo]},  
                   data-pname=${product.pName},
                   data-description=${product.description},
                   data-price=${product.pPrice},
-                  data-sell-status=${product.sellStatus}
+                  data-sell-status=${product.sellStatus}, 
+                  data-img-path=${product.imgPath}, 
+                  data-stock=${product.stock}
                 ">
         <td><input type="checkbox" /></td>
         <td th:text="${iterStat.index + 1}"></td>
-        <td th:text="${product.cNo}"></td> <!-- 상품분류: 카테고리 번호 -->
+        <td th:text="${categoryMap[product.cNo]}"></td> <!-- 상품분류: 카테고리 번호 -->
         <td th:text="${product.pName}"></td> <!-- 상품명 -->
         <td th:text="${product.description}"></td> <!-- 상품설명 -->
         <td th:text="${#numbers.formatInteger(product.pPrice, 0)} + '원'"></td> <!-- 상품가격 -->
-        <td>--</td> <!-- 손님pc 공개여부 -->
-        <td th:text="${product.stock} + '개'"></td> <!-- 재고 -->
+        <td th:text="${product.sellStatus} ? 'O' : 'X'"></td> <!-- 손님PC 공개여부 -->
+        <td class="stock-cell">
+          <span class="stock-display" th:text="${product.stock}"></span>
+          <input type="number" 
+                class="stock-input"
+                th:value="${product.stock}"
+                min="0"
+                th:attr="data-product-no=${product.no}" />
+        </td>
         <td th:text="${product.todaySales}"></td> <!-- 금일 판매량 -->
       </tr>
     </tbody>
@@ -75,7 +86,7 @@
 <div id="category-modal" class="modal">
   <div class="category-modal-content">
     <div class="category-modal-header">
-      <h2>상품등록</h2>
+      <h2>상품분류등록</h2>
       <span class="category-close-btn">×</span>
     </div>
     <div class="category-modal-body">
@@ -90,8 +101,21 @@
         <tbody id="category-table">
           <tr th:each="entry, iterStat : ${categoryMap}">
             <td th:text="${iterStat.index + 1}">1</td> <!-- 순서 -->
-            <td><input type="text" th:value="${entry.value}" /></td> <!-- 분류명 -->
-            <td><input type="checkbox" th:attr="data-category-no=${entry.key}" /></td> <!-- 삭제용 체크박스 -->
+            <td>      
+              <div class="category-edit-wrapper">
+                <span class="category-name-text" 
+                      th:text="${entry.value}"
+                      onclick="editCategory(this)"
+                      th:attr="data-category-no=${entry.key}">
+                </span>
+              </div>
+            </td> <!-- 분류명 -->
+            <td>
+              <button type="button"
+                      class="delete-category-btn"
+                      th:attr="data-category-no=${entry.key}"
+                      onclick="deleteCategoryRow(this)">×</button>
+            </td> <!-- 삭제 버튼 -->
           </tr>
         </tbody>
       </table>
@@ -100,7 +124,7 @@
         <label>분류명</label>
         <div class="category-input-button">
           <input type="text" id="new-category-input" />
-          <button onclick="addCategory()">분류등록</button>
+          <button type="button" onclick="addCategory()">분류등록</button>
         </div>
       </div>
   

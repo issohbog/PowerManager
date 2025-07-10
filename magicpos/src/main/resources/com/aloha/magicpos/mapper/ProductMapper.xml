@@ -56,11 +56,11 @@
     <select id="findTodaySalesMap" resultType="map">
         SELECT 
             p.no AS productNo,
-            IFNULL(SUM(od.quantity), 0) AS todaySales
+            IFNULL(SUM(CASE WHEN DATE(o.order_time) = CURDATE() THEN od.quantity ELSE 0 END), 0) AS todaySales
         FROM 
             products p
         LEFT JOIN orders_details od ON p.no = od.p_no
-        LEFT JOIN orders o ON od.o_no = o.no AND DATE(o.order_time) = CURDATE()
+        LEFT JOIN orders o ON od.o_no = o.no
         GROUP BY p.no
     </select>
 
@@ -75,6 +75,13 @@
     <update id="increaseStock">
         UPDATE products
         SET stock = stock + #{quantity}
+        WHERE no = #{pNo}
+    </update>
+
+    <!-- 상품 재고 수정 -->
+    <update id="updateStock">
+        UPDATE products
+        SET stock = #{stock}
         WHERE no = #{pNo}
     </update>
 

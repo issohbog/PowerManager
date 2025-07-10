@@ -20,4 +20,7 @@ public class Products {
 
     // 당일 판매량 조회용 
     private Long todaySales;
+
+    // 카테고리 명 조회용 
+    private String cName;
 }

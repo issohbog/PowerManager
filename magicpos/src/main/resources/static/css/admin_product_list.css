@@ -137,6 +137,84 @@ button.action:hover {
     color: #ffffff;
 }
 
+/* product-table 너비 조정 */
+.product_table {
+  table-layout: fixed; /* 열 너비 고정 */
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product_table th,
+.product_table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 8px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* 각 열 너비 지정 (순서는 열 번호 기준) */
+.product_table th:nth-child(1),
+.product_table td:nth-child(1) { width: 40px; }    /* 체크박스 */
+.product_table th:nth-child(2),
+.product_table td:nth-child(2) { width: 60px; }    /* No. */
+.product_table th:nth-child(3),
+.product_table td:nth-child(3) { width: 100px; }   /* 상품분류 */
+.product_table th:nth-child(4),
+.product_table td:nth-child(4) { width: 150px; }   /* 상품명 */
+.product_table th:nth-child(5),
+.product_table td:nth-child(5) { width: 250px; }   /* 상품설명 */
+.product_table th:nth-child(6),
+.product_table td:nth-child(6) { width: 100px; }   /* 상품가격 */
+.product_table th:nth-child(7),
+.product_table td:nth-child(7) { width: 100px; }   /* 손님pc */
+.product_table th:nth-child(8),
+.product_table td:nth-child(8) { width: 80px; }    /* 재고 */
+.product_table th:nth-child(9),
+.product_table td:nth-child(9) { width: 100px; }   /* 금일 판매량 */
+
+/* product-table 너비 조정 끝*/
+
+.product_table td:nth-child(8) input[type="number"] {
+  width: 50px;
+  height: 30px;
+}
+
+/* ✅ 기본적으로 input 숨기고 span만 보여줌 */
+.stock-cell .stock-input {
+  display: none;
+  width: 60px;
+  height: 34px;
+  padding: 4px;
+  font-size: 14px;
+}
+
+/* ✅ 보여지는 숫자 스타일 */
+.stock-cell .stock-display {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+/* ✅ input 활성화 시 스피너(증감버튼) 크게 */
+.stock-cell .stock-input::-webkit-inner-spin-button,
+.stock-cell .stock-input::-webkit-outer-spin-button {
+  -webkit-appearance: auto;
+  appearance: auto;
+  margin: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.stock-cell .stock-input:focus {
+  outline: 2px solid #4dabf7;
+  border-radius: 4px;
+}
+
+
 
 /* 모달 */
 
@@ -664,81 +742,25 @@ textarea#memo {
 /* 모달끝  */
 
 
-/* ✅ 임시 비밀번호 안내 모달 전체 영역 */
-
-/* 임시비번 모달 */
-.modal-content.small {
-  width: 400px;
+.category-edit-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 7px;
+    align-items: center;
 }
 
-#temp-password-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6); /* 어두운 반투명 배경 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999 !important; /* 항상 위에 뜨게 */
+.category-table input[type="text"] {
+  height: 30px;
 }
 
-/* ✅ 모달 내용 상자 */
-#temp-password-modal .modal-content {
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  min-width: 360px;
-  max-width: 90%;
-  text-align: center;
-}
-
-/* ✅ 모달 제목 영역 */
-#temp-password-modal .modal-header {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
-
-/* ✅ 모달 본문 */
-#temp-password-modal .modal-body p {
-  font-size: 16px;
-  margin: 8px 0;
-}
-
-/* ✅ 강조된 임시 비밀번호 */
-#temp-password-modal .modal-body span {
-  color: red;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-/* ✅ 모달 하단 버튼 */
-#temp-password-modal .modal-footer {
-  margin-top: 20px;
-}
-
-#temp-password-modal .modal-footer button {
-  padding: 8px 20px;
-  background-color: #5D6D7E;
-  color: white;
+.category-edit-wrapper button {
+  padding: 5px 10px;
+  background: #c4c4c4;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
-#temp-password-modal .modal-footer button:hover {
-  background-color: #34495E;
+.delete-category-btn {
+  border: 1px solid #5D6D7E;
+  background: #c4c4c4;
 }
-
-/* 닫기 버튼 (오른쪽 상단 X 버튼이 있다면) */
-#temp-password-modal .close-btn {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 24px;
-  cursor: pointer;
-  color: white;
-}
-

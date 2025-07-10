@@ -55,7 +55,7 @@ public class AdminController {
     private CartService cartService;
 
     @GetMapping("/admin")
-    public String findAllSeat(Model model) {
+    public String findAllSeat(Model model) throws Exception {
         
         Map<String, List<Seats>> seatMap = seatService.getSeatSections();
 

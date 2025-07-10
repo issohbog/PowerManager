@@ -33,6 +33,9 @@ public interface ProductService {
     // 재고 증가
     public boolean increaseStock(Long pNo, Long quantity) throws Exception;
 
+    // 재고 수정 
+    public boolean updateStock(Long pNo, int newStock) throws Exception;
+
     // 🔍 상품 검색 (분류 + 키워드) throws Exception
     public List<Products> searchProducts(Long cNo, String keyword) throws Exception;
 
