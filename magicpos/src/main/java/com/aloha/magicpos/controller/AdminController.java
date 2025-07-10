@@ -20,6 +20,8 @@ import com.aloha.magicpos.service.SeatService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RequiredArgsConstructor
@@ -45,6 +47,13 @@ public class AdminController {
         return "pages/admin/seat_status";
     
     }
+
+    @GetMapping("sell/counter")
+    public String sellcounter() {
+        return "pages/admin/sellcounter";
+    }
+    
+
     /**
      * 관리자 주문 팝업 - 주문 취소
      * @param orderNo
@@ -52,26 +61,16 @@ public class AdminController {
      * @return
      * @throws Exception 
      */
-    @GetMapping("/admin/orders/cancel/{orderNo}")
-    public String cancelOrderPopup(@PathVariable Long orderNo, Model model) throws Exception {
+    @GetMapping("/admin/cancel/{orderNo}")
+    public String cancelOrderPopup(@PathVariable("orderNo") Long orderNo, Model model) throws Exception {
 
         Orders order = orderService.findOrderByNo(orderNo);
         List<Map<String, Object>> orderDetails = orderService.findDetailsWithProductNames(orderNo); // ← 여기 수정!
 
-        List<String> menuNameList = orderDetails.stream()
-            .map(d -> {
-                String name = d.get("p_name").toString();
-                Object quantityObj = d.get("quantity");
-                int quantity = (quantityObj != null) ? Integer.parseInt(quantityObj.toString()) : 1;
-                return name + "(" + quantity + ")";
-            })
-            .collect(Collectors.toList());
-
         model.addAttribute("order", order);
         model.addAttribute("orderDetails", orderDetails);
-        model.addAttribute("menuNameList", menuNameList);
 
-        return "admin/orderpopup :: orderCancel";
+        return "fragments/admin/modal/orderCancel :: orderCancel";
     }
 
 
@@ -99,11 +98,11 @@ public class AdminController {
             }
             // ✅ 여기부터 메뉴 이름 , 로 이어붙이기
             Map<Long, String> menuNamesMap = new HashMap<>();
-
+        
             for (Orders order : orderList) {
                 Long oNo = order.getNo();
                 List<Map<String, Object>> details = orderDetailsMap.get(oNo);
-
+        
                 if (details != null && !details.isEmpty()) {
                     String names = details.stream()
                         .map(d -> {
@@ -118,9 +117,7 @@ public class AdminController {
                     menuNamesMap.put(oNo, "");
                 }
             }
-            
             model.addAttribute("menuNamesMap", menuNamesMap);
-            // model.addAttribute("quantityListMap", quantityListMap);
             model.addAttribute("orderDetailsMap", orderDetailsMap);
             model.addAttribute("orderCount", orderService.countByStatus(List.of(0L, 1L)));
             model.addAttribute("preparingCount", orderService.countByStatus(List.of(1L)));

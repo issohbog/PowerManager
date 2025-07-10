@@ -2,21 +2,5 @@
   <!-- 페이지별 JS (예: 회원 목록용) -->
   <script src="/js/admin_user_list.js"></script>
   
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        console.log("✅ JS 로드됨");
 
-        document.body.addEventListener("click", (e) => {
-        const target = e.target.closest(".sell-cancel");
-        if (target) {
-            console.log("✅ 판매취소 클릭됨");
-            document.getElementById("cancel-modal").style.display = "flex";
-        }
-        });
-    });
-
-    function closeCancelModal() {
-        document.getElementById("cancel-modal").style.display = "none";
-    }
-</script>
 </th:block>

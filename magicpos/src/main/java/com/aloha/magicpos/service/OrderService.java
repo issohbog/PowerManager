@@ -3,6 +3,8 @@ package com.aloha.magicpos.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.OrdersDetails;
 
@@ -19,5 +21,9 @@ public interface OrderService {
     public List<OrdersDetails> findOrderDetails(Long oNo) throws Exception;
     public List<Map<String, Object>> findDetailsWithProductNames(Long oNo) throws Exception;
     public boolean updateOrderDetailQuantity(Long oNo, Long pNo, Long quantity) throws Exception;
+    // 수량 증가
+    public boolean increaseQuantity(@Param("oNo") Long oNo, @Param("pNo") Long pNo) throws Exception;
+    // 수량 감소
+    public boolean decreaseQuantity(@Param("oNo") Long oNo, @Param("pNo") Long pNo) throws Exception;
     public boolean deleteOrderDetail(Long oNo, Long pNo) throws Exception;
 }
