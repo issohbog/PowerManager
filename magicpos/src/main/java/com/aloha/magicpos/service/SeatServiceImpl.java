@@ -98,6 +98,11 @@ public class SeatServiceImpl implements SeatService {
         return seatMapper.countUsingSeats();
     }
 
+    @Override
+    public int countAllSeats() throws Exception {
+        return seatMapper.countAllSeats();
+    }
+
 
 
 

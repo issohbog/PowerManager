@@ -4,18 +4,22 @@
         <div class="seat-title">사용현황</div>
         <!-- 좌석 현황 -->
         <div class="seat-info">
-            <div class="seat-con-used">
-                <div class="seat-cell">1</div>
-                <div class="seat-cell">5</div>
+            <div class="seat-con-used" id="used-seat-count">
+                <div class="seat-cell">0</div>
+                <div class="seat-cell">0</div>
                 <div class="seat-cell">0</div>
             </div>
-            <div class="seat-con-all">
-                <div class="seat-cell">1</div>
-                <div class="seat-cell">8</div>
+            <div class="seat-con-all" id="total-seat-count">
+                <div class="seat-cell">0</div>
+                <div class="seat-cell">0</div>
                 <div class="seat-cell">0</div>
             </div>
         </div>
     </div>
+    <!-- 서버에서 좌석 받아오기  -->
+    <input type="hidden" id="using-seat-hidden" th:value="${usingSeatCount}"/>
+    <input type="hidden" id="total-seat-hidden" th:value="${totalSeatCount}"/>
+
     <div class="header-nav-con">
         <!-- 메뉴 -->
         <nav class="header-nav">

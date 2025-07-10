@@ -15,6 +15,9 @@ public interface SeatService {
     // 사용중인 좌석 개수 조회 
     public int countUsingSeats() throws Exception;
 
+    // 전체 좌석 개수 조회 
+    public int countAllSeats() throws Exception;
+
     // 좌석 구간별 분리 
     Map<String, List<Seats>> getSeatSections() throws Exception;
 

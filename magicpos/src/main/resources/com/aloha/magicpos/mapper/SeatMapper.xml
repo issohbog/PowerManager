@@ -87,4 +87,9 @@
         FROM seats 
         WHERE seat_status = 1
     </select>
+
+    <!-- 전체 좌석 수 조회 -->
+    <select id="countAllSeats" resultType="int">
+        SELECT COUNT(*) FROM seats
+    </select>
 </mapper>

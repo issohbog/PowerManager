@@ -19,6 +19,9 @@ public interface SeatMapper {
     // 사용 중인 좌석 조회 (좌석 데시보드 용)
     int countUsingSeats();
 
+    // 전체 좌석 개수 조회 (좌석 데시보드 용)
+    int countAllSeats();
+
     // 단일 좌석 조회
     Seats findById(@Param("seatId") String seatId);
 
@@ -30,4 +33,6 @@ public interface SeatMapper {
 
     // 로그인한 유저 기준 좌석 사용 정보 조회
     Map<String, Object> findSeatUsageInfoByUser(@Param("userNo") Long userNo);
+
+
 }
