@@ -103,5 +103,13 @@
         ORDER BY no DESC
     </select>
 
+    <!-- 상품 재고 조회 -->
+    <select id="selectStockByPNo" resultType="long">
+        SELECT stock
+        FROM products
+        WHERE no = #{pNo}
+    </select>
+
+
 
 </mapper>

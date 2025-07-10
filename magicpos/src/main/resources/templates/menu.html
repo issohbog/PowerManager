@@ -115,6 +115,7 @@
                 <div th:each="cart, cartStat : ${cartList != null ? cartList : {}}">
                     <input type="hidden" name="pNoList" th:value="${cart.p_no}" />
                     <input type="hidden" name="quantityList" th:value="${cart.quantity}" />
+                    <input type="hidden" name="pNameList" th:value="${cart.p_name}" />
                 </div>
                 <input type="hidden" name="totalPrice" th:value="${totalPrice}" />
                 <div class="payment-methods">
@@ -145,6 +146,9 @@
     <script th:src="@{/js/userscript.js}"></script>
     <script th:inline="javascript">
     window.orderSuccess = [[${orderSuccess}]];
+    </script>
+    <script th:if="${error}" th:inline="javascript">
+        alert([[${error}]]);
     </script>
 </body>
 </html>
