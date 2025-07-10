@@ -77,8 +77,18 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public boolean deleteOrderDetail(Long oNo, Long pNo) throws Exception {
-        return orderDetailMapper.delete(oNo, pNo) > 0;
+        boolean isDeleted = orderDetailMapper.delete(oNo, pNo) > 0;
+
+        // 삭제 후, 남은 상세가 있는지 확인
+        List<OrdersDetails> remainDetails = orderDetailMapper.findByOrderNo(oNo);
+        if (remainDetails.isEmpty()) {
+            // 아무것도 없으면 주문도 삭제
+            orderMapper.delete(oNo);
+        }
+
+        return isDeleted;
     }
+
 
     @Override
     public List<Orders> findOrdersByStatus(List<Long> orderStatus) throws Exception {
@@ -97,5 +107,15 @@ public class OrderServiceImpl implements OrderService{
         }
         // findOrdersByStatus를 재사용해서 크기만 가져옴
         return (long) findOrdersByStatus(orderStatus).size();
+    }
+
+    @Override
+    public boolean increaseQuantity(Long oNo, Long pNo) throws Exception {
+        return orderDetailMapper.increaseQuantity(oNo, pNo) > 0;
+    }
+
+    @Override
+    public boolean decreaseQuantity(Long oNo, Long pNo) throws Exception {
+        return orderDetailMapper.decreaseQuantity(oNo, pNo) > 0;
     }
 }

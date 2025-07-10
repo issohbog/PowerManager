@@ -4,7 +4,7 @@
       layout:decorate="~{/layouts/admin/main_layout}"
       th:inline="javascript">
 
-<div layout:fragment="content">
+<body layout:fragment="content">
     <div class="order-status-container">
         <!-- 헤더 -->
       <div class="order-status-header">
@@ -41,7 +41,7 @@
 
                 <div class="status-row1">
                   <div class="memo" th:text="${order.message}">맛있게 만들어주세요~</div>
-                  <span class="sell-cancel">판매취소</span>
+                  <span class="sell-cancel" th:attr="data-order-no=${order.no}">판매취소</span>
                 </div>
                 <div class="status-row2">
                 <div class="price-box">
@@ -72,3 +72,95 @@
         </div>
     </div>
 </div>
+  <script>
+      // 주문현황 수량 갱신
+      function refreshCounts() {
+      fetch('/orders/status/counts')
+          .then(res => res.json())
+          .then(data => {
+          document.querySelector('.number-tab1 span').textContent =
+              data.orderCount.toString().padStart(2, '0');
+          document.querySelector('.number-tab2 span').textContent =
+              data.prepareCount.toString().padStart(2, '0');
+          });
+      }
+  </script>
+  <script>
+  function closeCancelModal(orderNo) {
+    const modal = document.getElementById(`cancel-modal-${orderNo}`);
+    if (modal) {
+      modal.remove(); // 아예 DOM에서 삭제해도 됨
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.sell-cancel').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const orderNo = btn.dataset.orderNo;
+
+        fetch(`/admin/cancel/${orderNo}`)
+          .then(res => res.text())
+          .then(html => {
+            // 이미 열려 있는 모달 있으면 먼저 제거
+            const existing = document.getElementById(`cancel-modal-${orderNo}`);
+            if (existing) existing.remove();
+
+            // 응답 HTML을 body에 추가
+            document.body.insertAdjacentHTML("beforeend", html);
+
+            // 모달 띄우기
+            const modal = document.getElementById(`cancel-modal-${orderNo}`);
+            if (modal) modal.style.display = 'block';
+          });
+      });
+    });
+  });
+</script>
+
+<script>
+// 페이지 로딩 시 수량 나옴
+document.addEventListener("DOMContentLoaded", () => {
+refreshCounts(); // 상태 숫자 최신화
+});
+
+// 준비중, 전달완료 상태 변경
+function updateStatus(orderNo, status, el) {
+    console.log('orderNo:', orderNo, 'status:', status);
+    // const data = {
+        //   no: orderNo,
+        //   orderStatus: status,
+        // }
+        const formData = new FormData();    // Content-Type: multipart/form-data
+        formData.append("no", orderNo);
+        formData.append("orderStatus", status);
+        fetch('/orders/status', {
+            method: 'POST',
+            // JSON
+            // headers: {
+                //   'Content-Type': 'application/json' // JSON 형식으로 전송
+                // },
+                // body: JSON.stringify(data) // 객체를 JSON 문자열로 변환  -> '{"no":1,"orderStatus":2}'
+                // FormData
+                body: formData // FormData 객체를 전송
+            })
+            .then(res => res.text())
+            .then(data => {
+                if (data === 'ok') {
+                    refreshCounts();
+                    if (status == 2) {
+                        // 전달완료 → 카드 제거
+                        el.closest('.order-card').style.display = 'none';
+                    } else {
+                        // 준비중 → 강조 표시
+                        const badges = el.parentElement.querySelectorAll('.badge');
+                        badges.forEach(b => b.classList.remove('active'));
+                        el.classList.add('active');
+                    }
+                } else {
+                    alert("상태 변경 실패!");
+                }
+            });
+        }
+</script>
+</body>
+</html>

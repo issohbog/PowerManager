@@ -79,12 +79,12 @@ INSERT INTO seats (seat_id, seat_name, seat_status) VALUES
 ('S5', '좌석5', 1);
 
 
-INSERT INTO orders (u_no, seat_id, total_price, payment, message, order_status, payment_status) VALUES
-(1, 'S1', 2000, 'CASH', '요청메시지1', 1, 1),
-(2, 'S2', 4000, 'CASH', '요청메시지2', 2, 0),
-(3, 'S3', 6000, 'CASH', '요청메시지3', 0, 1),
-(4, 'S4', 8000, 'CASH', '요청메시지4', 1, 0),
-(5, 'S5', 10000, 'CASH', '요청메시지5', 2, 1);
+INSERT INTO orders (u_no, seat_id, total_price, payment, message, order_status, payment_status, pay_at) VALUES
+(1, 'S1', 2000, 'CASH', '요청메시지1', 1, 1, NOW()),  -- 결제 완료
+(2, 'S2', 4000, 'CASH', '요청메시지2', 2, 0, NULL),   -- 결제 전
+(3, 'S3', 6000, 'CASH', '요청메시지3', 0, 1, NOW()),  -- 결제 완료
+(4, 'S4', 8000, 'CASH', '요청메시지4', 1, 0, NULL),   -- 결제 전
+(5, 'S5', 10000, 'CASH', '요청메시지5', 2, 1, NOW()); -- 결제 완료
 
 
 INSERT INTO carts (p_no, u_no, quantity) VALUES

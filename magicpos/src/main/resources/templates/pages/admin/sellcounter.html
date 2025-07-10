@@ -1,15 +1,19 @@
-<th:block th:fragment="orderCancel" th:inline="javascript">
-  <!-- 상품취소 모달 -->
-  <div th:id="'cancel-modal-' + ${order.no}" class="cancel-modal">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/admin/main_layout}"
+      >
+
+ <body layout:fragment="content">
     <div class="cancel-modal-box">
 
       <!-- 모달 상단 -->
       <div class="cancel-modal-header">
-        <span class="cancel-modal-title">상품취소</span>
+        <span class="cancel-modal-title">상품판매</span>
         <button class="cancel-modal-close" th:attr="onclick=|closeCancelModal(${order.no})|">X</button>
       </div>
 
-      <!-- 상품 취소 목록 -->
+      <!-- 상품 판매 목록 -->
       <div class="cart-section-box">
           <div class="cart-section">
             <div class="cart-items">
@@ -51,15 +55,18 @@
         </div>
         </div>
 
+        <!-- 결제 수단 선택 -->
+        <div class="payment-methods">
+            <label><input type="radio" name="payment" value="현금" required>현금</label>
+            <label><input type="radio" name="payment" value="카드">카드</label>
+        </div>
         <!-- 하단 버튼 -->
         <div class="cancel-modal-footer">
           <form action="/orders/delete" method="post">
               <input type="hidden" name="orderNo" th:value="${order.no}" />
-              <button class="allCancel">전체 주문 취소</button>
+              <button class="allCancel">판매하기</button>
           </form>
-          <button class="selectCancel">수정</button>
         </div>
       </div>
-    </div>
-  </div>
-</th:block>
+</body>
+</html>

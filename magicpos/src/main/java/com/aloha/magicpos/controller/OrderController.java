@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,7 +81,57 @@ public class OrderController {
         rttr.addFlashAttribute("orderSuccess", true);
         return "redirect:/menu";
     }
+    
+    // 🔸 주문 삭제 (주문 + 상세 함께 삭제)
+    @PostMapping("/delete")
+    public String deleteOrder(@RequestParam("orderNo") Long orderNo) throws Exception {
+        orderService.deleteOrder(orderNo);
+        return "redirect:/admin/orderpopup";
+    }
+    
+    // 🔸 주문 상세 삭제 (단일 상품)
+    @PostMapping("/delete/detail")
+    public String deleteOrderDetail(@RequestParam("oNo") Long oNo, @RequestParam("pNo") Long pNo, Model model, RedirectAttributes redirectAttributes) throws Exception{
+        orderService.deleteOrderDetail(oNo, pNo);
+        // 🔥 주문정보 다시 조회
+        Orders order = orderService.findOrderByNo(oNo);
+        if (order == null) {
+            redirectAttributes.addFlashAttribute("error", "주문이 삭제되었습니다.");
+            return "redirect:/admin/orderpopup";
+        }
+        List<Map<String, Object>> orderDetails = orderService.findDetailsWithProductNames(oNo);
 
+        // 🔥 모델에 담기
+        model.addAttribute("order", order);
+        model.addAttribute("orderDetails", orderDetails);
+
+
+        return "redirect:/admin/orderpopup";
+    }
+    // 🔸 주문 상세 1 수량 증가
+    @PostMapping("/increaseQuantity")
+    public String increaseOrderDetailQuantity(@RequestParam("oNo") Long orderNo,
+                                               @RequestParam("pNo") Long productNo) throws Exception {
+        orderService.increaseQuantity(orderNo, productNo);
+        return "redirect:/admin/orderpopup";
+    }
+
+    // 🔸 주문 상세 1 수량 감소
+    @PostMapping("/decreaseQuantity")
+    public String decreaseOrderDetailQuantity(@RequestParam("oNo") Long orderNo,
+                                               @RequestParam("pNo") Long productNo) throws Exception {
+        orderService.decreaseQuantity(orderNo, productNo);
+        return "redirect:/admin/orderpopup";
+    }
+    
+    // 🔸 주문 상세 수량 수정
+    @PostMapping("/updateQuantity")
+    public String updateOrderDetailQuantity(@RequestParam Long orderNo,
+                                            @RequestParam Long productNo,
+                                            @RequestParam Long quantity) throws Exception {
+        orderService.updateOrderDetailQuantity(orderNo, productNo, quantity);
+        return "redirect:/admin/orderpopup";
+    }
 
     // 🔸 주문 상세 등록
     @PostMapping("/{oNo}/details")
@@ -99,12 +150,6 @@ public class OrderController {
         return "order_status_updated";
     }
 
-    // 🔸 주문 삭제 (주문 + 상세 함께 삭제)
-    @PostMapping("/delete")
-    public String deleteOrder(@RequestParam Long orderNo) throws Exception {
-        orderService.deleteOrder(orderNo);
-        return "redirect:/admin/orderpopup";
-    }
 
     // 🔸 모든 주문 조회
     @GetMapping
@@ -136,22 +181,8 @@ public class OrderController {
         return orderService.findDetailsWithProductNames(oNo);
     }
 
-    // 🔸 주문 상세 수량 수정
-    @PostMapping("/admin/orders/updateQuantity")
-    public String updateOrderDetailQuantity(@RequestParam Long orderNo,
-                                            @RequestParam Long productNo,
-                                            @RequestParam Long quantity) throws Exception {
-        orderService.updateOrderDetailQuantity(orderNo, productNo, quantity);
-        return "redirect:/admin/orderpopup";
-    }
 
 
-    // 🔸 주문 상세 삭제 (단일 상품)
-    @DeleteMapping("/{oNo}/details/{pNo}")
-    public String deleteOrderDetail(@PathVariable Long oNo, @PathVariable Long pNo) throws Exception{
-        orderService.deleteOrderDetail(oNo, pNo);
-        return "order_detail_deleted";
-    }
 
     // 주문 상태 변경
     @PutMapping("/{no}/status/update")
@@ -168,7 +199,9 @@ public class OrderController {
     @ResponseBody
     // public String updateOrderStatusAjax(@RequestParam("no") Long no,
     //                                     @RequestParam("orderStatus") Long orderStatus) {
+    // public String updateOrderStatusAjax(@RequestParam Map<String, String> params) {
     public String updateOrderStatusAjax(@RequestParam Map<String, String> params) {
+    // public String updateOrderStatusAjax(@RequestBody Map<String, String> params) {
         try {
             Long no = Long.parseLong(params.get("no"));
             Long orderStatus = Long.parseLong(params.get("orderStatus"));

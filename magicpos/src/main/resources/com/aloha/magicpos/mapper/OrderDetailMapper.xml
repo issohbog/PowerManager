@@ -17,6 +17,21 @@
         SET quantity = #{quantity}
         WHERE o_no = #{oNo} AND p_no = #{pNo}
     </update>
+    
+    <!-- 수량 1 증가 -->
+    <update id="increaseQuantity">
+        UPDATE orders_details
+        SET quantity = quantity + 1
+        WHERE o_no = #{oNo} AND p_no = #{pNo}
+    </update>
+
+    <!-- 수량 1 감소 (단, 수량이 1 이상일 때만 감소) -->
+    <update id="decreaseQuantity">
+        UPDATE orders_details
+        SET quantity = quantity - 1
+        WHERE o_no = #{oNo} AND p_no = #{pNo}
+        AND quantity > 1
+    </update>
 
     <!-- 주문 상세 삭제 (특정 주문의 특정 상품) -->
     <delete id="delete">
@@ -39,7 +54,7 @@
 
     <!-- 주문번호로 상품 이름 조회 -->
     <select id="findDetailsWithProductNamesByOrderNo" resultType="map">
-        SELECT od.*, p.p_name
+        SELECT od.*, p.p_name, p.p_price
         FROM orders_details od
         JOIN products p ON od.p_no = p.no
         WHERE od.o_no = #{oNo}
