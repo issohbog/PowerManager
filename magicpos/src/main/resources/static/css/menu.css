@@ -51,9 +51,9 @@
   color: white;
 }
 
-.menu-tabs .active {
-  color: #ffd700;
-  font-weight: bold;
+.menu-tabs button.active {
+    color: #ffd700;
+    font-weight: bold;
 }
 
 .search-form {
@@ -211,6 +211,7 @@
 
 .cart-items {
   flex-grow: 1;
+  max-height: 300px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -307,7 +308,7 @@
 }
 
 .cash-options {
-  width: 343px;
+  width: 344px;
   height: 72px;
   padding: 5px;
   background-color: #1e2b38;
