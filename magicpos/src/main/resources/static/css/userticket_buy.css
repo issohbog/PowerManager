@@ -1,0 +1,267 @@
+/* menu.css */
+
+.container {
+  display: flex;
+}
+
+.main-panel {
+  width: 80%;
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  background-color: #2a3b4d;
+  color: white;
+  font-family: sans-serif;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
+.ticket_con {
+  padding: 0px 300px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 35px;
+}
+
+.plan-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.plan-card {
+  background-color: #fff;
+  color: #000;
+  border-radius: 10px;
+  padding: 35px;
+  width: 300px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 150px;
+}
+
+.plan-title {
+  font-weight: normal;
+  font-size: 14px;
+  margin-bottom: 10px;
+  border: 1px solid #D9D9D9;
+  display: inline-block;
+  width: auto;
+  height: auto;
+  align-self: flex-start;
+  padding: 3px 6px;
+  box-sizing: border-box;
+  border-radius: 16px;
+}
+
+.plan-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.plan-time {
+  color: #333;
+}
+
+.plan-price {
+  color: #000;
+}
+
+@media (max-width: 600px) {
+  .plan-card {
+    width: 100%;
+  }
+}
+
+
+
+
+
+
+.side-panel {
+  width: 20%;
+  height: calc(100vh - 100px);
+  background-color: #2C3E50;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  font-size: 14px;
+  gap: 15px;
+}
+
+.remaintime-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 16px;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#openModalBtn {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: #3d4b5a;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.ticket-section {
+  overflow-y: auto;
+  height: 330px;
+  width: 100%;
+  flex-grow: 1;
+  background-color: #1A252F;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ticket-item {
+  color: white;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.selected-ticket {        
+  margin-bottom: 10px;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.select-ticket-name {
+    font-size: 12px;
+    color: #333;
+    background: #F5F5F5;
+    display: inline-block;
+    width: auto;
+    height: auto;
+    border-radius: 15px;
+    padding: 3px 9px;
+    justify-content: center;
+    display: flex
+;
+}
+
+
+
+
+
+.payment-methods {
+  width: 100%;
+  display: flex;
+  padding: 10px;
+  background-color: #1e2b38;
+  border-radius: 6px;
+  gap: 10px;
+  font-size: 16px;
+  justify-content: space-evenly;
+}
+
+.payment-methods input[type="radio"] {
+  display: none;
+}
+
+.payment-methods label {
+  width: calc((100% - 20px) / 3);
+  height: 50px;
+  background-color: #3d4b5a;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.cash-options {
+  width: 343px;
+  height: 72px;
+  padding: 5px;
+  background-color: #1e2b38;
+  border-radius: 6px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cash-quick {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 5px;
+}
+
+.cash-custom {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  padding: 5px;
+}
+
+.cash-custom input[type="text"] {
+  width: 100px;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 4px;
+}
+.cash-quick label input[type="radio"],
+.cash-custom label input[type="radio"] {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.request-input {
+  width: 100%;
+  background-color: #1e2b38;
+  color: white;
+  border: 1px solid #f0f0f0;
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-size: 16px;
+  outline: none;
+}
+
+.order-button {
+  width: 100%;
+  background-color: #f1c40f;
+  color: black;
+  font-weight: bold;
+  border: none;
+  padding: 15px 0;
+  border-radius: 6px;
+  font-size: 16px;
+}
+.cartcontrolBtn{
+  all: unset;
+  line-height: 1 ;
+}
+
+#orderForm {
+  display: contents;
+}
+
+.payment-methods label:has(input[type="radio"]:checked) {
+  background-color: #f4d03f;
+  color: #000;
+  font-weight: bold;
+}

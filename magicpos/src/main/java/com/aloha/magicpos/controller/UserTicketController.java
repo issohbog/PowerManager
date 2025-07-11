@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.aloha.magicpos.domain.Tickets;
 import com.aloha.magicpos.domain.UserTickets;
-import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.service.SeatService;
+import com.aloha.magicpos.service.TicketService;
 import com.aloha.magicpos.service.UserTicketService;
 
 import jakarta.servlet.http.HttpSession;
@@ -23,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/user-tickets")
+@RequestMapping("/usertickets")
 public class UserTicketController {
 
     @Autowired
@@ -32,11 +33,29 @@ public class UserTicketController {
     @Autowired
     private SeatService seatService;
 
+    @Autowired 
+    private TicketService ticketService;
+
+
+
     @GetMapping("/buy")
     public String userTicketBuy(HttpSession session,  Model model) throws Exception {
+        // ✅ 1. 세션에서 userNo 가져오기
+        Long userNo = (Long) session.getAttribute("userNo");
 
-            // 도와주세요... 
+        // ✅ 2. 세션에 없으면 임시 userNo로 설정
+        if (userNo == null) {
+            userNo = 1L; // 임시 유저 번호
+            session.setAttribute("userNo", userNo);
+        }
 
+        // ✅ 3. userNo로 모든 사용자 정보 + 좌석 정보 + 남은 시간 조회
+        Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
+        model.addAttribute("usageInfo", usageInfo);
+
+        List<Tickets> ticketList = ticketService.findAll();    
+        model.addAttribute("ticketList", ticketList);
+            
     return "pages/users/userticket_buy";
 
     }
