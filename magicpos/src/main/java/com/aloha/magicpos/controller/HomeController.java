@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.aloha.magicpos.domain.Categories;
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.Products;
 import com.aloha.magicpos.domain.Seats;
@@ -41,8 +42,9 @@ public class HomeController {
     @Autowired
     private OrderService orderService;
 
+
     @GetMapping({"/menu", "/menu/search"})
-    public String menulist(@RequestParam(name = "keyword", required = false) String keyword, Model model, HttpSession session) throws Exception {
+    public String menulist(@RequestParam(name = "selectedCategory", required = false) Long selectedCategory, @RequestParam(name = "keyword", required = false) String keyword, Model model, HttpSession session) throws Exception {
 
         // ✅ 1. 세션에서 userNo 가져오기
         Long userNo = (Long) session.getAttribute("userNo");
@@ -57,12 +59,18 @@ public class HomeController {
         Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
         model.addAttribute("usageInfo", usageInfo);
 
-        // ✅ 4. 상품 목록 조회(검색 기능 포함)
+        // ✅ 4. 카테고리 불러오기
+        List<Categories> categories = categoryService.findAll(); // 전체 카테고리 불러오기
+        model.addAttribute("categories", categories);
+        model.addAttribute("selectedCategory", selectedCategory);
+
+
+        // ✅ 5. 상품 목록 조회(검색 기능 포함)
         List<Products> products;
         if (keyword != null && !keyword.trim().isEmpty()) {
             products = productService.searchProductsAll(keyword);
         } else {
-            products = productService.findAll();
+            products = productService.findByCategory(selectedCategory != null ? selectedCategory : 1L); // 기본 카테고리로 1번 카테고리 설정
         }
         model.addAttribute("products", products);
         // -------------------------------------------------------------------

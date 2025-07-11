@@ -61,22 +61,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const manualInput = document.querySelector('input[name="cashManual"]');
     const orderForm = document.getElementById('orderForm');
 
+    
     function updateCashRequirement() {
         const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
 
-        if (selectedPayment === 'cash') {
+        if (selectedPayment === '현금') {
             cashRadios.forEach(r => r.required = true);
         } else {
             cashRadios.forEach(r => r.required = false);
         }
     }
-
     // 💥 form 제출할 때 "직접 입력"이면 값 있는지 확인
     orderForm.addEventListener('submit', function (e) {
         const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
         const selectedCash = document.querySelector('input[name="cash"]:checked')?.value;
 
-        if (selectedPayment === 'cash' && selectedCash === 'manual') {
+        // 현금인데 아무 금액도 선택 안 했을 때도 막아주기
+        if (selectedPayment === '현금' && !selectedCash) {
+            e.preventDefault();
+            alert('결제 금액을 선택해주세요!');
+            return;
+        }
+        // "직접 입력" 선택했는데 값이 없으면 막아주기
+        if (selectedPayment === '현금' && selectedCash === 'manual') {
             if (!manualInput.value || manualInput.value.trim() === '') {
                 e.preventDefault(); // 제출 막기
                 alert('금액을 입력해주세요!');

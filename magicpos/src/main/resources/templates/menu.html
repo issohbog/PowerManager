@@ -16,22 +16,17 @@
                 </button>
 
                 <div class="menu-tabs">
-                    <button>추천 상품</button>
-                    <button>세트 메뉴</button>
-                    <button>라면</button>
-                    <button class="active">밥</button>
-                    <button>간식</button>
-                    <button>cafe</button>
-                    <button>스낵</button>
-                    <button>아이스크림</button>
-                    <button>추가사리</button>
-                    <button>디스펜서 음료</button>
+                    <button th:each="category : ${categories}"
+                            th:text="${category.cName}"
+                            th:classappend="${category.no} == ${selectedCategory} ? 'active' : ''"
+                            th:onclick="'location.href=\'/menu?selectedCategory=' + ${category.no} + '\''">
+                    </button>
                 </div>
-
+                
                 <button class="icon-button">
                     <img th:src="@{/images/다음페이지.png}" alt="다음페이지">
                 </button>
-
+                
                 <form action="/menu" method="get" class="search-form">
                     <input type="text" name="keyword" placeholder="상품명 검색">
                     <button type="submit">
@@ -39,7 +34,7 @@
                     </button>
                 </form>
             </div>
-
+            
             <div class="product-list">
                 <div class="grid-container">
                     <div th:each="product : ${products}" class="product-card">
