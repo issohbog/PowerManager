@@ -32,11 +32,13 @@ INSERT INTO users (id, username, password, birth, email, phone, memo) VALUES
 
 
 INSERT INTO tickets (ticket_name, time, price) VALUES
-('이용권1', 60, 1000),
-('이용권2', 120, 2000),
-('이용권3', 180, 3000),
-('이용권4', 240, 4000),
-('이용권5', 300, 5000);
+('회원 1000원권', 40, 1000),
+('회원 3000원권', 140, 3000),
+('회원 1만원권', 600, 10000),
+('회원 5만원권', 3600, 50000),
+('회원 10만원권', 8640, 100000),
+('회원 6000원권', 220, 5000),
+('회원 3만원권', 1980, 30000);
 
 
 INSERT INTO categories (c_name) VALUES

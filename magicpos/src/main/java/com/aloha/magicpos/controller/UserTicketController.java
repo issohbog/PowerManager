@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.magicpos.domain.Tickets;
 import com.aloha.magicpos.domain.UserTickets;
@@ -62,10 +63,11 @@ public class UserTicketController {
     
     
      // 🔸 이용권 등록 (결제 시)
-    @PostMapping
+    @PostMapping("/insert")
+    @ResponseBody
     public String insertUserTicket(@RequestBody UserTickets userTicket) throws Exception {
-        userticketService.insert(userTicket);
-        return "user_ticket_created";
+        boolean success = userticketService.insert(userTicket);
+        return success ? "success" : "fail";
     }
 
     // 🔸 전체 이용권 내역 조회 (관리자용)
