@@ -15,11 +15,13 @@ import com.aloha.magicpos.domain.Categories;
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.Products;
 import com.aloha.magicpos.domain.Seats;
+import com.aloha.magicpos.domain.Tickets;
 import com.aloha.magicpos.service.CartService;
 import com.aloha.magicpos.service.CategoryService;
 import com.aloha.magicpos.service.OrderService;
 import com.aloha.magicpos.service.ProductService;
 import com.aloha.magicpos.service.SeatService;
+import com.aloha.magicpos.service.TicketService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,9 @@ public class HomeController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private TicketService ticketService;
 
 
     @GetMapping({"/menu", "/menu/search"})
@@ -118,6 +123,12 @@ public class HomeController {
             orderDetailsMap.put(oNo, details);
         }
         model.addAttribute("orderDetailsMap", orderDetailsMap);
+
+
+        // 요금제 모달 
+        List<Tickets> ticketList = ticketService.findAll();    
+        model.addAttribute("ticketList", ticketList);
+
         return "menu";
     }
 }
