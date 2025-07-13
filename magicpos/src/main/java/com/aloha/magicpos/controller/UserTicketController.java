@@ -1,7 +1,9 @@
 package com.aloha.magicpos.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,16 +13,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.magicpos.domain.Tickets;
 import com.aloha.magicpos.domain.UserTickets;
-import com.aloha.magicpos.service.SeatService;
+import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.service.TicketService;
+import com.aloha.magicpos.service.UserService;
 import com.aloha.magicpos.service.UserTicketService;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+
 
 
 @Slf4j
@@ -32,40 +36,49 @@ public class UserTicketController {
     private UserTicketService userticketService;
 
     @Autowired
-    private SeatService seatService;
-
-    @Autowired 
     private TicketService ticketService;
 
-
-
-    @GetMapping("/buy")
-    public String userTicketBuy(HttpSession session,  Model model) throws Exception {
-        // ✅ 1. 세션에서 userNo 가져오기
-        Long userNo = (Long) session.getAttribute("userNo");
-
-        // ✅ 2. 세션에 없으면 임시 userNo로 설정
-        if (userNo == null) {
-            userNo = 1L; // 임시 유저 번호
-            session.setAttribute("userNo", userNo);
-        }
-
-        // ✅ 3. userNo로 모든 사용자 정보 + 좌석 정보 + 남은 시간 조회
-        Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
-        model.addAttribute("usageInfo", usageInfo);
-
-        List<Tickets> ticketList = ticketService.findAll();    
-        model.addAttribute("ticketList", ticketList);
-            
-    return "pages/users/userticket_buy";
-
+    @Autowired
+    private UserService userService;
+    
+    // 이용권 등록 (결제 시) - 관리자 용
+    @GetMapping("/admin/tickets")
+    @ResponseBody
+    public List<Tickets> ticketlist(Model model) throws Exception {
+        return ticketService.findAll();
     }
     
+    // 이용권 등록 전 회원 검색 용
+    @GetMapping("/admin/usersearch")
+    @ResponseBody
+    public List<Map<String,Object>> searchUserByKeywordList(@RequestParam("keyword") String keyword) throws Exception {
+        List<Users> users = userService.searchUsersByKeyword(keyword);
+
+        return users.stream().map(user -> {
+            Map<String,Object> map = new HashMap<>();
+            map.put("userNo", user.getNo());
+            map.put("username", user.getUsername());
+            map.put("userId", user.getId());
+            return map;
+        }).collect(Collectors.toList());
+    }
     
-     // 🔸 이용권 등록 (결제 시)
+
+
+
+    
+     // 🔸 이용권 등록 (결제 시) - 사용자 화면용
     @PostMapping("/insert")
     @ResponseBody
     public String insertUserTicket(@RequestBody UserTickets userTicket) throws Exception {
+        log.info("🧾 받은 userTicket = {}", userTicket);
+
+        // 임시로 setter 강제 사용
+        if (userTicket.getUNo() == null) {
+            log.error("🔥 uNo가 null이야!");
+        }
+
+        
         boolean success = userticketService.insert(userTicket);
         return success ? "success" : "fail";
     }

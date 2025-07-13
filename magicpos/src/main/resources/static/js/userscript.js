@@ -1,6 +1,5 @@
 
 document.addEventListener('DOMContentLoaded', () => {
-  alert("실행!")
   // ✅ 모달 열기/닫기
   const modal = document.getElementById('orderModal');
   const openBtn = document.getElementById('openModalBtn');
@@ -131,6 +130,9 @@ document.addEventListener("DOMContentLoaded", () => {
     openBtn.addEventListener("click", () => {
       modal.style.display = "flex";
       modal.classList.remove("fade-out");
+
+      // 이전 선택 초기화 
+      ticketItem.innerHTML = "";
     });
   }
 
@@ -145,7 +147,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const time = card.dataset.time;
 
       const itemHTML = `
-        <div class="selected-ticket">
+        <div class="selected-ticket"
+            data-price="${card.dataset.price}"
+            data-time="${card.dataset.time}"
+            data-ticket-no="${card.dataset.ticketNo}"                        
+        >
           <div class="select-ticket-name">${name}</div>
           <div class="select-ticket-info">
             <span>${price}원 (${time}분)</span>
@@ -159,6 +165,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+// 요금제 결제 하지 않고 닫기 버튼(x)으로 모달 닫기 
+function closeTicketModal() {
+  const modal = document.getElementById("ticketModal");
+  if (!modal) return;
+
+  if (!modal.classList.contains("fade-out")) {
+    modal.classList.add("fade-out");
+  }
+
+  setTimeout(() => {
+    modal.style.display = "none";
+    modal.classList.remove("fade-out");
+  }, 300);
+}
+
 
 
 // 요금제 결제 완료 모달 열기 
@@ -175,32 +197,26 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const name = selectedTicket.querySelector(".select-ticket-name").textContent;
-    const infoText = selectedTicket.querySelector(".select-ticket-info span").textContent;
-    const timeMatch = infoText.match(/\((\d+)분\)/);
-    const priceMatch = name.match(/(\d{1,3}(,\d{3})*)원/);
+  const remainTime = parseInt(selectedTicket.dataset.time);
+  const price = parseInt(selectedTicket.dataset.price);
+  const ticketNo = parseInt(selectedTicket.dataset.ticketNo);
 
-    if (!timeMatch || !priceMatch) {
-      alert("요금제 정보 추출에 실패했습니다.");
-      return;
-    }
+  if (!remainTime || !price || !ticketNo) {
+    alert("요금제 정보가 올바르지 않습니다.");
+    return;
+  }
 
-    const remainTime = parseInt(timeMatch[1]);
-    const price = parseInt(priceMatch[1].replace(/,/g, ""));
+  const userNoInput = document.getElementById("user-no");
+  if (!userNoInput || !userNoInput.value) {
+    alert("유저 정보가 없습니다.");
+    return;
+  }
+  const userNo = parseInt(userNoInput.value);
 
-    const ticket = Array.from(document.querySelectorAll(".plan-card")).find(card => 
-      parseInt(card.dataset.price) === price && parseInt(card.dataset.time) === remainTime
-    );
-
-    if (!ticket) {
-      alert("선택한 요금제를 찾을 수 없습니다.");
-      return;
-    }
-
-  const ticketNo = ticket.getAttribute("data-ticket-no"); // 👉 data-ticket-no 추가해야 됨 (아래 참고)
+  console.log({ userNo, ticketNo, remainTime });
 
   // 서버로 결제 정보 전송
-  fetch("/user-tickets/insert", {
+  fetch("/usertickets/insert", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -215,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
   .then(response => response.text())  // ✅ 문자열로 받기
   .then(text => {
     if (text === "success") {
+      modal.classList.remove("fade-out");
       modal.style.display = "flex"; // 성공 시 모달 열기
     } else {
       alert("결제 실패");
