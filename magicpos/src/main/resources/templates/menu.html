@@ -142,9 +142,10 @@
 <!-- 요금제 구매 모달 -->
 <div class="ticket-modal-bg fade" id="ticketModal" style="display: none;">
   <div class="ticket-modal-content">
-    <th:block th:if="${ usageInfo != null && usageInfo.user_no != null }">
+    <!-- <th:block th:if="${ usageInfo != null && usageInfo.user_no != null }">
         <input type="hidden" id="user-no" th:value="${usageInfo.user_no} ?: ''" />
-    </th:block>
+    </th:block> -->
+    <input type="hidden" id="user-no" th:value="${usageInfo.user_no} ?: ''" />
     <span class="ticket-modal-close-btn" onclick="closeTicketModal()">×</span>
     <div class="ticket_con">
       <h2>요금제 구매</h2>
@@ -188,14 +189,9 @@
     </div>
   </div>
 </div>
-
-
-
-
     <script th:src="@{/js/userscript.js}"></script>
         <script>
         document.addEventListener("DOMContentLoaded", () => {
-            alert("나와라!")
         const btn = document.getElementById("openTicketBtn");
         if (btn) {
             btn.addEventListener("click", () => {
@@ -244,7 +240,9 @@
         alert([[${error}]]);
     </script>
 
-
+    <script th:inline="javascript">
+    const userNo = /*[[${usageInfo.user_no}]]*/ null;
+    </script>
 
 </body>
 </html>

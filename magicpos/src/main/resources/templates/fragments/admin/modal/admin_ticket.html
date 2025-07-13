@@ -1,0 +1,65 @@
+<!-- 관리자 요금제 구매 모달 -->
+<div th:fragment="adminTicketModal" id="admin-ticket-modal" class="admin-modal">
+  <div class="admin-modal-content">
+
+    <!-- 모달 헤더 -->
+    <div class="admin-modal-header">
+      <h2>요금제 구매</h2>
+      <button class="admin-close-btn" onclick="closeAdminTicketModal()">×</button>
+    </div>
+
+    <!-- 모달 바디 -->
+    <div class="admin-modal-body">
+
+      <!-- 좌측: 테이블 -->
+      <div class="admin-ticket-left">
+        <div class="admin-search-bar">
+          <input type="text" id="admin-user-search-input" placeholder="회원이름검색">
+          <button class="admin-search-btn">🔍</button>
+
+          <!-- 실시간 유저 검색 결과 -->
+          <ul id="admin-user-search-result" class="admin-user-search-result"></ul>
+
+          <!-- 선택된 유저 번호 저장용 -->
+           <input type="hidden" id="selectd-user-no" name="userNo">
+
+        </div>
+
+        <table class="admin-ticket-table">
+          <thead>
+            <tr>
+              <th>요금제</th>
+              <th>제공 시간</th>
+              <th>가격</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>회원 1000원권</td>
+              <td>00:40</td>
+              <td>1,000원</td>
+              <td><button class="admin-add-btn">＋</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 우측: 선택 + 결제 -->
+      <div class="admin-ticket-right">
+        <div class="admin-selected-ticket-box">
+          <div class="admin-ticket-name">회원 1000원권</div>
+          <div class="admin-ticket-info">1,000원 (00:40)</div>
+        </div>
+
+        <div class="admin-pay-methods">
+          <button class="admin-pay-btn">현금</button>
+          <button class="admin-pay-btn">신용카드</button>
+        </div>
+
+        <button class="admin-confirm-btn">결제하기</button>
+      </div>
+
+    </div>
+  </div>
+</div>
