@@ -22,6 +22,7 @@
                                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                                 <input type="hidden" name="oNo" th:value="${orderDetail['o_no']}" />
                                 <input type="hidden" name="pNo" th:value="${orderDetail['p_no']}" />
+                                <input type="hidden" name="orderNo" th:value="${order.no}" />
                                 <button type="submit" class="cartcontrolBtn">
                                   <img th:src="@{/images/마이너스 하얀색.png}" alt="감소">
                                 </button>
@@ -31,6 +32,7 @@
                               <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                               <input type="hidden" name="oNo" th:value="${orderDetail['o_no']}" />
                                 <input type="hidden" name="pNo" th:value="${orderDetail['p_no']}" />
+                                <input type="hidden" name="orderNo" th:value="${order.no}" />
                                 <button type="submit" class="cartcontrolBtn">
                                     <img th:src="@{/images/플러스 노란색.png}" alt="증가">
                                 </button>
@@ -43,6 +45,7 @@
                             <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                             <input type="hidden" name="oNo" th:value="${orderDetail['o_no']}" />
                             <input type="hidden" name="pNo" th:value="${orderDetail['p_no']}" />
+                            <input type="hidden" name="orderNo" th:value="${order.no}" />
                             <button type="submit" class="deleteBtn">✕</button>
                         </form>
                     </div>

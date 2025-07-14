@@ -1,27 +1,25 @@
-<th:block th:fragment="orderPopup">
-<div id="orderPopup" class="order-popup-overlay" style="display: none;">
-  <div class="order-popup-box">
-    <div id="customConfirmModal" style="display: none;" class="modal-overlay">
-    <div class="modal-box">
-      <div class="modal-message" id="modalMessage">정말 삭제하시겠습니까?</div>
-      <div class="modal-buttons">
-        <button id="modalConfirmBtn">확인</button>
-        <button id="modalCancelBtn">취소</button>
-      </div>
+<th:block th:fragment="orderpopup">
+  <div id="customConfirmModal" style="display: none;" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-message" id="modalMessage">정말 삭제하시겠습니까?</div>
+    <div class="modal-buttons">
+      <button id="modalConfirmBtn">확인</button>
+      <button id="modalCancelBtn">취소</button>
     </div>
   </div>
+</div>
+<div id="orderPopup" class="order-popup-overlay" style="display: none;">
+  <div class="order-popup-box">
     <div class="order-status-container">
         <!-- 헤더 -->
       <div class="order-status-header">
-      <a href="/admin/orderpopup" class="number-tab1"
-        th:classappend="${requestURI == '/admin/orderpopup'} ? 'active-tab'">
+        <a href="/admin/orderpopup/fetch?status=all" class="number-tab1 active-tab">
           주문현황 <span th:text="${#numbers.formatInteger(orderCount, 2)}">00</span>
-      </a>
+        </a>
 
-      <a href="/admin/orderpopup/preparing" class="number-tab2"
-        th:classappend="${requestURI == '/admin/orderpopup/preparing'} ? 'active-tab'">
+        <a href="/admin/orderpopup/fetch?status=1" class="number-tab2">
           준비중 <span th:text="${#numbers.formatInteger(preparingCount, 2)}">00</span>
-      </a>
+        </a>
       </div>
 
         <!-- 주문 리스트 -->

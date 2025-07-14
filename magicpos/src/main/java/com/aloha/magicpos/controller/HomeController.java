@@ -66,11 +66,11 @@ public class HomeController {
         // ✅ 1. 세션에서 userNo 가져오기
         Long userNo = (Long) session.getAttribute("userNo");
 
-        // ✅ 2. 세션에 없으면 임시 userNo로 설정
-        if (userNo == null) {
-            userNo = 1L; // 임시 유저 번호
-            session.setAttribute("userNo", userNo);
-        }
+        // // ✅ 2. 세션에 없으면 임시 userNo로 설정
+        // if (userNo == null) {
+        //     userNo = 1L; // 임시 유저 번호
+        //     session.setAttribute("userNo", userNo);
+        // }
 
         // ✅ 3. userNo로 모든 사용자 정보 + 좌석 정보 + 남은 시간 조회
         Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
