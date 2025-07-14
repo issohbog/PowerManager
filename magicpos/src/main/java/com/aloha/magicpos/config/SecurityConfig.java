@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -31,8 +33,8 @@ public class SecurityConfig {
     @Autowired
     private DataSource dataSource;
 
-    // @Autowired 
-    // private PasswordEncoder passwordEncoder;
+    @Autowired 
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;
@@ -54,8 +56,17 @@ public class SecurityConfig {
         // ✅ 인가 설정
         
         http.authorizeHttpRequests(auth -> auth
+                                .requestMatchers("/login", "/users/signup", "/users/new", "/css/**", "/js/**", "/img/**").permitAll()
                                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/menu", "/menu/**","/carts", "/carts/**").hasAnyRole("USER","ADMIN")
+                                .requestMatchers("/users/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/products/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/categories/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/usertickets/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/logs/**").hasRole("ADMIN")
+                                .requestMatchers("/seats/**").hasRole("ADMIN")
+                                .requestMatchers("/history/today/**").hasRole("ADMIN")
+                                .requestMatchers("/menu", "/menu/**","/carts", "/carts/**", "/users/**").hasAnyRole("USER","ADMIN")
+                                .requestMatchers("/userticket/insert").hasAnyRole("USER","ADMIN")
                                 .anyRequest().permitAll()
                                 );
 
@@ -142,5 +153,13 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    // /**
+    //  * 비밀번호 암호화 
+    //  * @return
+    //  */
+    // @Bean 
+    // public PasswordEncoder passwordEncoder() {
+    //     return new BCryptPasswordEncoder();
+    // }
     
 }

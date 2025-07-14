@@ -23,6 +23,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean insert(Auths auth) throws Exception {
+        log.info("🛠 authService.insert() 호출됨 - uNo: {}, 권한: {}", auth.getUNo(), auth.getAuth());
         return authMapper.insert(auth) > 0;
     }
     

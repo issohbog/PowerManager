@@ -90,18 +90,27 @@ public class UserController {
     public String signup(@ModelAttribute Users user) throws Exception {         // @ModelAttribute Users user : html form 에서 입력한 내용을 Users 객체에 자동으로 담아줌 
         log.info("회원 가입 요청: {}", user);
         
-        // 1. 비밀번호 암호화 
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+        // 1. 비밀번호 암호화 (서비스에서만 진행)
+        // String encodedPassword = passwordEncoder.encode(user.getPassword());
+        // user.setPassword(encodedPassword);
 
         // 2. 회원 정보 저장 
-        Users savedUser = userService.insert(user);
+        Users savedUser = userService.insertByUser(user);
 
         // 3. 권한 부여 
         Auths auth = new Auths();
         auth.setUNo(savedUser.getNo());
         auth.setAuth("ROLE_USER");
-        authService.insert(auth);
+
+        try {
+            boolean result = authService.insert(auth);
+            log.info("✅ 권한 저장 여부: {}", result);
+        } catch (Exception e) {
+            log.error("❌ 권한 저장 중 예외 발생: ", e);
+        }
+        log.info("👉 사용자 번호: {}", savedUser.getNo());
+
+        log.info("✅ 회원가입 끝났고, /login으로 리다이렉트 예정");
 
         // 4. 리다이렉트 
         return "redirect:/login";
@@ -117,7 +126,7 @@ public class UserController {
     }
     
     // 회원 등록 처리
-    @PostMapping("/save")
+    @PostMapping("/admin/save")
     public String insert(Users user, 
                         RedirectAttributes redirectAttributes             
     ) throws Exception {

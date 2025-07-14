@@ -34,7 +34,7 @@ function openUserModal(mode, user = {}, remain = 0, used = 0) {
 
   if (mode === "register") {
     modalTitle.textContent = "회원등록";
-    form.action = "/users/save";
+    form.action = "/users/admin/save";
     renderFooterButtons("register");
 
     const inputs = modal.querySelectorAll("input, textarea");

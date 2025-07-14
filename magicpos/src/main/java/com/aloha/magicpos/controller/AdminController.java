@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +31,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -66,6 +70,18 @@ public class AdminController {
         return "pages/admin/seat_status";
     
     }
+
+    // @PostMapping("/admin/seats/clear/{seatId}")
+    // @ResponseBody
+    // public String clearSeat(@PathVariable String seatId) {
+    //     try {
+    //         // boolean result = seatService.clearSeat(seatId);
+    //         // return result ? "success" : "fail";
+    //     } catch (Exception e) {
+    //         return "error";
+    //     }   
+    // }
+    
 
     @GetMapping("/admin/sell/counter")
     public String sellcounter(@RequestParam(name = "keyword", required = false) String keyword,Model model, HttpSession session) throws Exception {
