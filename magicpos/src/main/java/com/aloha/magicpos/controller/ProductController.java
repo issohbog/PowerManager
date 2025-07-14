@@ -159,7 +159,7 @@ public class ProductController {
         return "ok";
     }
 
-    // 상품 수정 폼
+    // 상품 수정 폼(사용 안함)
     @GetMapping("/{no}/edit")
     public String edit(@PathVariable Long no, Model model) throws Exception{
         Products product = productService.findById(no);
@@ -230,7 +230,7 @@ public class ProductController {
     }
 
 
-    // 🔍 상품 검색 (통합 검색)
+    // 🔍 상품 검색 (통합 검색) (사용안함)
     @GetMapping("/search")
     public String search(@RequestParam String keyword, Model model) throws Exception {
         List<Products> products = productService.searchProductsAll(keyword);
@@ -238,7 +238,7 @@ public class ProductController {
         return "product/list";
     }
 
-    // 🔍 상품 검색 + 분류 필터
+    // 🔍 상품 검색 + 분류 필터 (사용안함)
     @GetMapping("/filter")
     public String filter(@RequestParam("cNo") long cNo,
                          @RequestParam("keyword") String keyword,

@@ -26,7 +26,10 @@ public interface UserMapper {
     Users findByNo(Long userNo);
 
     // 회원 등록
-    int insert(Users user);
+    int insert(Users user) throws Exception;
+
+    // 회원 권한 등록
+    int insertAuth(Auths auth) throws Exception;
 
     // 관리자용 회원 정보 수정
     int update(Users user);
@@ -48,7 +51,7 @@ public interface UserMapper {
     public int join(Users user) throws Exception;
     
     // 회원 권한 등록
-    public int insertAuth(Auths userAuth) throws Exception;
+    // public int insertAuth(Auths userAuth) throws Exception;
 
     // 회원 조회
     public Users select(@Param("id") String id) throws Exception;

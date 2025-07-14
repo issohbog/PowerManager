@@ -26,8 +26,14 @@ public interface UserService {
     // userNo로 회원 조회 
     public Users findByNo(Long userNo);
 
-    // 회원 등록
+    // 회원 가입(회원등록- 관리자용)
     public Users insert(Users user) throws Exception;
+
+    // 회원 가입(사용자용)
+    public Users insertByUser(Users user) throws Exception;
+
+    // 회원 권한 등록
+    public boolean insertAuth(Auths auth) throws Exception;
 
     // 관리자용 회원 정보 수정
     public boolean update(Users user) throws Exception;
@@ -49,7 +55,7 @@ public interface UserService {
     public int join(Users user) throws Exception;
     
     // 회원 권한 등록
-    public int insertAuth(Auths userAuth) throws Exception;
+    // public int insertAuth(Auths userAuth) throws Exception;
 
     // 🔐 로그인
     public boolean login(Users user, HttpServletRequest request);

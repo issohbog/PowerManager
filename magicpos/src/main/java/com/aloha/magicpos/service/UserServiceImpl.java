@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aloha.magicpos.domain.Auths;
 import com.aloha.magicpos.domain.Users;
@@ -72,8 +73,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    //관리자용 회원가입
     @Override
-    public Users insert(Users user) throws Exception {
+    @Transactional
+    public Users insert(Users user) throws Exception {          
         // 임시 비밀번호 생성 
         String tempPassword = PasswordUtil.generateTempPassword();
 
@@ -85,10 +88,53 @@ public class UserServiceImpl implements UserService {
         user.setTempPassword(tempPassword);
 
         // DB에 저장 
-        userMapper.insert(user);
+        int result = userMapper.insert(user);
+
+        if (result > 0) {
+            Auths auth = new Auths();
+            auth.setUNo(user.getNo());
+            auth.setAuth("ROLE_USER");
+            int authResult = userMapper.insertAuth(auth);
+
+            if (authResult > 0) {
+                log.info("권한 등록 성공");
+            } else {
+                log.warn("권한 등록 실패");
+            }
+
+        } else {
+            log.error("사용자 등록 실패");
+        }
         return user; 
     }
 
+    // 사용자용 회원가입
+    @Override
+    @Transactional
+    public Users insertByUser(Users user) throws Exception {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        // DB에 저장 
+        int result = userMapper.insert(user);
+
+        if (result > 0) {
+            Auths auth = new Auths();
+            auth.setUNo(user.getNo());
+            auth.setAuth("ROLE_USER");
+            int authResult = userMapper.insertAuth(auth);
+
+            if (authResult > 0) {
+                log.info("권한 등록 성공");
+            } else {
+                log.warn("권한 등록 실패");
+            }
+
+        } else {
+            log.error("사용자 등록 실패");
+        }
+        return user; 
+    }
 
 
     @Override
@@ -130,7 +176,6 @@ public class UserServiceImpl implements UserService {
             Auths userAuth = new Auths();
             userAuth.setUNo(user.getNo());         // ✅ 핵심 변경: uNo 설정
             userAuth.setAuth("ROLE_USER");
-
             result = userMapper.insertAuth(userAuth);
         }
 
@@ -138,9 +183,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int insertAuth(Auths userAuth) throws Exception {
-        int result = userMapper.insertAuth(userAuth);
-        return result;
+    public boolean insertAuth(Auths auth) throws Exception {
+        int result = userMapper.insertAuth(auth);
+        return result > 0;
     }
 
     @Override
@@ -186,7 +231,7 @@ public class UserServiceImpl implements UserService {
                     .map(GrantedAuthority::getAuthority)
                     .anyMatch(role -> role.equals("ROLE_ADMIN"));
     }
-
+ 
 
 
 
