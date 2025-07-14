@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.aloha.magicpos.domain.Auths;
 import com.aloha.magicpos.domain.Users;
 
 @Mapper
@@ -41,4 +42,14 @@ public interface UserMapper {
 
     // 회원 검색 (이름 / 아이디 / 전화번호)
     List<Users> searchUsersByKeyword(@Param("keyword") String keyword);
+
+    // --- 선생님 코드 ---
+    // 회원 가입
+    public int join(Users user) throws Exception;
+    
+    // 회원 권한 등록
+    public int insertAuth(Auths userAuth) throws Exception;
+
+    // 회원 조회
+    public Users select(@Param("id") String id) throws Exception;
 }

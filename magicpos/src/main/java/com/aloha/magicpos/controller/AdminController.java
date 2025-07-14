@@ -67,7 +67,7 @@ public class AdminController {
     
     }
 
-    @GetMapping("/sell/counter")
+    @GetMapping("/admin/sell/counter")
     public String sellcounter(@RequestParam(name = "keyword", required = false) String keyword,Model model, HttpSession session) throws Exception {
         // ✅ 1. 세션에서 userNo 가져오기
         Long userNo = (Long) session.getAttribute("userNo");
@@ -111,7 +111,7 @@ public class AdminController {
     }
     
     // 장바구니에 항목 추가
-    @PostMapping("/sellcounter/add")
+    @PostMapping("/admin/sellcounter/add")
     public String addToCart(Carts carts, HttpSession session) throws Exception {
         Long uNo = (Long) session.getAttribute("userNo"); // 로그인 시 저장해뒀던 세션에서 꺼냄
         carts.setUNo(uNo); // 서버에서 직접 넣어줌
@@ -119,33 +119,33 @@ public class AdminController {
             carts.setQuantity(1L); // 기본값 1
         }
         cartService.addToCart(carts);
-        return "redirect:/sell/counter";
+        return "redirect:/admin/sell/counter";
     }
 
     // 장바구니 항목 삭제
-    @PostMapping("/sellcounter/delete")
+    @PostMapping("/admin/sellcounter/delete")
     public String deleteItem(@RequestParam("cNo") Long cNo) throws Exception{
         cartService.delete(cNo);
-        return "redirect:/sell/counter";
+        return "redirect:/admin/sell/counter";
     }
     
     // 장바구니 수량 증가
-    @PostMapping("/sellcounter/increase")
+    @PostMapping("/admin/sellcounter/increase")
     public String increaseQuantity(@RequestParam("pNo") Long pNo, HttpSession session) throws Exception{
         Long uNo = (Long) session.getAttribute("userNo");
         cartService.increaseQuantity(uNo, pNo);
-        return "redirect:/sell/counter";
+        return "redirect:/admin/sell/counter";
     }
 
     // 장바구니 수량 감소
-    @PostMapping("/sellcounter/decrease")
+    @PostMapping("/admin/sellcounter/decrease")
     public String decreaseQuantity(@RequestParam("pNo") Long pNo, HttpSession session) throws Exception{
         Long uNo = (Long) session.getAttribute("userNo");
         cartService.decreaseQuantity(uNo,pNo);
-        return "redirect:/sell/counter";
+        return "redirect:/admin/sell/counter";
     }
     // 🔸 주문 등록
-    @PostMapping("/sellcounter/create")
+    @PostMapping("/admin/sellcounter/create")
     public String insertOrder(
         Orders order, // 기본 주문 정보는 그대로 받고
         @RequestParam("seatId") String seatId,
@@ -175,7 +175,7 @@ public class AdminController {
 
                 if (currentStock == null || currentStock < quantity) {
                     rttr.addFlashAttribute("error", pName + "의 재고가 부족합니다.");
-                    return "redirect:/sell/counter";
+                    return "redirect:/admin/sell/counter";
                 }
             }
 
@@ -205,7 +205,7 @@ public class AdminController {
         cartService.deleteAllByUserNo(userNo);
         
         rttr.addFlashAttribute("orderSuccess", true);
-        return "redirect:/sell/counter";
+        return "redirect:/admin/sell/counter";
     }
     
 

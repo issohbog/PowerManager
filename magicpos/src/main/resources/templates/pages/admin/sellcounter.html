@@ -17,7 +17,7 @@
         <div class="productlist">
           
           <div class="top-controls">
-            <form th:action="@{/sell/counter}" method="get" class="search-box">
+            <form th:action="@{/admin/sell/counter}" method="get" class="search-box">
               <select name="type" class="admin_product_category" >
                 <option value="" th:selected="${type == null or type == ''}">상품 분류 전체</option>
                 <option value="pname" th:selected="${type == 'pname'}">상품명</option>
@@ -60,8 +60,9 @@
                 <td th:text="${product.stock} + '개'"></td> <!-- 재고 -->
                 <td th:text="${#numbers.formatInteger(product.pPrice, 0)} + '원'"></td> <!-- 상품가격 -->
                 <td>
-                <form method="post" action="/sellcounter/add">
+                <form method="post" action="/admin/sellcounter/add">
                   <input type="hidden" name="pNo" th:value="${product.no}" />
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                   <button type="submit" class="cart-img-btn">
                     <img src="/images/회색 플러스.png" alt="담기" />
                   </button>
@@ -88,14 +89,14 @@
               <div th:text="${cart.p_name} ?: '이름없음'">상품이름</div>
               <div class="quantity-control">
                 <!-- 수량 감소/증가/삭제 form은 주문 form 밖에 위치 -->
-                <form action="/sellcounter/decrease" method="post">
+                <form action="/admin/sellcounter/decrease" method="post">
                   <input type="hidden" name="pNo" th:value="${cart.p_no}" />
                   <button type="submit" class="cartcontrolBtn">
                     <img th:src="@{/images/마이너스 하얀색.png}" alt="감소">
                   </button>
                 </form>
                 <span th:text="${cart.quantity}">1</span>
-                <form action="/sellcounter/increase" method="post">
+                <form action="/admin/sellcounter/increase" method="post">
                   <input type="hidden" name="pNo" th:value="${cart.p_no}" />
                   <button type="submit" class="cartcontrolBtn">
                     <img th:src="@{/images/플러스 노란색.png}" alt="증가">
@@ -105,7 +106,7 @@
             </div>
             <div class="cart-item-right">
               <div th:text="${(cart.p_price != null and cart.quantity != null) ? #numbers.formatInteger(cart.p_price * cart.quantity, 3, 'COMMA') + '원' : '0원'}">가격</div>
-              <form action="/sellcounter/delete" method="post">
+              <form action="/admin/sellcounter/delete" method="post">
                 <input type="hidden" name="cNo" th:value="${cart['no']}" />
                 <button class="deleteBtn">✕</button>
               </form>
@@ -118,8 +119,9 @@
       </div>
       
       <!-- 주문 폼은 cart-section 아래에 위치, cartList 정보를 hidden input으로 전달 -->
-      <form id="orderForm" action="/sellcounter/create" method="post">
+      <form id="orderForm" action="/admin/sellcounter/create" method="post">
         <input type="hidden" name="seatId" id="seatIdHidden">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div th:each="cart, cartStat : ${cartList != null ? cartList : {}}">
           <input type="hidden" name="pNoList" th:value="${cart.p_no}" />
           <input type="hidden" name="quantityList" th:value="${cart.quantity}" />

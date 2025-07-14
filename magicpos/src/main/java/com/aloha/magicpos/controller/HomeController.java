@@ -42,6 +42,15 @@ public class HomeController {
     @Autowired
     private OrderService orderService;
 
+    @GetMapping("/")
+    public String showLoginPage() {
+        return "login"; // templates/login.html 로 이동
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login"; // templates/login.html
+    }
 
     @GetMapping({"/menu", "/menu/search"})
     public String menulist(@RequestParam(name = "selectedCategory", required = false) Long selectedCategory, @RequestParam(name = "keyword", required = false) String keyword, Model model, HttpSession session) throws Exception {

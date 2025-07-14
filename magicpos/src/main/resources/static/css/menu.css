@@ -211,7 +211,7 @@
 
 .cart-items {
   flex-grow: 1;
-  max-height: 300px;
+  max-height: 700px !important;
   display: flex;
   flex-direction: column;
   overflow-y: auto;

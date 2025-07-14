@@ -12,13 +12,14 @@
       <!-- 상품 취소 목록 -->
       <div class="cart-section-box">
           <div class="cart-section">
-            <div class="cart-items">
+            <div class="cancel-cart-items">
                 <div th:each="orderDetail : ${orderDetails}" class="cart-item">
                     <div class="cart-item-left">
                         <div th:text="${orderDetail['p_name']} ?: '이름없음'" style="color: white;">상품이름</div>
                         <div class="quantity-control">
                             <!-- 수량 감소/증가/삭제 form은 주문 form 밖에 위치 -->
-                            <form action="/orders/decreaseQuantity" method="post">
+                            <form action="/admin/orders/decreaseQuantity" method="post">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                                 <input type="hidden" name="oNo" th:value="${orderDetail['o_no']}" />
                                 <input type="hidden" name="pNo" th:value="${orderDetail['p_no']}" />
                                 <button type="submit" class="cartcontrolBtn">
@@ -26,7 +27,8 @@
                                 </button>
                               </form>
                               <span th:text="${orderDetail['quantity']}" style="color: white;">1</span>
-                              <form action="/orders/increaseQuantity" method="post">
+                              <form action="/admin/orders/increaseQuantity" method="post">
+                              <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                               <input type="hidden" name="oNo" th:value="${orderDetail['o_no']}" />
                                 <input type="hidden" name="pNo" th:value="${orderDetail['p_no']}" />
                                 <button type="submit" class="cartcontrolBtn">
@@ -37,10 +39,11 @@
                     </div>
                     <div class="cart-item-right">
                         <div th:text="${(orderDetail['p_price'] != null and orderDetail['quantity'] != null) ? #numbers.formatInteger(orderDetail['p_price'] * orderDetail['quantity'], 3, 'COMMA') + '원' : '0원'}">가격</div>
-                        <form action="/orders/delete/detail" method="post">
+                        <form action="/admin/orders/delete/detail" method="post">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                             <input type="hidden" name="oNo" th:value="${orderDetail['o_no']}" />
                             <input type="hidden" name="pNo" th:value="${orderDetail['p_no']}" />
-                            <button class="deleteBtn">✕</button>
+                            <button type="submit" class="deleteBtn">✕</button>
                         </form>
                     </div>
                 </div>
@@ -53,11 +56,11 @@
 
         <!-- 하단 버튼 -->
         <div class="cancel-modal-footer">
-          <form action="/orders/delete" method="post">
+          <form action="/admin/orders/delete" method="post" class="order-delete-form">
+              <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
               <input type="hidden" name="orderNo" th:value="${order.no}" />
-              <button class="allCancel">전체 주문 취소</button>
+              <button type="submit" class="allCancel">전체 주문 취소</button>
           </form>
-          <button class="selectCancel">수정</button>
         </div>
       </div>
     </div>
