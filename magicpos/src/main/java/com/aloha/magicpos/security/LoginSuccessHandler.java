@@ -72,6 +72,9 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
             CustomUser customUser = (CustomUser) authentication.getPrincipal();
             Users user = customUser.getUser();
 
+            request.getSession().setAttribute("userNo", user.getNo());
+            request.getSession().setAttribute("usageInfo", user);
+
             int remainingTime = userTicketMapper.findRemainTimeByUserNo(user.getNo());
             log.info("🎫 남은 시간: {}분", remainingTime);
 

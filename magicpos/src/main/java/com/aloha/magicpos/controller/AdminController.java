@@ -54,6 +54,58 @@ public class AdminController {
     @Autowired
     private CartService cartService;
 
+
+    @GetMapping("/admin/orderpopup/fetch")
+    public String fetchOrderPopup(@RequestParam(name = "status", required = false) String status, Model model) throws Exception {
+    List<Long> statusList = "1".equals(status) ? List.of(1L) : List.of(0L, 1L);
+    List<Orders> orderList = orderService.findOrdersByStatus(statusList);
+    
+    System.out.println("🔥 orderList size: " + orderList.size()); // 이거 넣어서 확인해봐
+    model.addAttribute("orderList", orderList);
+
+    Map<Long, List<Map<String, Object>>> orderDetailsMap = new HashMap<>();
+    Map<Long, String> menuNamesMap = new HashMap<>();
+    Map<Long, Long> waitTimeMap = new HashMap<>();
+    long now = System.currentTimeMillis();
+
+    for (Orders order : orderList) {
+        Long oNo = order.getNo();
+        List<Map<String, Object>> details = orderService.findDetailsWithProductNames(oNo);
+
+        if (details == null) details = new ArrayList<>();
+        orderDetailsMap.put(oNo, details);
+
+        // 메뉴 이름 조합
+        String names = details.stream()
+            .map(d -> {
+                String name = d.get("p_name") != null ? d.get("p_name").toString() : "이름없음";
+                Object qObj = d.get("quantity");
+                int quantity = (qObj != null) ? Integer.parseInt(qObj.toString()) : 1;
+                return name + "(" + quantity + ")";
+            })
+            .collect(Collectors.joining(", "));
+        menuNamesMap.put(oNo, names);
+
+        // 대기 시간 계산
+        if (order.getOrderTime() != null) {
+            long waitMillis = now - order.getOrderTime().getTime();
+            waitTimeMap.put(oNo, waitMillis / (60 * 1000));
+        } else {
+            waitTimeMap.put(oNo, 0L);
+        }
+    }
+
+    model.addAttribute("menuNamesMap", menuNamesMap);
+    model.addAttribute("orderDetailsMap", orderDetailsMap);
+    model.addAttribute("orderCount", orderService.countByStatus(List.of(0L, 1L)));
+    model.addAttribute("preparingCount", orderService.countByStatus(List.of(1L)));
+    model.addAttribute("waitTime", waitTimeMap);
+    model.addAttribute("requestURI", "/admin/orderpopup");
+
+    return "fragments/admin/orderpopup :: orderpopup"; // ✅ fragment만!
+    }
+
+
     @GetMapping("/admin")
     public String findAllSeat(Model model) throws Exception {
         
@@ -229,145 +281,146 @@ public class AdminController {
     }
 
 
-    /**
-     * 관리자 주문 팝업 - 준비중 주문 조회
-     * @param model
-     * @return
-     */
-    @GetMapping("/admin/orderpopup/preparing")
-    public String orderpopupPreparing(Model model, HttpServletRequest request) {
-        try {
-            model.addAttribute("requestURI", request.getRequestURI());
-            List<Orders> orderList = orderService.findOrdersByStatus(List.of(1L)); // 주문 상태가 1 인 주문만 조회
-            model.addAttribute("orderList", orderList);
+    // /**
+    //  * 관리자 주문 팝업 - 준비중 주문 조회
+    //  * @param model
+    //  * @return
+    //  */
+    // @GetMapping("/admin/orderpopup/preparing")
+    // public String orderpopupPreparing(Model model, HttpServletRequest request) {
+    //     try {
+    //         model.addAttribute("requestURI", request.getRequestURI());
+    //         List<Orders> orderList = orderService.findOrdersByStatus(List.of(1L)); // 주문 상태가 1 인 주문만 조회
+    //         model.addAttribute("orderList", orderList);
 
-            Map<Long, List<Map<String, Object>>> orderDetailsMap = new HashMap<>();
-            for (Orders order : orderList) {
-                Long oNo = order.getNo();
-                List<Map<String, Object>> details = orderService.findDetailsWithProductNames(oNo);
-                if (details == null || details.isEmpty()) {
-                    log.warn("❗ 주문 상세 없음: orderNo = {}", oNo);
-                    details = new ArrayList<>();
-                }
-                orderDetailsMap.put(oNo, details);
-            }
-            // ✅ 여기부터 메뉴 이름 , 로 이어붙이기
-            Map<Long, String> menuNamesMap = new HashMap<>();
+    //         Map<Long, List<Map<String, Object>>> orderDetailsMap = new HashMap<>();
+    //         for (Orders order : orderList) {
+    //             Long oNo = order.getNo();
+    //             List<Map<String, Object>> details = orderService.findDetailsWithProductNames(oNo);
+    //             if (details == null || details.isEmpty()) {
+    //                 log.warn("❗ 주문 상세 없음: orderNo = {}", oNo);
+    //                 details = new ArrayList<>();
+    //             }
+    //             orderDetailsMap.put(oNo, details);
+    //         }
+    //         // ✅ 여기부터 메뉴 이름 , 로 이어붙이기
+    //         Map<Long, String> menuNamesMap = new HashMap<>();
         
-            for (Orders order : orderList) {
-                Long oNo = order.getNo();
-                List<Map<String, Object>> details = orderDetailsMap.get(oNo);
+    //         for (Orders order : orderList) {
+    //             Long oNo = order.getNo();
+    //             List<Map<String, Object>> details = orderDetailsMap.get(oNo);
         
-                if (details != null && !details.isEmpty()) {
-                    String names = details.stream()
-                        .map(d -> {
-                            String name = d.get("p_name").toString();
-                            Object quantityObj = d.get("quantity");
-                            int quantity = (quantityObj != null) ? Integer.parseInt(quantityObj.toString()) : 1;
-                            return name + "(" + quantity + ")";
-                        })
-                        .collect(Collectors.joining(", "));
-                    menuNamesMap.put(oNo, names);
-                } else {
-                    menuNamesMap.put(oNo, "");
-                }
-            }
-            model.addAttribute("menuNamesMap", menuNamesMap);
-            model.addAttribute("orderDetailsMap", orderDetailsMap);
-            model.addAttribute("orderCount", orderService.countByStatus(List.of(0L, 1L)));
-            model.addAttribute("preparingCount", orderService.countByStatus(List.of(1L)));
-            // 주문별 대기시간 계산 (현재시간 - orderTime)
-            Map<Long, Long> waitTimeMap = new HashMap<>();
-            long now = System.currentTimeMillis();
-            for (Orders order : orderList) {
-                if (order.getOrderTime() != null) {
-                    long waitMillis = now - order.getOrderTime().getTime();
-                    long waitMinutes = waitMillis / (60 * 1000);
-                    waitTimeMap.put(order.getNo(), waitMinutes);
-                } else {
-                    waitTimeMap.put(order.getNo(), 0L);
-                }
-            }
-            model.addAttribute("waitTime", waitTimeMap);
-        } catch (Exception e) {
-            log.error("❗ 관리자 주문팝업 오류", e);
-            model.addAttribute("errorMessage", "주문 정보를 불러오는 중 오류 발생");
-        }
+    //             if (details != null && !details.isEmpty()) {
+    //                 String names = details.stream()
+    //                     .map(d -> {
+    //                         String name = d.get("p_name").toString();
+    //                         Object quantityObj = d.get("quantity");
+    //                         int quantity = (quantityObj != null) ? Integer.parseInt(quantityObj.toString()) : 1;
+    //                         return name + "(" + quantity + ")";
+    //                     })
+    //                     .collect(Collectors.joining(", "));
+    //                 menuNamesMap.put(oNo, names);
+    //             } else {
+    //                 menuNamesMap.put(oNo, "");
+    //             }
+    //         }
+    //         model.addAttribute("menuNamesMap", menuNamesMap);
+    //         model.addAttribute("orderDetailsMap", orderDetailsMap);
+    //         model.addAttribute("orderCount", orderService.countByStatus(List.of(0L, 1L)));
+    //         model.addAttribute("preparingCount", orderService.countByStatus(List.of(1L)));
+    //         // 주문별 대기시간 계산 (현재시간 - orderTime)
+    //         Map<Long, Long> waitTimeMap = new HashMap<>();
+    //         long now = System.currentTimeMillis();
+    //         for (Orders order : orderList) {
+    //             if (order.getOrderTime() != null) {
+    //                 long waitMillis = now - order.getOrderTime().getTime();
+    //                 long waitMinutes = waitMillis / (60 * 1000);
+    //                 waitTimeMap.put(order.getNo(), waitMinutes);
+    //             } else {
+    //                 waitTimeMap.put(order.getNo(), 0L);
+    //             }
+    //         }
+    //         model.addAttribute("waitTime", waitTimeMap);
+    //     } catch (Exception e) {
+    //         log.error("❗ 관리자 주문팝업 오류", e);
+    //         model.addAttribute("errorMessage", "주문 정보를 불러오는 중 오류 발생");
+    //     }
 
-        return "pages/admin/orderpopup";
-    }
+    //     return "fragments/admin/orderpopup :: orderpopup";
+
+    // }
 
 
 
-    /**
-     * 관리자 주문 팝업 - 전체 주문 조회
-     * @param model
-     * @return
-     */
-    @GetMapping("/admin/orderpopup")
-    public String orderpopup(Model model, HttpServletRequest request) {
-        try {
-            model.addAttribute("requestURI", request.getRequestURI());
-            List<Orders> orderList = orderService.findOrdersByStatus(List.of(0L, 1L)); // 주문 상태가 0, 1 인 주문만 조회
-            model.addAttribute("orderList", orderList);
+    // /**
+    //  * 관리자 주문 팝업 - 전체 주문 조회
+    //  * @param model
+    //  * @return
+    //  */
+    // @GetMapping("/admin/orderpopup")
+    // public String orderpopup(Model model, HttpServletRequest request) {
+    //     try {
+    //         model.addAttribute("requestURI", request.getRequestURI());
+    //         List<Orders> orderList = orderService.findOrdersByStatus(List.of(0L, 1L)); // 주문 상태가 0, 1 인 주문만 조회
+    //         model.addAttribute("orderList", orderList);
 
-            Map<Long, List<Map<String, Object>>> orderDetailsMap = new HashMap<>();
-            for (Orders order : orderList) {
-                Long oNo = order.getNo();
-                List<Map<String, Object>> details = orderService.findDetailsWithProductNames(oNo);
-                if (details == null || details.isEmpty()) {
-                    log.warn("❗ 주문 상세 없음: orderNo = {}", oNo);
-                    details = new ArrayList<>();
-                }
-                orderDetailsMap.put(oNo, details);
-            }
-            // ✅ 여기부터 메뉴 이름 , 로 이어붙이기
-            Map<Long, String> menuNamesMap = new HashMap<>();
+    //         Map<Long, List<Map<String, Object>>> orderDetailsMap = new HashMap<>();
+    //         for (Orders order : orderList) {
+    //             Long oNo = order.getNo();
+    //             List<Map<String, Object>> details = orderService.findDetailsWithProductNames(oNo);
+    //             if (details == null || details.isEmpty()) {
+    //                 log.warn("❗ 주문 상세 없음: orderNo = {}", oNo);
+    //                 details = new ArrayList<>();
+    //             }
+    //             orderDetailsMap.put(oNo, details);
+    //         }
+    //         // ✅ 여기부터 메뉴 이름 , 로 이어붙이기
+    //         Map<Long, String> menuNamesMap = new HashMap<>();
 
-            for (Orders order : orderList) {
-                Long oNo = order.getNo();
-                List<Map<String, Object>> details = orderDetailsMap.get(oNo);
+    //         for (Orders order : orderList) {
+    //             Long oNo = order.getNo();
+    //             List<Map<String, Object>> details = orderDetailsMap.get(oNo);
 
-                if (details != null && !details.isEmpty()) {
-                    String names = details.stream()
-                        .map(d -> {
-                            String name = d.get("p_name").toString();
-                            Object quantityObj = d.get("quantity");
-                            int quantity = (quantityObj != null) ? Integer.parseInt(quantityObj.toString()) : 1;
-                            return name + "(" + quantity + ")";
-                        })
-                        .collect(Collectors.joining(", "));
-                    menuNamesMap.put(oNo, names);
-                } else {
-                    menuNamesMap.put(oNo, "");
-                }
-            }
-            model.addAttribute("menuNamesMap", menuNamesMap);
+    //             if (details != null && !details.isEmpty()) {
+    //                 String names = details.stream()
+    //                     .map(d -> {
+    //                         String name = d.get("p_name").toString();
+    //                         Object quantityObj = d.get("quantity");
+    //                         int quantity = (quantityObj != null) ? Integer.parseInt(quantityObj.toString()) : 1;
+    //                         return name + "(" + quantity + ")";
+    //                     })
+    //                     .collect(Collectors.joining(", "));
+    //                 menuNamesMap.put(oNo, names);
+    //             } else {
+    //                 menuNamesMap.put(oNo, "");
+    //             }
+    //         }
+    //         model.addAttribute("menuNamesMap", menuNamesMap);
 
-            model.addAttribute("menuNamesMap", menuNamesMap);
-            model.addAttribute("orderDetailsMap", orderDetailsMap);
-            model.addAttribute("orderCount", orderService.countByStatus(List.of(0L, 1L)));
-            model.addAttribute("preparingCount", orderService.countByStatus(List.of(1L)));
-            // 주문별 대기시간 계산 (현재시간 - orderTime)
-            Map<Long, Long> waitTimeMap = new HashMap<>();
-            long now = System.currentTimeMillis();
-            for (Orders order : orderList) {
-                if (order.getOrderTime() != null) {
-                    long waitMillis = now - order.getOrderTime().getTime();
-                    long waitMinutes = waitMillis / (60 * 1000);
-                    waitTimeMap.put(order.getNo(), waitMinutes);
-                } else {
-                    waitTimeMap.put(order.getNo(), 0L);
-                }
-            }
-            model.addAttribute("waitTime", waitTimeMap);
-        } catch (Exception e) {
-            log.error("❗ 관리자 주문팝업 오류", e);
-            model.addAttribute("errorMessage", "주문 정보를 불러오는 중 오류 발생");
-        }
+    //         model.addAttribute("menuNamesMap", menuNamesMap);
+    //         model.addAttribute("orderDetailsMap", orderDetailsMap);
+    //         model.addAttribute("orderCount", orderService.countByStatus(List.of(0L, 1L)));
+    //         model.addAttribute("preparingCount", orderService.countByStatus(List.of(1L)));
+    //         // 주문별 대기시간 계산 (현재시간 - orderTime)
+    //         Map<Long, Long> waitTimeMap = new HashMap<>();
+    //         long now = System.currentTimeMillis();
+    //         for (Orders order : orderList) {
+    //             if (order.getOrderTime() != null) {
+    //                 long waitMillis = now - order.getOrderTime().getTime();
+    //                 long waitMinutes = waitMillis / (60 * 1000);
+    //                 waitTimeMap.put(order.getNo(), waitMinutes);
+    //             } else {
+    //                 waitTimeMap.put(order.getNo(), 0L);
+    //             }
+    //         }
+    //         model.addAttribute("waitTime", waitTimeMap);
+    //     } catch (Exception e) {
+    //         log.error("❗ 관리자 주문팝업 오류", e);
+    //         model.addAttribute("errorMessage", "주문 정보를 불러오는 중 오류 발생");
+    //     }
 
-        return "pages/admin/orderpopup";
-    }
+    //     return "fragments/admin/orderpopup :: orderpopup";
+    // }
 }
     
 

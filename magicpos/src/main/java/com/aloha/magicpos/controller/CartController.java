@@ -14,7 +14,9 @@ import com.aloha.magicpos.domain.Carts;
 import com.aloha.magicpos.service.CartService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/carts")
 public class CartController {
@@ -26,6 +28,7 @@ public class CartController {
     public String addToCart(Carts carts, HttpSession session) throws Exception {
         Long uNo = (Long) session.getAttribute("userNo"); // 로그인 시 저장해뒀던 세션에서 꺼냄
         carts.setUNo(uNo); // 서버에서 직접 넣어줌
+        log.info("🧪 세션 userNo: {}", uNo);
         if (carts.getQuantity() == null) {
             carts.setQuantity(1L); // 기본값 1
         }

@@ -107,7 +107,7 @@ public class AdminOrderController {
     @PostMapping("/delete")
     public String deleteOrder(@RequestParam("orderNo") Long orderNo) throws Exception {
         orderService.deleteOrder(orderNo);
-        return "redirect:/admin/orderpopup";
+        return "redirect:/admin/orderpopup/fetch?status=0";
     }
     
     // 🔸 주문 상세 삭제 (단일 상품)
@@ -118,7 +118,7 @@ public class AdminOrderController {
         Orders order = orderService.findOrderByNo(oNo);
         if (order == null) {
             redirectAttributes.addFlashAttribute("error", "주문이 삭제되었습니다.");
-            return "redirect:/admin/orderpopup";
+            return "redirect:/admin/orderpopup/fetch?status=0";
         }
         List<Map<String, Object>> orderDetails = orderService.findDetailsWithProductNames(oNo);
 
@@ -127,14 +127,14 @@ public class AdminOrderController {
         model.addAttribute("orderDetails", orderDetails);
 
 
-        return "redirect:/admin/orderpopup";
+        return "redirect:/admin/orderpopup/fetch?status=0";
     }
     // 🔸 주문 상세 1 수량 증가
     @PostMapping("/increaseQuantity")
     public String increaseOrderDetailQuantity(@RequestParam("oNo") Long orderNo,
                                                @RequestParam("pNo") Long productNo) throws Exception {
         orderService.increaseQuantity(orderNo, productNo);
-        return "redirect:/admin/orderpopup";
+        return "redirect:/admin/orderpopup/fetch?status=0";
     }
 
     // 🔸 주문 상세 1 수량 감소
@@ -142,7 +142,7 @@ public class AdminOrderController {
     public String decreaseOrderDetailQuantity(@RequestParam("oNo") Long orderNo,
                                                @RequestParam("pNo") Long productNo) throws Exception {
         orderService.decreaseQuantity(orderNo, productNo);
-        return "redirect:/admin/orderpopup";
+        return "redirect:/admin/orderpopup/fetch?status=0";
     }
     
     // 🔸 주문 상세 수량 수정
@@ -151,7 +151,7 @@ public class AdminOrderController {
                                             @RequestParam Long productNo,
                                             @RequestParam Long quantity) throws Exception {
         orderService.updateOrderDetailQuantity(orderNo, productNo, quantity);
-        return "redirect:/admin/orderpopup";
+        return "redirect:/admin/orderpopup/fetch?status=0";
     }
 
     // 🔸 주문 상세 등록

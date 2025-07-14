@@ -5,7 +5,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 50; /* 🧨 사이드바보다 높게 */
+  z-index: 30; /* 🧨 사이드바보다 높게 */
   display: none; /* 기본은 숨김 */
   justify-content: center;
   align-items: center;
