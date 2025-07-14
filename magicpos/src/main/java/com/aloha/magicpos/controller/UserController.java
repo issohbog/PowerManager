@@ -28,6 +28,8 @@ import com.aloha.magicpos.service.UserTicketService;
 import com.aloha.magicpos.util.PasswordUtil;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @Slf4j
@@ -76,13 +78,35 @@ public class UserController {
         return "pages/admin/admin_user_list";
     }
 
-    // ✅ 회원 등록 폼(사용안함)
+    // 회원가입( 사용자 용 )
     @GetMapping("/new")
-    public String form(Model model) {
+    public String signupform(Model model) {
         model.addAttribute("user", new Users());
-        return "user/form";
+        return "pages/user_signup";
     }
 
+    // 회원가입 처리( 사용자 용 )
+    @PostMapping("/signup")
+    public String signup(@ModelAttribute Users user) throws Exception {         // @ModelAttribute Users user : html form 에서 입력한 내용을 Users 객체에 자동으로 담아줌 
+        log.info("회원 가입 요청: {}", user);
+        
+        // 1. 비밀번호 암호화 
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        // 2. 회원 정보 저장 
+        Users savedUser = userService.insert(user);
+
+        // 3. 권한 부여 
+        Auths auth = new Auths();
+        auth.setUNo(savedUser.getNo());
+        auth.setAuth("ROLE_USER");
+        authService.insert(auth);
+
+        // 4. 리다이렉트 
+        return "redirect:/login";
+    }
+    
 
     // 아이디 중복 체크 
     @GetMapping("/admin/check-id")
