@@ -140,12 +140,111 @@
             <!-- 주문 폼 끝 -->
         </div>
     </div>
+
+<!-- 요금제 구매 모달 -->
+<div class="ticket-modal-bg fade" id="ticketModal" style="display: none;">
+  <div class="ticket-modal-content">
+    <!-- <th:block th:if="${ usageInfo != null && usageInfo.user_no != null }">
+        <input type="hidden" id="user-no" th:value="${usageInfo.user_no} ?: ''" />
+    </th:block> -->
+    <input type="hidden" id="user-no" th:value="${usageInfo.user_no} ?: ''" />
+    <span class="ticket-modal-close-btn" onclick="closeTicketModal()">×</span>
+    <div class="ticket_con">
+      <h2>요금제 구매</h2>
+      <div class="plan-grid">
+        <div class="plan-card" 
+             th:each="ticket : ${ticketList}"
+             th:data-name="'회원 ' + ${ticket.price} + '원권'"
+             th:data-price="${ticket.price}"
+             th:data-time="${ticket.time}"
+             th:data-ticket-no="${ticket.no}"
+             >
+          <div class="plan-title" th:text="'회원 ' + ${#numbers.formatInteger(ticket.price, 0)} + '원권'"></div>
+          <div class="plan-info">
+            <div class="plan-time" th:text="${ticket.time} + ':00'">00:00</div>
+            <div class="plan-price" th:text="${#numbers.formatInteger(ticket.price, 0)} + '원'">1,000원</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ticket-modal-side">
+        <div class="ticket-section">
+            <div class="ticket-item">    
+            </div>
+        </div>
+        <button class="ticket-payment-btn" type="submit">결제하기</button>
+    </div>
+  </div>
+</div>
+<!-- 요금제 구매 모달 끝 -->
+
+<!-- 결제 완료 모달 -->
+<div class="paysucc-modal-bg fade" id="paymentSuccessModal" style="display: none;">
+  <div class="paysucc-modal-content">
+    <div class="paysucc-modal-body">
+    <img th:src="@{/images/clock.png}">
+      <h3>요금제 구매가 완료되었습니다.</h3>
+      <p>잔여 이용 시간이 추가되었습니다.<br>즐거운 이용 되세요!</p>
+    </div>
+    <div class="paysucc-modal-footer">
+      <button onclick="closeAllModals()">확인</button>
+    </div>
+  </div>
+</div>
     <script th:src="@{/js/userscript.js}"></script>
+        <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("openTicketBtn");
+        if (btn) {
+            btn.addEventListener("click", () => {
+            const modal = document.getElementById("ticketModal");
+            modal.style.display = "flex";
+            modal.classList.remove("fade-out");
+            });
+        } else {
+            console.log("버튼 또는 모달이 없습니다. ", btn, modal);
+        }
+        });
+    </script>
+
+
+    <script>
+        // 요금제 결제 완료 모달 열고 닫기 
+        function showPaymentSuccessModal() {
+            document.getElementById("paymentSuccessModal").style.display = "flex";
+            document.getElementById("paymentSuccessModal").classList.remove("fade-out");
+        }
+    </script>
+
+    <script>
+        // 모든 모달 닫기 (요금제 구매 + 결제 모달 둘다)
+        function closeAllModals() {
+            const modals = [document.getElementById("paymentSuccessModal"), document.getElementById("ticketModal")];
+
+            modals.forEach(modal => {
+                // fade-out 클래스 추가
+                modal.classList.add("fade-out");
+
+                // 트랜지션 끝나면 display: none 처리
+                modal.addEventListener("transitionend", function handler() {
+                modal.style.display = "none";
+                modal.classList.remove("fade-out");
+                modal.removeEventListener("transitionend", handler); // 중복 방지
+                });
+            });
+        }
+    </script>
+
     <script th:inline="javascript">
     window.orderSuccess = [[${orderSuccess}]];
     </script>
     <script th:if="${error}" th:inline="javascript">
         alert([[${error}]]);
     </script>
+
+    <script th:inline="javascript">
+    const userNo = /*[[${usageInfo.user_no}]]*/ null;
+    </script>
+
 </body>
 </html>
