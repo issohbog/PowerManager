@@ -13,6 +13,7 @@ CREATE TABLE users (
   phone VARCHAR(20) NOT NULL COMMENT '핸드폰 번호',
   memo VARCHAR(255) NULL COMMENT '사용자 메모',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '가입일자',
+  `ENABLED` int NOT NULL DEFAULT 1 COMMENT '활성화 여부',
   
   PRIMARY KEY (no),
   UNIQUE KEY UK_users_id (id)

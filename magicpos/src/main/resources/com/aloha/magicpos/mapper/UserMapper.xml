@@ -113,6 +113,69 @@
     <!-- // Java 코드에서 사용할 값
     String defaultPassword = passwordEncoder.encode("a123456789"); -->
 
+    <!-- 선생님 코드 -->
+
+        <resultMap id="UserMap" type="Users">
+        <id property="no" column="no"/> <!-- PK -->
+        
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="birth" column="birth"/>
+        <result property="gender" column="gender"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="memo" column="memo"/>
+        <result property="enabled" column="enabled"/>
+        <result property="createdAt" column="created_at"/>
+
+        <!-- 🔄 권한 리스트 연동 (users.no → auths.u_no) -->
+        <collection property="authList" ofType="Auths"
+                    select="selectAuth"
+                    column="no"/>
+        </resultMap>
+
+    <resultMap id="AuthMap" type="Auths">
+        <result property="no" column="no" />
+        <result property="uNo" column="u_no" />
+        <result property="auth" column="auth" />
+    </resultMap>
+
+
+    <!-- 회원 가입 -->
+    <insert id="join" parameterType="Users"
+            useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO users (
+            id, username, password, birth, gender,
+            email, phone, memo, enabled, created_at
+        ) VALUES (
+            #{id}, #{username}, #{password}, #{birth}, #{gender},
+            #{email}, #{phone}, #{memo}, #{enabled}, NOW()
+        )
+    </insert>
+
+
+    <!-- 회원 권한 등록 -->
+    <insert id="insertAuth" parameterType="Auths">
+        INSERT INTO auths (u_no, auth)
+        VALUES (#{uNo}, #{auth})
+    </insert>
+
+
+    <!-- 회원 조회 -->
+    <select id="select" resultMap="UserMap">
+        SELECT *
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <!-- 권한 조회 -->
+    <select id="selectAuth" parameterType="long" resultType="Auths">
+        SELECT *
+        FROM auths
+        WHERE u_no = #{no}
+    </select>
+
 
 
 </mapper>

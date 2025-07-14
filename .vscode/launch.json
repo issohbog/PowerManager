@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PASSWORDTEST",
+            "request": "launch",
+            "mainClass": "com.aloha.magicpos.security.PASSWORDTEST",
+            "projectName": "magicpos"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-MagicposApplication<magicpos>",
             "request": "launch",
             "cwd": "${workspaceFolder}",

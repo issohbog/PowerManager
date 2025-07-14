@@ -23,12 +23,13 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 
 
-INSERT INTO users (id, username, password, birth, email, phone, memo) VALUES
-('user1', '사용자1', 'pass1', '2000-01-01', 'user1@mail.com', '010-1234-1001', '메모1'),
-('user2', '사용자2', 'pass2', '2000-01-02', 'user2@mail.com', '010-1234-1002', '메모2'),
-('user3', '사용자3', 'pass3', '2000-01-03', 'user3@mail.com', '010-1234-1003', '메모3'),
-('user4', '사용자4', 'pass4', '2000-01-04', 'user4@mail.com', '010-1234-1004', '메모4'),
-('user5', '사용자5', 'pass5', '2000-01-05', 'user5@mail.com', '010-1234-1005', '메모5');
+INSERT INTO users (id, username, password, birth, gender, email, phone, memo, enabled)
+VALUES
+('user1', '사용자1', '$2a$10$2o4jB6oDYALHLFQMMxNT8uXy4y82zwhTzJa.FKl2ptBJ65HqA2wem', '2000-01-01', 'M', 'user1@mail.com', '010-1234-1001', '메모1', 1),
+('user2', '사용자2', '$2a$10$gQDwXAxGj1NrvaOttBedsuy.jDisoUL7oyyAAHBHryyAmnA2H8jli', '2000-01-02', 'F', 'user2@mail.com', '010-1234-1002', '메모2', 1),
+('user3', '사용자3', '$2a$10$kzqYrueR3LrNdbhTvjHHw.y8JDgblmWUDesl04EN6e2gMI7.7Gv9C', '2000-01-03', 'M', 'user3@mail.com', '010-1234-1003', '메모3', 1),
+('user4', '사용자4', '$2a$10$mCPGOVR5VQS4JT3bhV62xOwrdLrK6WMjHk5AfaMIBYrU8igqQP1Am', '2000-01-04', 'F', 'user4@mail.com', '010-1234-1004', '메모4', 1),
+('user5', '사용자5', '$2a$10$gUHFH4uGQy9PLaGTww2LEue.Hb9frGw6yJE6iblN5UDOhDSIMYb9e', '2000-01-05', 'M', 'user5@mail.com', '010-1234-1005', '메모5', 1);
 
 
 INSERT INTO tickets (ticket_name, time, price) VALUES
@@ -198,7 +199,10 @@ INSERT INTO auths (u_no, auth) VALUES
 (2, 'ROLE_USER'),
 (3, 'ROLE_USER'),
 (4, 'ROLE_USER'),
-(5, 'ROLE_USER');
+(5, 'ROLE_USER'),
+(3, 'ROLE_ADMIN'),
+(4, 'ROLE_ADMIN'),
+(5, 'ROLE_ADMIN');
 
 
 INSERT INTO orders_details (o_no, p_no, quantity) VALUES
@@ -222,4 +226,3 @@ INSERT INTO logs (u_no, seat_id, action_type, description) VALUES
 (3, 'S3', 'LOGIN', '사용자3님이 로그인하셨습니다.'),
 (4, 'S4', 'LOGIN', '사용자4님이 로그인하셨습니다.'),
 (5, 'S5', 'LOGIN', '사용자5님이 로그인하셨습니다.');
-

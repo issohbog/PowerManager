@@ -44,8 +44,20 @@ public class HomeController {
     @Autowired
     private OrderService orderService;
 
+
+    @GetMapping("/")
+    public String showLoginPage() {
+        return "login"; // templates/login.html 로 이동
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login"; // templates/login.html
+    }
+
     @Autowired
     private TicketService ticketService;
+
 
 
     @GetMapping({"/menu", "/menu/search"})

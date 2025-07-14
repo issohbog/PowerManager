@@ -24,6 +24,7 @@ public class Users {
     private String memo;
     private LocalDateTime createdAt;
     private List<Auths> authList;
+    private int enabled;
 
     // UserServiceImpl 에서 임시비밀번호 생성 후 UserController에 전달용
     private String tempPassword;

@@ -1,20 +1,12 @@
 package com.aloha.magicpos.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.OrdersDetails;
@@ -30,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/orders")
+@RequestMapping("users/orders")
 public class OrderController {
     
     @Autowired
@@ -102,161 +94,4 @@ public class OrderController {
         rttr.addFlashAttribute("orderSuccess", true);
         return "redirect:/menu";
     }
-    
-    // 🔸 주문 삭제 (주문 + 상세 함께 삭제)
-    @PostMapping("/delete")
-    public String deleteOrder(@RequestParam("orderNo") Long orderNo) throws Exception {
-        orderService.deleteOrder(orderNo);
-        return "redirect:/admin/orderpopup";
-    }
-    
-    // 🔸 주문 상세 삭제 (단일 상품)
-    @PostMapping("/delete/detail")
-    public String deleteOrderDetail(@RequestParam("oNo") Long oNo, @RequestParam("pNo") Long pNo, Model model, RedirectAttributes redirectAttributes) throws Exception{
-        orderService.deleteOrderDetail(oNo, pNo);
-        // 🔥 주문정보 다시 조회
-        Orders order = orderService.findOrderByNo(oNo);
-        if (order == null) {
-            redirectAttributes.addFlashAttribute("error", "주문이 삭제되었습니다.");
-            return "redirect:/admin/orderpopup";
-        }
-        List<Map<String, Object>> orderDetails = orderService.findDetailsWithProductNames(oNo);
-
-        // 🔥 모델에 담기
-        model.addAttribute("order", order);
-        model.addAttribute("orderDetails", orderDetails);
-
-
-        return "redirect:/admin/orderpopup";
-    }
-    // 🔸 주문 상세 1 수량 증가
-    @PostMapping("/increaseQuantity")
-    public String increaseOrderDetailQuantity(@RequestParam("oNo") Long orderNo,
-                                               @RequestParam("pNo") Long productNo) throws Exception {
-        orderService.increaseQuantity(orderNo, productNo);
-        return "redirect:/admin/orderpopup";
-    }
-
-    // 🔸 주문 상세 1 수량 감소
-    @PostMapping("/decreaseQuantity")
-    public String decreaseOrderDetailQuantity(@RequestParam("oNo") Long orderNo,
-                                               @RequestParam("pNo") Long productNo) throws Exception {
-        orderService.decreaseQuantity(orderNo, productNo);
-        return "redirect:/admin/orderpopup";
-    }
-    
-    // 🔸 주문 상세 수량 수정
-    @PostMapping("/updateQuantity")
-    public String updateOrderDetailQuantity(@RequestParam Long orderNo,
-                                            @RequestParam Long productNo,
-                                            @RequestParam Long quantity) throws Exception {
-        orderService.updateOrderDetailQuantity(orderNo, productNo, quantity);
-        return "redirect:/admin/orderpopup";
-    }
-
-    // 🔸 주문 상세 등록
-    @PostMapping("/{oNo}/details")
-    public String insertOrderDetail(@PathVariable Long oNo, @RequestBody OrdersDetails detail) throws Exception{
-        orderService.insertOrderDetail(oNo, detail);
-        return "order_detail_created";
-    }
-
-    // 🔸 주문 상태/결제 상태 수정
-    @PutMapping("/{no}/status")
-    public String updateStatus(@PathVariable Long no,
-                               @RequestParam Long orderStatus,
-                               @RequestParam Long paymentStatus) 
-        throws Exception{
-        orderService.updateStatus(no, orderStatus, paymentStatus);
-        return "order_status_updated";
-    }
-
-
-    // 🔸 모든 주문 조회
-    @GetMapping
-    public List<Orders> findAllOrders() throws Exception {
-        return orderService.findAllOrders();
-    }
-
-    // 🔸 특정 사용자 주문 목록 조회(사용자페이지 사용)
-    @GetMapping("/user")
-    public List<Orders> findOrdersByUser(@PathVariable Long uNo) throws Exception {
-        return orderService.findOrdersByUser(uNo);
-    }
-
-    // 🔸 단일 주문 조회
-    @GetMapping("/{no}")
-    public Orders findOrderByNo(@PathVariable Long no) throws Exception {
-        return orderService.findOrderByNo(no);
-    }
-
-    // 🔸 주문 상세 목록 조회 (단순)
-    @GetMapping("/{oNo}/details")
-    public List<OrdersDetails> findOrderDetails(@PathVariable Long oNo) throws Exception {
-        return orderService.findOrderDetails(oNo);
-    }
-
-    // 🔸 주문 상세 목록 조회 (상품명 + 가격 포함)
-    @GetMapping("/{oNo}/details/products")
-    public List<Map<String, Object>> findDetailsWithProductNames(@PathVariable Long oNo) throws Exception{
-        return orderService.findDetailsWithProductNames(oNo);
-    }
-
-
-
-
-    // 주문 상태 변경
-    @PutMapping("/{no}/status/update")
-    public String updateOrderStatus(@PathVariable Long no,
-                                    @RequestParam Long orderStatus,
-                                    @RequestParam Long paymentStatus) 
-        throws Exception {
-        orderService.updateStatus(no, orderStatus, paymentStatus);
-        return "order_status_updated";
-    }
-
-    // 주문 상태 변경(AJAX)
-    @PostMapping("/status")
-    @ResponseBody
-    // public String updateOrderStatusAjax(@RequestParam("no") Long no,
-    //                                     @RequestParam("orderStatus") Long orderStatus) {
-    // public String updateOrderStatusAjax(@RequestParam Map<String, String> params) {
-    public String updateOrderStatusAjax(@RequestParam Map<String, String> params) {
-    // public String updateOrderStatusAjax(@RequestBody Map<String, String> params) {
-        try {
-            Long no = Long.parseLong(params.get("no"));
-            Long orderStatus = Long.parseLong(params.get("orderStatus"));
-            log.info("🔥 상태 변경 요청: no={}, status={}", no, orderStatus);
-
-            Orders order = orderService.findOrderByNo(no);
-            if (order == null) {
-                log.warn("❗ 주문 없음: no={}", no);
-                return "fail";
-            }
-
-            Long paymentStatus = order.getPaymentStatus();
-            if (paymentStatus == null) {
-                log.warn("❗ 결제 상태 없음: orderNo={}", no);
-                return "fail";
-            }
-
-            orderService.updateStatus(no, orderStatus, paymentStatus);
-            return "ok";
-        } catch (Exception e) {
-            log.error("❗ 상태 변경 중 오류 발생", e);
-            return "fail";
-        }
-    }
-
-    // 주문 상태 카운트 조회 (AJAX)
-    @GetMapping("/status/counts")
-    @ResponseBody
-    public Map<String, Long> getOrderCounts() throws Exception {
-        Map<String, Long> counts = new HashMap<>();
-        counts.put("orderCount", orderService.countByStatus(List.of(0L, 1L)));
-        counts.put("prepareCount", orderService.countByStatus(List.of(1L)));
-        return counts;
-    }
-
-
     }

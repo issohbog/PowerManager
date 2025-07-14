@@ -1,3 +1,16 @@
+/* 전체 모달 설정 */
+#orderPopup {
+  position: fixed; /* ✨ 화면 전체 덮게 */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 50; /* 🧨 사이드바보다 높게 */
+  display: none; /* 기본은 숨김 */
+  justify-content: center;
+  align-items: center;
+}
+
 .order-status-container{
   top: 100px;
   right: 70px;
@@ -209,3 +222,80 @@
     font-weight: bold;
 }
 
+/* ----------------------- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-box {
+  background-color: #2C3E50; 
+  position: relative;
+  padding: 30px 40px;
+  border-radius: 16px;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  width: 340px;
+  z-index: 10000;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-message {
+  font-size: 15px;
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.modal-buttons button {
+  padding: 10px 24px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.2s ease;
+}
+
+/* ✅ 확인 버튼: 노란색 */
+#modalConfirmBtn {
+  background-color: #f1c40f;
+  color: black;
+}
+#modalConfirmBtn:hover {
+  background-color: #f39c12;
+}
+
+/* ❎ 취소 버튼: 회색 */
+#modalCancelBtn {
+  background-color: #bdc3c7;
+  color: black;
+}
+#modalCancelBtn:hover {
+  background-color: #95a5a6;
+}
+
+/* 💫 애니메이션 (선택) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
