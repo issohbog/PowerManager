@@ -36,4 +36,9 @@ public interface SeatService {
     // 로그인한 유저 기준 좌석 사용 정보 조회
     public Map<String, Object> findSeatUsageInfoByUser(Long userNo) throws Exception;
 
+    // 예약된 좌석ID만 반환
+    List<String> findReservedSeatIds();
+
+    // 예약되지 않은 좌석ID만 반환
+    List<String> findAvailableSeatIds();
 }

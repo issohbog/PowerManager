@@ -109,7 +109,15 @@ public class SeatServiceImpl implements SeatService {
         return seatMapper.countAllSeats();
     }
 
+    @Override
+    public List<String> findReservedSeatIds() {
+        return seatMapper.findReservedSeatIds();
+    }
 
+    @Override
+    public List<String> findAvailableSeatIds() {
+        return seatMapper.findAvailableSeatIds();
+    }
 
 
 

@@ -272,3 +272,75 @@ function closeTicketModal() {
   }
 })();
 
+
+// 좌석 선택 모달 관련 스크립트
+// 좌석 미선택 상태라면 모달 자동 노출
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    var seatId = document.body.dataset.seatId;
+    if (!seatId) {
+      document.getElementById('seatModal').style.display = 'block';
+      loadReservedSeats();
+    }
+  });
+
+  window.closeSeatModal = function() {
+    document.getElementById('seatModal').style.display = 'none';
+  }
+
+  // 좌석 버튼 동적 생성 및 예약좌석 비활성화
+  window.loadReservedSeats = function() {
+    fetch('/api/seats/reserved')
+      .then(res => res.json())
+      .then(data => {
+        const reserved = data.reservedSeats || [];
+        const seatGrid = document.getElementById('seatGrid');
+        seatGrid.innerHTML = '';
+        for (let i = 1; i <= 34; i++) {
+          const seatId = 'S' + i;
+          const btn = document.createElement('button');
+          btn.textContent = seatId;
+          btn.className = 'seat-btn';
+          if (reserved.includes(seatId)) {
+            btn.disabled = true;
+            btn.classList.add('reserved');
+          }
+          btn.onclick = function() {
+            document.querySelectorAll('.seat-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            document.getElementById('seatSelectBtn').disabled = false;
+            document.getElementById('seatSelectBtn').dataset.seatId = seatId;
+          };
+          seatGrid.appendChild(btn);
+        }
+      });
+  }
+
+  // 좌석 선택 완료 버튼 클릭 시 서버로 예약 요청
+  document.addEventListener('DOMContentLoaded', function() {
+    var seatSelectBtn = document.getElementById('seatSelectBtn');
+    if (seatSelectBtn) {
+      seatSelectBtn.onclick = function() {
+        const seatId = this.dataset.seatId;
+        fetch('/api/seats/reserve', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+          },
+          body: JSON.stringify({ seatId: seatId })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert(data.message || '좌석 예약 실패');
+            loadReservedSeats();
+          }
+        });
+      };
+    }
+  });
+})();
+
