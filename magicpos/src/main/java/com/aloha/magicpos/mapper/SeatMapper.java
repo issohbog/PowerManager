@@ -37,5 +37,10 @@ public interface SeatMapper {
     // 좌석 상태 업데이트 (청소중 -> 이용가능)
     int clearSeat(@Param("seatId") String seatId);
 
+    // 예약된 좌석ID만 반환
+    List<String> findReservedSeatIds();
+
+    // 예약되지 않은 좌석ID만 반환
+    List<String> findAvailableSeatIds();
 
 }

@@ -22,5 +22,7 @@ public interface UserTicketService {
     
     // 티켓 정보 조회 후 요금제 구매 (관리자용)
     public boolean insertUserTicketByAdmin(UserTickets userTicket) throws Exception;
+
+
     
 }

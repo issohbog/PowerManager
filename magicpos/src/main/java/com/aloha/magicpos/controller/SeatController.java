@@ -67,4 +67,12 @@ public class SeatController {
     return seatService.findSeatUsageInfoByUser(userNo);
     }
 
+    // 예약된 좌석 리스트 반환 (AJAX)
+    @GetMapping("/api/reserved")
+    @ResponseBody
+    public Map<String, Object> reservedSeats() {
+        List<String> reservedSeats = seatService.findReservedSeatIds();
+        return Map.of("reservedSeats", reservedSeats);
+    }
+
 }

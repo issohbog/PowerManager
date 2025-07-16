@@ -101,4 +101,19 @@
         SET seat_status = 0
         WHERE seat_id = #{seatId}
     </update>
+    
+    <!-- 사용중인 좌석 조회 -->
+    <select id="findReservedSeatIds" resultType="string">
+        SELECT seat_id
+        FROM seats_reservations
+    </select>
+
+    <!-- 예약되지 않은 좌석ID만 반환 -->
+    <select id="findAvailableSeatIds" resultType="string">
+        SELECT seat_id
+        FROM seats
+        WHERE seat_id NOT IN (SELECT seat_id FROM seats_reservations)
+    </select>
+
+
 </mapper>
