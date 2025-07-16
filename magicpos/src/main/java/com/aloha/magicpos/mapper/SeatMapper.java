@@ -34,6 +34,7 @@ public interface SeatMapper {
     // 로그인한 유저 기준 좌석 사용 정보 조회
     Map<String, Object> findSeatUsageInfoByUser(@Param("userNo") Long userNo);
 
+
     // 로그아웃시 end_time 업데이트
     void updateSeatEndTime(@Param("userNo") Long userNo);
 
@@ -53,5 +54,15 @@ public interface SeatMapper {
 
     // 좌석 사용중 업데이트
     void updateSeatStatusToInUse(@Param("seatId") String seatId);
+
+    // 좌석 상태 업데이트 (청소중 -> 이용가능)
+    int clearSeat(@Param("seatId") String seatId);
+
+    // 예약된 좌석ID만 반환
+    List<String> findReservedSeatIds();
+
+    // 예약되지 않은 좌석ID만 반환
+    List<String> findAvailableSeatIds();
+
 
 }

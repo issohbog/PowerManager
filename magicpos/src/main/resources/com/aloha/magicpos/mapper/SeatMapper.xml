@@ -19,12 +19,13 @@
             s.seat_name, 
             s.seat_status, 
             u.username, 
-            ut.remain_time AS remainTime
+            SUM(ut.remain_time) AS remainTime
         FROM seats s 
         LEFT JOIN seats_reservations sr ON s.seat_id = sr.seat_id 
         LEFT JOIN users u ON sr.u_no = u.no 
         LEFT JOIN user_tickets ut ON u.no = ut.u_no
-        ORDER BY s.seat_id;
+        GROUP BY s.seat_id, s.seat_name, s.seat_status, u.username
+        ORDER BY CAST(SUBSTRING(s.seat_id, 2) AS UNSIGNED);
     </select>
 
 
@@ -151,7 +152,26 @@
         AND sr.end_time > NOW()
     </select>
 
+    
+    <!-- 좌석 상태 업데이트 (청소중[3] -> 이용가능[0]) -->
+    <update id="clearSeat">
+        UPDATE seats
+        SET seat_status = 0
+        WHERE seat_id = #{seatId}
+    </update>
+    
+    <!-- 사용중인 좌석 조회 -->
+    <select id="findReservedSeatIds" resultType="string">
+        SELECT seat_id
+        FROM seats_reservations
+    </select>
 
+    <!-- 예약되지 않은 좌석ID만 반환 -->
+    <select id="findAvailableSeatIds" resultType="string">
+        SELECT seat_id
+        FROM seats
+        WHERE seat_id NOT IN (SELECT seat_id FROM seats_reservations)
+    </select>
 
 
 </mapper>

@@ -3,6 +3,17 @@ function openAdminTicketModal() {
   if (modal) {
     modal.style.display = "flex";
     loadTicketsToModal();       // 티켓 목록 불러오는 ajax 호출
+    
+    // 모달 내부 요소들 확인
+    const payButtons = document.querySelectorAll(".admin-pay-btn");
+    const confirmBtn = document.querySelector(".admin-confirm-btn");
+    const hiddenInput = document.getElementById("selected-payment-method");
+    
+    console.log("🔍 결제 버튼 개수:", payButtons.length);
+    console.log("🔍 결제하기 버튼:", confirmBtn);
+    console.log("🔍 hidden input:", hiddenInput);
+  } else {
+    console.error("🔍 admin-ticket-modal을 찾을 수 없습니다!");
   }
 }
 
@@ -14,12 +25,19 @@ function closeAdminTicketModal() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("admin_ticket.js 로드됨");
+  
   const openBtn = document.getElementById("openAdminTicketModalBtn");
+  console.log("openAdminTicketModalBtn 찾음:", openBtn);
+  
   if (openBtn) {
     openBtn.addEventListener("click", (e) => {
+      console.log("버튼 클릭됨!");
       e.preventDefault();
       openAdminTicketModal();
     });
+  } else {
+    console.error("openAdminTicketModalBtn 버튼을 찾을 수 없습니다!");
   }
 
   // 실시간 유저 검색 
@@ -132,4 +150,166 @@ document.addEventListener("click", (e) => {
     // 선택된 티켓의 번호도 저장 (결제 API용)
     document.querySelector(".admin-confirm-btn").dataset.tno = btn.dataset.tno;
   }
+  
+  // 결제 방법 선택 버튼 클릭 시
+  if (e.target.classList.contains("admin-pay-btn")) {
+    console.log("💳 결제 버튼 클릭됨!");
+    const btn = e.target;
+    const paymentMethod = btn.dataset.payment;
+    console.log("💳 결제 방법:", paymentMethod);
+    
+    // 모든 결제 버튼에서 selected 클래스 제거
+    document.querySelectorAll(".admin-pay-btn").forEach(btn => {
+      btn.classList.remove("selected");
+    });
+    
+    // 클릭된 버튼에 selected 클래스 추가
+    btn.classList.add("selected");
+    console.log("💳 selected 클래스 추가됨");
+    
+    // 선택된 결제 방법을 hidden input에 저장
+    const hiddenInput = document.getElementById("selected-payment-method");
+    if (hiddenInput) {
+      hiddenInput.value = paymentMethod;
+      console.log("💳 hidden input에 저장됨:", paymentMethod);
+    } else {
+      console.error("💳 selected-payment-method input을 찾을 수 없습니다!");
+    }
+    
+    console.log("선택된 결제 방법:", paymentMethod);
+  }
 });
+
+// 관리자 요금제 결제 처리 함수
+function processAdminTicketPayment() {
+  console.log("💳 결제하기 버튼 클릭됨!");
+  
+  const selectedUserNo = document.getElementById("selected-user-no").value;
+  const selectedTicketNo = document.querySelector(".admin-confirm-btn").dataset.tno;
+  const selectedPaymentMethod = document.getElementById("selected-payment-method").value;
+  const ticketName = document.querySelector(".admin-ticket-name").textContent;
+  const ticketInfo = document.querySelector(".admin-ticket-info").textContent;
+  
+  console.log("💳 선택된 값들:", {
+    selectedUserNo,
+    selectedTicketNo,
+    selectedPaymentMethod,
+    ticketName,
+    ticketInfo
+  });
+
+  // 유효성 검사
+  if (!selectedUserNo) {
+    alert("회원을 선택해주세요.");
+    return;
+  }
+
+  if (!selectedTicketNo) {
+    alert("요금제를 선택해주세요.");
+    return;
+  }
+
+  if (!selectedPaymentMethod) {
+    alert("결제 방법을 선택해주세요.");
+    return;
+  }
+
+  console.log("선택된 결제 방법:", selectedPaymentMethod);
+
+    // 신용카드 선택 시 토스페이먼츠로 이동
+  if (selectedPaymentMethod === "신용카드") {
+    // 백엔드에서 티켓 정보 조회
+    console.log("💳 티켓 정보 조회 요청:", `/usertickets/ticket/${selectedTicketNo}`);
+    fetch(`/usertickets/ticket/${selectedTicketNo}`)
+      .then(response => {
+        console.log("💳 응답 상태:", response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(ticketInfo => {
+        if (ticketInfo.error) {
+          console.error("💳 티켓 정보 조회 실패:", ticketInfo.error);
+          alert("티켓 정보를 가져올 수 없습니다: " + ticketInfo.error);
+          return;
+        }
+        
+        // 백엔드에서 가져온 실제 티켓 가격 사용
+        const amount = ticketInfo.price;
+        const orderId = `admin_ticket_${Date.now()}_user${selectedUserNo}_ticket${selectedTicketNo}`;
+        const orderName = ticketInfo.ticketName;
+        
+        console.log("💳 백엔드에서 가져온 티켓 정보:", ticketInfo);
+        console.log("💳 토스페이먼츠 결제 요청:", {
+          orderId,
+          amount,
+          orderName,
+          userNo: selectedUserNo,
+          ticketNo: selectedTicketNo
+        });
+        
+        // 토스페이먼츠 결제창 직접 호출
+        tossPayments.requestPayment("카드", {
+          amount: amount,
+          orderId: orderId,
+          orderName: orderName,
+          customerName: "관리자",
+          successUrl: "http://localhost:8080/admin/payment/ticket/success",
+          failUrl: "http://localhost:8080/admin/payment/ticket/fail",
+        });
+      })
+      .catch(error => {
+        console.error("💳 티켓 정보 조회 중 오류:", error);
+        alert("티켓 정보 조회 중 오류가 발생했습니다.");
+      });
+    return;
+  }
+
+  // 현금 결제 시
+  if (selectedPaymentMethod === "현금") {
+    // CSRF 토큰 가져오기
+    const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+    // 결제 정보 구성
+    const paymentData = {
+      uNo: parseInt(selectedUserNo),
+      tNo: parseInt(selectedTicketNo),
+      paymentMethod: selectedPaymentMethod,
+      payAt: new Date().toISOString()
+    };
+
+    // 서버로 결제 요청 전송 (관리자용 API)
+    fetch("/usertickets/admin/insert", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": csrfToken
+      },
+      body: JSON.stringify(paymentData)
+    })
+    .then(response => response.text())
+    .then(result => {
+      if (result === "success") {
+        alert("요금제 구매가 완료되었습니다.");ㅔㅔㅔ
+        closeAdminTicketModal();
+        // 모달 초기화
+        document.getElementById("selected-user-no").value = "";
+        document.getElementById("admin-user-search-input").value = "";
+        document.querySelector(".admin-ticket-name").textContent = "";
+        document.querySelector(".admin-ticket-info").textContent = "";
+        document.getElementById("selected-payment-method").value = "";
+        // 선택된 결제 버튼 스타일 초기화
+        document.querySelectorAll(".admin-pay-btn").forEach(btn => {
+          btn.classList.remove("selected");
+        });
+      } else {
+        alert("결제에 실패했습니다.");
+      }
+    })
+    .catch(error => {
+      console.error("결제 처리 중 오류 발생:", error);
+      alert("결제 처리 중 오류가 발생했습니다.");
+    });
+  }
+}

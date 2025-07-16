@@ -76,6 +76,7 @@ public class UserTicketController {
         // 임시로 setter 강제 사용
         if (userTicket.getUNo() == null) {
             log.error("🔥 uNo가 null이야!");
+            return "fail";
         }
 
         
@@ -99,5 +100,85 @@ public class UserTicketController {
     @GetMapping("/user/{uNo}/remain-time")
     public Integer getRemainTime(@PathVariable long uNo) throws Exception {
         return userticketService.findRemainTimeByUserNo(uNo);
+    }
+
+    // 🔸 관리자용 요금제 구매 (결제 시)
+    @PostMapping("/admin/insert")
+    @ResponseBody
+    public String insertUserTicketByAdmin(@RequestBody UserTickets userTicket) throws Exception {
+        log.info("🧾 관리자 요금제 구매 - 받은 userTicket = {}", userTicket);
+
+        // 유효성 검사
+        if (userTicket.getUNo() == null) {
+            log.error("🔥 uNo가 null이야!");
+            return "fail";
+        }
+
+        if (userTicket.getTNo() == null) {
+            log.error("🔥 tNo가 null이야!");
+            return "fail";
+        }
+
+        // 서비스에서 티켓 정보 조회 및 요금제 구매 처리
+        boolean success = userticketService.insertUserTicketByAdmin(userTicket);
+        return success ? "success" : "fail";
+    }
+
+    // 🔸 티켓 번호로 티켓 정보 조회 (가격 포함)
+    @GetMapping("/ticket/{ticketNo}")
+    @ResponseBody
+    public Map<String, Object> getTicketInfo(@PathVariable("ticketNo") Long ticketNo) throws Exception {
+        log.info("🎫 티켓 정보 조회 시작: ticketNo={}", ticketNo);
+        log.info("🎫 요청 URL: /usertickets/ticket/{}", ticketNo);
+        
+        try {
+            Tickets ticket = ticketService.findByNo(ticketNo);
+            if (ticket != null) {
+                Map<String, Object> ticketInfo = new HashMap<>();
+                ticketInfo.put("no", ticket.getNo());
+                ticketInfo.put("ticketName", ticket.getTicketName());
+                ticketInfo.put("time", ticket.getTime());
+                ticketInfo.put("price", ticket.getPrice());
+                log.info("🎫 티켓 정보 조회 완료: {}", ticketInfo);
+                return ticketInfo;
+            } else {
+                log.error("🎫 티켓을 찾을 수 없습니다: ticketNo={}", ticketNo);
+                Map<String, Object> error = new HashMap<>();
+                error.put("error", "티켓을 찾을 수 없습니다.");
+                return error;
+            }
+        } catch (Exception e) {
+            log.error("🎫 티켓 정보 조회 중 오류: {}", e.getMessage());
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "티켓 정보 조회 중 오류가 발생했습니다.");
+            return error;
+        }
+    }
+
+    // 🔸 사용자 결제 정보 반환 (TossPayments 연동용)
+    @PostMapping("/payment-info")
+    @ResponseBody
+    public Map<String, Object> getPaymentInfo(@RequestBody Map<String, Object> params) throws Exception {
+        Long userNo = Long.valueOf(params.get("userNo").toString());
+        Long ticketNo = Long.valueOf(params.get("ticketNo").toString());
+
+        Tickets ticket = ticketService.findByNo(ticketNo);
+        Users user = userService.findByNo(userNo);
+
+        // 결제 정보 생성
+        String orderId = "order-" + System.currentTimeMillis();
+        String orderName = ticket.getTicketName();
+        int amount = ticket.getPrice() != null ? ticket.getPrice().intValue() : 0;
+        String customerName = user.getUsername();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("orderId", orderId);
+        result.put("orderName", orderName);
+        result.put("amount", amount);
+        result.put("customerName", customerName);
+        result.put("successUrl", "http://localhost:8080/users/payment/ticket/success?userNo=" + userNo + "&ticketNo=" + ticketNo);
+        result.put("failUrl", "http://localhost:8080/users/payment/ticket/fail");
+
+        return result;
     }
 }

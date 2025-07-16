@@ -26,4 +26,9 @@ public class TicketServiceImpl implements TicketService {
         return ticketMapper.findById(no);
     }
 
+    @Override
+    public Tickets findByNo(Long no) throws Exception {
+        return ticketMapper.findByNo(no);
+    }
+
 }

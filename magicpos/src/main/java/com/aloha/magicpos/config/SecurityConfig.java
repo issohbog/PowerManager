@@ -60,12 +60,13 @@ public class SecurityConfig {
         // ✅ 인가 설정
         
         http.authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/login", "/users/signup", "/users/new", "/css/**", "/js/**", "/img/**").permitAll()
+                                .requestMatchers("/login", "/users/signup", "/users/new", "/users/admin/check-id", "/css/**", "/js/**", "/img/**").permitAll()
                                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/users/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/products/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/categories/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/usertickets/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/usertickets/ticket/**").hasRole("ADMIN")
                                 .requestMatchers("/seats/**").hasRole("ADMIN")
                                 .requestMatchers("/menu", "/menu/**","/carts", "/carts/**", "/users/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/userticket/insert").hasAnyRole("USER","ADMIN")

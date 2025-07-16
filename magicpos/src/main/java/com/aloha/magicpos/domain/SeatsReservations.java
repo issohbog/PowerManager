@@ -8,7 +8,6 @@ import lombok.Data;
 public class SeatsReservations {
     private Long no;
     private String seatId;
-    private Long tNo;
     private Long uNo;
     private Timestamp startTime;
     private Timestamp endTime;

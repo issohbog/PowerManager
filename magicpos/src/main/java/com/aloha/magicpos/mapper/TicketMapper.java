@@ -14,4 +14,7 @@ public interface TicketMapper {
 
     // 특정 이용권 조회 (선택적)
     Tickets findById(@Param("no") Long no);
+    
+    // 티켓 번호로 티켓 정보 조회
+    Tickets findByNo(@Param("no") Long no);
 }

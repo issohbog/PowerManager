@@ -11,12 +11,13 @@
         <result property="tNo" column="t_no" />
         <result property="remainTime" column="remain_time" />
         <result property="payAt" column="pay_at" />
+        <result property="payment" column="payment" />
     </resultMap>
 
     <!-- 이용권 등록 (결제 시 호출) -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="no" parameterType="com.aloha.magicpos.domain.UserTickets">
-        INSERT INTO user_tickets (u_no, t_no, remain_time, pay_at)
-        VALUES (#{uNo}, #{tNo}, #{remainTime}, #{payAt})
+        INSERT INTO user_tickets (u_no, t_no, remain_time, pay_at, payment)
+        VALUES (#{uNo}, #{tNo}, #{remainTime}, #{payAt}, #{payment})
     </insert>
 
     <!-- 전체 이용권 내역 조회 (관리자용) -->

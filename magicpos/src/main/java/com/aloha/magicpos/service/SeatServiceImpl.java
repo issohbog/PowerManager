@@ -72,6 +72,12 @@ public class SeatServiceImpl implements SeatService {
         return map;
     }
 
+    // 좌석 상태 변경 (청소중 -> 사용가능)
+    @Override
+    public boolean clearSeat(String seatId) throws Exception {
+        return seatMapper.clearSeat(seatId) > 0;
+    }
+
     @Override
     public Seats findById(String seatId) throws Exception {
         return seatMapper.findById(seatId);
@@ -103,7 +109,15 @@ public class SeatServiceImpl implements SeatService {
         return seatMapper.countAllSeats();
     }
 
+    @Override
+    public List<String> findReservedSeatIds() {
+        return seatMapper.findReservedSeatIds();
+    }
 
+    @Override
+    public List<String> findAvailableSeatIds() {
+        return seatMapper.findAvailableSeatIds();
+    }
 
 
 

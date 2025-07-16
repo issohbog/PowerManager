@@ -1,3 +1,9 @@
+
+// HTML <meta>에서 CSRF 토큰 정보 읽기
+const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".clear-btn").forEach(btn => {
     btn.addEventListener("click", async (e) => {
@@ -6,7 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         const res = await fetch(`/admin/seats/clear/${seatId}`, {
-          method: "POST"
+          method: "POST",
+          headers: {
+            [csrfHeader]: csrfToken
+          }
         });
 
         const text = await res.text();

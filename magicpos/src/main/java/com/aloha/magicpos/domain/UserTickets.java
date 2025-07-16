@@ -18,4 +18,6 @@ public class UserTickets {
 
     private Long remainTime;
     private Timestamp payAt;
+    private String payment;
+
 }
