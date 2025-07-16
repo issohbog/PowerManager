@@ -34,5 +34,8 @@ public interface SeatMapper {
     // 로그인한 유저 기준 좌석 사용 정보 조회
     Map<String, Object> findSeatUsageInfoByUser(@Param("userNo") Long userNo);
 
+    // 좌석 상태 업데이트 (청소중 -> 이용가능)
+    int clearSeat(@Param("seatId") String seatId);
+
 
 }

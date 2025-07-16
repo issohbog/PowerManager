@@ -1,3 +1,8 @@
+// HTML <meta>에서 CSRF 토큰 정보 읽기
+const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+
 // ✅ 회원 정보 모달 확장 통합 버전 with 클래스 기반 버튼 렌더링
 
 const modal = document.getElementById("user-modal");
@@ -72,7 +77,7 @@ function openUserModal(mode, user = {}, remain = 0, used = 0) {
 function renderFooterButtons(mode, userNo = null, user = {}, remain = 0, used = 0) {
   if (mode === "register") {
     footer.innerHTML = `
-      <button type="button" onclick="closeModal()" class="btn-cancel">취소</button>
+      <button type="button" onclick="closeUserModal()" class="btn-cancel">취소</button>
       <button type="submit" id="modal-submit-btn" class="btn-save">저장</button>
     `;
   } else if (mode === "edit") {
@@ -169,7 +174,11 @@ idCheckBtn.addEventListener("click", async () => {
   }
 
   try {
-    const response = await fetch(`/users/admin/check-id?id=${encodeURIComponent(userId)}`);
+    const response = await fetch(`/users/admin/check-id?id=${encodeURIComponent(userId)}`,{
+      headers: {
+        [csrfHeader]: csrfToken
+      }
+    });
     const result = await response.json();
     if (result.exists) {
       idMessage.textContent = "이미 사용 중인 아이디입니다.";
@@ -204,7 +213,10 @@ function handleUserUpdate() {
 
   fetch("/users/admin/update", {
     method: "POST",
-    body: formData
+    body: formData,
+    headers: {
+      [csrfHeader]: csrfToken
+    }
   })
     .then(res => {
       if (!res.ok) throw new Error("서버 오류");
@@ -221,7 +233,12 @@ function handleUserUpdate() {
 async function resetPassword(userNo) {
   if (!confirm("비밀번호를 초기화하시겠습니까?")) return;
 
-  const response = await fetch(`/users/admin/${userNo}/reset`, { method: "POST" });
+  const response = await fetch(`/users/admin/${userNo}/reset`, 
+    { method: "POST",
+      headers: {
+        [csrfHeader]: csrfToken
+      }
+    });
   const data = await response.json();
 
   if (data.success) {
@@ -247,7 +264,10 @@ async function resetPassword(userNo) {
 function deleteUser(userNo) {
   if (!confirm("정말 삭제하시겠습니까?")) return;
   fetch(`/users/admin/${userNo}/delete`, {
-    method: "POST"
+    method: "POST",
+    headers: {
+      [csrfHeader]: csrfToken
+    }
   }).then(res => {
     if (res.ok) {
       alert("삭제 완료");
@@ -281,6 +301,7 @@ function deleteSelectedUsers() {
     method: "POST",
     body: formData,
     headers: {
+      [csrfHeader]: csrfToken,
       "Content-Type": "application/x-www-form-urlencoded"
     }
   })
@@ -301,7 +322,7 @@ document.querySelector('.button-group .action:nth-child(3)')
   .addEventListener('click', deleteSelectedUsers);
 
 
-function closeModal() {
+function closeUserModal() {
   const modal = document.getElementById("user-modal")
   if( !modal ) return;
 
@@ -320,7 +341,16 @@ function closeTempPasswordModal() {
   tempModal.style.display = "none";
 }
 
-
+form.addEventListener("submit", function(e) {
+  // 이미 CSRF input이 있으면 중복 추가 방지
+  if (!form.querySelector("input[name='_csrf']")) {
+    const csrfInput = document.createElement("input");
+    csrfInput.type = "hidden";
+    csrfInput.name = "_csrf";
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+  }
+});
 
 
 

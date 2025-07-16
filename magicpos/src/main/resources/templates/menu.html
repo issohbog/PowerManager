@@ -5,8 +5,12 @@
       layout:decorate="~{layouts/user/main_layout}">
 <head>
     <link rel="stylesheet" th:href="@{/css/menu.css}">
+    <!-- TossPayments 결제 스크립트 추가 -->
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>    
 </head>
-<body layout:fragment="content">
+<body layout:fragment="content" th:attr="data-seat-id=${usageInfo.seat_id}">
     <div class="container">
         <div class="main-panel">
             <!-- 표상 메뉴 -->
@@ -179,6 +183,89 @@
     </div>
   </div>
 </div>
+
+<!-- 좌석 선택 모달 -->
+<div class="seat-modal-bg fade" id="seatModal" style="display: none;">
+  <div class="seat-modal-content">
+    <span class="seat-modal-close-btn" onclick="closeSeatModal()">×</span>
+    <h2>좌석 선택</h2>
+    <div class="seat-grid" id="seatGrid">
+      <!-- S1~S34 버튼이 JS로 동적으로 생성됨 -->
+    </div>
+    <button id="seatSelectBtn" disabled>좌석 선택 완료</button>
+  </div>
+</div>
+
+<!-- 토스페이먼츠 스크립트 추가 -->
+<script th:inline="javascript">
+    const clientKey = "test_ck_ZLKGPx4M3MGPnBZkRAlwrBaWypv1"; // 테스트용 client key
+    const tossPayments = TossPayments(clientKey);
+
+    // 좌석 선택 모달 관련 스크립트
+    document.addEventListener('DOMContentLoaded', function() {
+      // 좌석 미선택 상태라면 모달 자동 노출
+      var seatId = document.body.dataset.seatId;
+      if (!seatId) {
+        document.getElementById('seatModal').style.display = 'block';
+        loadReservedSeats();
+      }
+    });
+
+    function closeSeatModal() {
+      document.getElementById('seatModal').style.display = 'none';
+    }
+
+    // 좌석 버튼 동적 생성 및 예약좌석 비활성화
+    function loadReservedSeats() {
+      fetch('/api/seats/reserved')
+        .then(res => res.json())
+        .then(data => {
+          const reserved = data.reservedSeats || [];
+          const seatGrid = document.getElementById('seatGrid');
+          seatGrid.innerHTML = '';
+          for (let i = 1; i <= 34; i++) {
+            const seatId = 'S' + i;
+            const btn = document.createElement('button');
+            btn.textContent = seatId;
+            btn.className = 'seat-btn';
+            if (reserved.includes(seatId)) {
+              btn.disabled = true;
+              btn.classList.add('reserved');
+            }
+            btn.onclick = function() {
+              document.querySelectorAll('.seat-btn').forEach(b => b.classList.remove('selected'));
+              btn.classList.add('selected');
+              document.getElementById('seatSelectBtn').disabled = false;
+              document.getElementById('seatSelectBtn').dataset.seatId = seatId;
+            };
+            seatGrid.appendChild(btn);
+          }
+        });
+    }
+
+    // 좌석 선택 완료 버튼 클릭 시 서버로 예약 요청
+    document.getElementById('seatSelectBtn').onclick = function() {
+      const seatId = this.dataset.seatId;
+      fetch('/api/seats/reserve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+        },
+        body: JSON.stringify({ seatId: seatId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          location.reload();
+        } else {
+          alert(data.message || '좌석 예약 실패');
+          loadReservedSeats();
+        }
+      });
+    };
+</script>
+
 <!-- 요금제 구매 모달 끝 -->
 
 <!-- 결제 완료 모달 -->

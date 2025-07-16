@@ -11,4 +11,6 @@ public interface TicketService {
     // 특정 이용권 조회 (선택적)
     public Tickets findById(Long no) throws Exception;
     
+    // 티켓 번호로 티켓 정보 조회
+    public Tickets findByNo(Long no) throws Exception;
 } 

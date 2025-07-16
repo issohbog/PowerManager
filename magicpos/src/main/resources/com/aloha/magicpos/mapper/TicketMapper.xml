@@ -19,4 +19,11 @@
         WHERE no = #{no}
     </select>
 
+    <!-- 티켓 번호로 티켓 정보 조회 -->
+    <select id="findByNo" resultType="Tickets">
+        SELECT *
+        FROM tickets
+        WHERE no = #{no}
+    </select>
+
 </mapper>

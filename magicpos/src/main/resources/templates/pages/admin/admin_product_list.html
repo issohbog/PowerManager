@@ -4,7 +4,10 @@
       layout:decorate="~{/layouts/admin/main_layout}"
       >
 
- 
+   <head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  </head>
  <body layout:fragment="content">
   <div class="content">
 

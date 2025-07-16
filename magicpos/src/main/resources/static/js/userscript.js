@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 이전 선택 초기화 
       ticketItem.innerHTML = "";
     });
-  }
+    }
 
   console.log("카드 개수:", cards.length);
   console.log("ticketItem 존재 여부:", ticketItem !== null);
@@ -164,7 +164,79 @@ document.addEventListener("DOMContentLoaded", () => {
       
     });
   });
+  const paymentBtn = document.querySelector(".ticket-payment-btn");
+
+  let selectedTicket = null;
+
+  cards.forEach(card => {
+    card.addEventListener("click", () => {
+      selectedTicket = {
+        price: card.dataset.price,
+        time: card.dataset.time,
+        ticketNo: card.dataset.ticketNo,
+        name: card.dataset.name
+      };
+    });
+  });
+
+  // TossPayments 객체를 한 번만 생성 (테스트용 client key)
+  const clientKey = "test_ck_ZLKGPx4M3MGPnBZkRAlwrBaWypv1";
+  const tossPayments = TossPayments(clientKey);
+
+  // CSRF 토큰과 헤더 이름을 meta 태그에서 읽어옴
+  const csrfToken = document.querySelector('meta[name=\"_csrf\"]').getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name=\"_csrf_header\"]').getAttribute('content');
+
+  // 결제 버튼 클릭 이벤트
+  if (paymentBtn) {
+    paymentBtn.addEventListener("click", async () => {
+      if (!selectedTicket) {
+        alert("요금제를 선택해주세요.");
+        return;
+      }
+
+      // 사용자 번호 가져오기
+      const userNo = document.getElementById("user-no").value;
+
+      // UserTicketController에 결제 정보 요청
+      try {
+        const response = await fetch("/usertickets/payment-info", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            [csrfHeader]: csrfToken 
+          },
+          body: JSON.stringify({
+            userNo: userNo,
+            ticketNo: selectedTicket.ticketNo
+          })
+        });
+
+        if (!response.ok) {
+          alert("결제 정보 요청 실패");
+          return;
+        }
+
+        const paymentInfo = await response.json();
+
+        // Toss Payments 결제창 띄우기 (테스트 키 사용)
+        tossPayments.requestPayment("카드", {
+          amount: paymentInfo.amount,
+          orderId: paymentInfo.orderId,
+          orderName: paymentInfo.orderName,
+          customerName: paymentInfo.customerName,
+          successUrl: paymentInfo.successUrl,
+          failUrl: paymentInfo.failUrl
+        });
+      } catch (e) {
+        alert("결제 요청 중 오류 발생");
+        console.error(e);
+      }
+    });
+  }
 });
+
+
 
 // 요금제 결제 하지 않고 닫기 버튼(x)으로 모달 닫기 
 function closeTicketModal() {
@@ -183,69 +255,20 @@ function closeTicketModal() {
 
 
 
-// 요금제 결제 완료 모달 열기 
-document.addEventListener("DOMContentLoaded", () => {
-  const showModalBtn = document.querySelector(".ticket-payment-btn"); // 결제하기 버튼
-  const modal = document.getElementById("paymentSuccessModal");
-  const closeBtn = modal.querySelector(".paysucc-modal-footer button");
-
-  // 모달 열기
-  showModalBtn.addEventListener("click", () => {
-  const selectedTicket = document.querySelector(".selected-ticket");
-  if (!selectedTicket) {
-    alert("요금제를 선택해주세요.");
-    return;
-  }
-
-  const remainTime = parseInt(selectedTicket.dataset.time);
-  const price = parseInt(selectedTicket.dataset.price);
-  const ticketNo = parseInt(selectedTicket.dataset.ticketNo);
-
-  if (!remainTime || !price || !ticketNo) {
-    alert("요금제 정보가 올바르지 않습니다.");
-    return;
-  }
-
-  const userNoInput = document.getElementById("user-no");
-  if (!userNoInput || !userNoInput.value) {
-    alert("유저 정보가 없습니다.");
-    return;
-  }
-  const userNo = parseInt(userNoInput.value);
-
-  console.log({ userNo, ticketNo, remainTime });
-
-  // 서버로 결제 정보 전송
-  fetch("/usertickets/insert", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      uNo: userNo,
-      tNo: ticketNo,
-      remainTime: remainTime,
-      payAt: new Date().toISOString()
-    })
-  })
-  .then(response => response.text())  // ✅ 문자열로 받기
-  .then(text => {
-    if (text === "success") {
-      modal.classList.remove("fade-out");
-      modal.style.display = "flex"; // 성공 시 모달 열기
+// 결제 성공 시 쿼리 파라미터로 모달 자동 오픈
+(function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("payment") === "success") {
+    if (typeof showPaymentSuccessModal === "function") {
+      showPaymentSuccessModal();
     } else {
-      alert("결제 실패");
+      // 함수가 아직 정의되지 않은 경우를 대비해 약간의 딜레이 후 재시도
+      setTimeout(() => {
+        if (typeof showPaymentSuccessModal === "function") {
+          showPaymentSuccessModal();
+        }
+      }, 300);
     }
-  })
-  .catch(err => {
-    console.error(err);
-    alert("에러 발생");
-  });
-  });
-
-  // 모달 닫기
-  closeBtn.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-});
+  }
+})();
 
