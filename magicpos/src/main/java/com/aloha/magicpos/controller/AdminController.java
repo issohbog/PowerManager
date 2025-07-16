@@ -37,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 
 
 
-
 @RequiredArgsConstructor
 @Slf4j
 @Controller
@@ -64,7 +63,7 @@ public class AdminController {
     List<Long> statusList = "1".equals(status) ? List.of(1L) : List.of(0L, 1L);
     List<Orders> orderList = orderService.findOrdersByStatus(statusList);
     
-    System.out.println("🔥 orderList size: " + orderList.size()); // 이거 넣어서 확인해봐
+    System.out.println("🔥 orderList size: " + orderList.size());
     model.addAttribute("orderList", orderList);
 
     Map<Long, List<Map<String, Object>>> orderDetailsMap = new HashMap<>();
@@ -180,101 +179,115 @@ public class AdminController {
     
     // 장바구니에 항목 추가
     @PostMapping("/admin/sellcounter/add")
+    @ResponseBody
     public String addToCart(Carts carts, HttpSession session) throws Exception {
         Long uNo = (Long) session.getAttribute("userNo"); // 로그인 시 저장해뒀던 세션에서 꺼냄
+        System.out.println("userNo 세션 값: " + uNo);
         carts.setUNo(uNo); // 서버에서 직접 넣어줌
         if (carts.getQuantity() == null) {
             carts.setQuantity(1L); // 기본값 1
         }
         cartService.addToCart(carts);
-        return "redirect:/admin/sell/counter";
+        return "ok";
     }
 
     // 장바구니 항목 삭제
     @PostMapping("/admin/sellcounter/delete")
+    @ResponseBody
     public String deleteItem(@RequestParam("cNo") Long cNo) throws Exception{
         cartService.delete(cNo);
-        return "redirect:/admin/sell/counter";
+        return "ok";
     }
     
     // 장바구니 수량 증가
     @PostMapping("/admin/sellcounter/increase")
+    @ResponseBody
     public String increaseQuantity(@RequestParam("pNo") Long pNo, HttpSession session) throws Exception{
         Long uNo = (Long) session.getAttribute("userNo");
         cartService.increaseQuantity(uNo, pNo);
-        return "redirect:/admin/sell/counter";
+        return "ok";
     }
 
     // 장바구니 수량 감소
     @PostMapping("/admin/sellcounter/decrease")
+    @ResponseBody
     public String decreaseQuantity(@RequestParam("pNo") Long pNo, HttpSession session) throws Exception{
         Long uNo = (Long) session.getAttribute("userNo");
         cartService.decreaseQuantity(uNo,pNo);
-        return "redirect:/admin/sell/counter";
+        return "ok";
     }
     // 🔸 주문 등록
     @PostMapping("/admin/sellcounter/create")
-    public String insertOrder(
-        Orders order, // 기본 주문 정보는 그대로 받고
-        @RequestParam("seatId") String seatId,
-        @RequestParam("pNoList") List<Long> pNoList,
-        @RequestParam("quantityList") List<Long> quantityList,
-        @RequestParam("pNameList") List<String> pNameList, // 상품 이름 리스트 추가
-        RedirectAttributes rttr, // 리다이렉트 시 플래시 속성 사용
-        HttpSession session // 세션에서 사용자 정보 가져오기
+    @ResponseBody
+    public ResponseEntity<String> insertOrder(
+        @RequestParam(value = "seatId", required = false) String seatId,
+        @RequestParam(value = "pNoList", required = false) List<Long> pNoList,
+        @RequestParam(value = "quantityList", required = false) List<Long> quantityList,
+        @RequestParam(value = "pNameList", required = false) List<String> pNameList,
+        @RequestParam(value = "payment", required = false) String payment,
+        @RequestParam(value = "stockList", required = false) List<Long> stockList,
+        @RequestParam(value = "totalPrice", required = false) Long totalPrice,
+        HttpSession session
         ) throws Exception {
-            // ✅ 1. 세션에서 userNo 가져오기
+            log.info("🔥🔥🔥 insertOrder 진입됨");
+            
+            log.info("seatId = {}", seatId);
+            log.info("pNoList = {}", pNoList);
+            log.info("quantityList = {}", quantityList);
+            log.info("pNameList = {}", pNameList);
+            log.info("payment = {}", payment);
+            System.out.println("seatId: " + seatId);
+            System.out.println("pNoList: " + pNoList);
+            System.out.println("quantityList: " + quantityList);
+            System.out.println("pNameList: " + pNameList);
+            System.out.println("payment: " + payment);
+            System.out.println("stockList: " + stockList);
             Long userNo = (Long) session.getAttribute("userNo");
+        if (userNo == null) {
+            userNo = 1L;
+            session.setAttribute("userNo", userNo);
+        }
+        
+        for (int i = 0; i < pNoList.size(); i++) {
+            Long quantity = quantityList.get(i);
+            String pName = pNameList.get(i);
+            Long stock = stockList.get(i);
             
-            // ✅ 2. 세션에 없으면 임시 userNo로 설정
-            if (userNo == null) {
-                userNo = 1L; // 임시 유저 번호
-                session.setAttribute("userNo", userNo);
+            if (stock == null || stock < quantity) {
+                return ResponseEntity.status(400).body(pName + "의 재고가 부족합니다.");
             }
-            
-            // ✅ 3. 주문 전 재고 체크
-            for (int i = 0; i < pNoList.size(); i++) {
-                Long pNo = pNoList.get(i);
-                Long quantity = quantityList.get(i);
-                String pName = pNameList.get(i);
-
-                // 이 메서드에서 재고 수량 조회
-                Long currentStock = productService.selectStockByPNo(pNo);  // 아래에 구현 설명 있음
-
-                if (currentStock == null || currentStock < quantity) {
-                    rttr.addFlashAttribute("error", pName + "의 재고가 부족합니다.");
-                    return "redirect:/admin/sell/counter";
-                }
-            }
-
-
-            // 🔽 여기서 seatId 로그 확인
-            log.debug("넘어온 seatId: {}", order.getSeatId());
-            order.setUNo(userNo); // 주문에 사용자 번호 설정
-            order.setOrderStatus(0L); // 기본 주문 상태 설정
-            order.setPaymentStatus(0L); // 기본 결제 상태 설정
-            order.setSeatId(seatId);
-            boolean inserted = orderService.insertOrder(order);
-            if (!inserted) return "redirect:/orders/fail";
-            
-            Long oNo = order.getNo(); // insert 후에 받아온 주문 번호
-
-            // 상품별 주문 상세 넣기
-            for (int i = 0; i < pNoList.size(); i++) {
-                OrdersDetails detail = new OrdersDetails();
+        }
+        
+        Orders order = new Orders();
+        order.setUNo(userNo);
+        order.setOrderStatus(0L);
+        order.setPaymentStatus(0L);
+        order.setSeatId(seatId);
+        order.setPayment(payment);
+        order.setTotalPrice(totalPrice);
+        order.setMessage("");
+        
+        boolean inserted = orderService.insertOrder(order);
+        log.info("🧩 inserted 결과: {}", inserted);
+        // if (!inserted) return ResponseEntity.status(500).body("주문 저장 실패");
+        log.info("✅ insertOrder 끝까지 왔다");
+        
+        Long oNo = order.getNo();
+        log.info("🧾 주문 번호: {}", oNo);
+        log.info("🛒 상품 {}개 상세 등록 시도 중...", pNoList.size());
+        for (int i = 0; i < pNoList.size(); i++) {
+            OrdersDetails detail = new OrdersDetails();
             detail.setONo(oNo);
             detail.setPNo(pNoList.get(i));
             detail.setQuantity(quantityList.get(i));
             orderService.insertOrderDetail(oNo, detail);
-            // 상품 재고 감소
             productService.decreaseStock(pNoList.get(i), quantityList.get(i));
         }
-        // 장바구니 비우기
+
         cartService.deleteAllByUserNo(userNo);
-        
-        rttr.addFlashAttribute("orderSuccess", true);
-        return "redirect:/admin/sell/counter";
+        return ResponseEntity.ok("success");
     }
+
     
 
     /**
@@ -296,6 +309,11 @@ public class AdminController {
         return "fragments/admin/modal/orderCancel :: orderCancel";
     }
 
+    @GetMapping("/admin/seats/inuse")
+    @ResponseBody
+    public List<Map<String, Object>> getUsingUsers() {
+        return seatService.findInUseUsers(); // username, userId, remainTime 포함된 Map 리스트
+    }
 
     // /**
     //  * 관리자 주문 팝업 - 준비중 주문 조회

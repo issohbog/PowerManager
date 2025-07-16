@@ -32,6 +32,16 @@
         ORDER BY pay_at DESC
     </select>
 
+    <!-- 특정 사용자의 최신 ticket_no 1개만 조회 -->
+    <select id="findLatestTicketNoByUserNo" parameterType="long" resultType="long">
+        SELECT t_no
+        FROM user_tickets
+        WHERE u_no = #{uNo}
+        ORDER BY pay_at DESC
+        LIMIT 1
+    </select>
+
+
     <!-- 특정 사용자 최근 남은 시간 조회 -->
     <select id="findRemainTimeByUserNo" parameterType="long" resultType="int">
         SELECT remain_time

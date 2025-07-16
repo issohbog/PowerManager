@@ -94,6 +94,11 @@ public class ProductServiceImpl implements ProductService  {
     @Override
     public Long selectStockByPNo(Long pNo) throws Exception {
         return productMapper.selectStockByPNo(pNo);
+    }
+
+    @Override
+    public List<Map<String, Object>> getProductListWithCategory() throws Exception {
+        return productMapper.getProductListWithCategory();
     }   
     
 

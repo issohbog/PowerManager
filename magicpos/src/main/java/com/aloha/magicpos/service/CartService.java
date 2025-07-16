@@ -18,4 +18,5 @@ public interface CartService {
     public List<Map<String, Object>> getCartWithProductByUser(Long uNo) throws Exception;
     public int getTotalPrice(Long uNo) throws Exception;
     public boolean deleteAllByUserNo(Long userNo) throws Exception;
+    public List<Map<String, Object>> findCartWithProductByUser(Long userNo);
 }

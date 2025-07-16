@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.OrdersDetails;
+import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.service.CartService;
+import com.aloha.magicpos.service.LogService;
 import com.aloha.magicpos.service.OrderService;
 import com.aloha.magicpos.service.ProductService;
 
@@ -33,6 +35,9 @@ public class OrderController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private LogService logService;
     
     // 🔸 주문 등록
     @PostMapping("/create")
@@ -90,6 +95,13 @@ public class OrderController {
         }
         // 장바구니 비우기
         cartService.deleteAllByUserNo(userNo);
+
+        // ✅ 로그 추가
+        Users user = (Users) session.getAttribute("usageInfo");
+        String username = (user != null) ? user.getUsername() : "알 수 없음";
+
+        String description = username + "님이 " + order.getTotalPrice() + "원어치 상품을 주문하였습니다.";
+        logService.insertLog(userNo, seatId, "product", description);
         
         rttr.addFlashAttribute("orderSuccess", true);
         return "redirect:/menu";

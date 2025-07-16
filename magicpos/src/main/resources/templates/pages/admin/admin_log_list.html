@@ -9,19 +9,24 @@
   <div class="content">
 
       <div class="top-controls">
-        <form th:action="@{/admin/history/today/all}" method="get" class="search-box">
+        <form th:action="@{/admin/logs/logList}" method="get" class="search-box">
           <select name="type" class="admin_category" id="typeSelect">
             <option value="" th:selected="${type == null or type == ''}">전체</option>
-            <option value="orderhistory" th:selected="${type == 'orderhistory'}">주문</option>
-            <option value="tickethistory" th:selected="${type == 'tickethistory'}">이용권</option>
+            <option value="loginhistory" th:selected="${type == 'loginhistory'}">로그인/로그아웃</option>
+            <option value="joinhistory" th:selected="${type == 'joinhistory'}">회원가입</option>
+            <option value="tickethistory" th:selected="${type == 'tickethistory'}">이용권 구매</option>
+            <option value="orderhistory" th:selected="${type == 'orderhistory'}">상품 구매</option>
           </select>
-  
+          
           <div class="search-box">
-            <input type="text" name="keyword" th:value="${keyword}" placeholder="내역명/이름/아이디" />
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="이름/아이디/좌석번호" />
             <button type="submit" class="search-icon">
               <img src="/images/search.png" alt="검색버튼">
             </button>
           </div>
+          <input type="date" name="startDate" th:value="${startDate}" />
+          ~
+          <input type="date" name="endDate" th:value="${endDate}" />
         </form>
 
       </div>
@@ -29,25 +34,29 @@
     <thead>
       <tr>
         <th>No.</th>
-        <th>내역분류</th>
-        <th>내역명</th>
+        <th>로그분류</th>
         <th>이름</th>
         <th>아이디</th>
-        <th>좌석번호</th>
+        <th>로그 설명</th>
         <th>결제금액</th>
-        <th>결제시각</th>
+        <th>좌석번호</th>
+        <th>로그시각</th>
       </tr>
     </thead>
     <tbody>
-      <tr th:each="item, iterStat : ${todayList}">
+      <tr th:each="log, iterStat : ${logList}">
         <td th:text="${iterStat.count}"></td> <!-- No -->
-        <td th:text="${item['history_type']}">내역분류</td>
-        <td th:text="${item['item_name']}">내역명</td>
-        <td th:text="${item['username']}">이름</td>
-        <td th:text="${item['user_id']}">아이디</td>
-        <td th:text="${item['seat_id']}">좌석번호</td>
-        <td th:text="${#numbers.formatInteger(item['price'], 3, 'COMMA') + '원'}">0원</td>
-        <td th:text="${#dates.format(item['time'], 'yyyy.MM.dd HH:mm')}">2025.07.09</td>
+        <td th:text="${log['action_type']}">로그분류</td>
+        <td th:text="${log['username']}">이름</td>
+        <td th:text="${log['user_id']}">아이디</td>
+        <td th:text="${log['description']}">로그 설명</td>
+        <td>
+          <span th:if="${log['price'] != null}"
+                th:text="${#numbers.formatInteger(log['price'], 3, 'COMMA') + '원'}">금액</span>
+          <span th:unless="${log['price'] != null}">-</span>
+        </td>
+        <td th:text="${log['seat_id']}">좌석번호</td>
+        <td th:text="${#dates.format(log['created_at'], 'yyyy.MM.dd HH:mm')}">2025.07.09</td>
       </tr>
     </tbody>
   </table>
@@ -60,8 +69,8 @@ document.addEventListener("DOMContentLoaded", function() {
     selectBox.addEventListener("change", function() {
         const selectedType = this.value;
         const keyword = document.querySelector("input[name='keyword']").value;
-
-        fetch(`/admin/history/today/all?type=${selectedType}&keyword=${keyword}`)
+        const selectedDate = document.querySelector("input[name='date']").value;
+        fetch(`/admin/logs/logList?type=${selectedType}&keyword=${keyword}&date=${selectedDate}`)
             .then(res => res.text())
             .then(html => {
                 // 파싱해서 테이블 tbody만 추출

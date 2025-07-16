@@ -64,7 +64,8 @@
             c.quantity,
             p.p_name,
             p.p_price,
-            p.img_path
+            p.img_path,
+            p.stock
         FROM carts c
         JOIN products p ON c.p_no = p.no
         WHERE c.u_no = #{uNo}

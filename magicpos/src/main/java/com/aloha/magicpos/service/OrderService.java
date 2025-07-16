@@ -26,4 +26,7 @@ public interface OrderService {
     // 수량 감소
     public boolean decreaseQuantity(@Param("oNo") Long oNo, @Param("pNo") Long pNo) throws Exception;
     public boolean deleteOrderDetail(Long oNo, Long pNo) throws Exception;
+    // 재고 조회
+    public Long getQuantityByOrderAndProduct(Long oNo, Long pNo);
+
 }

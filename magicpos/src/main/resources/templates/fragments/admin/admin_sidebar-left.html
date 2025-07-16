@@ -4,7 +4,7 @@
     <img src="/images/icons8-user-plus-54 (2).png" alt="회원등록 아이콘">
     <span>회원등록</span>
   </a>
-  <a href="/products">
+  <a href="#" id="openAdminSellCounterModalBtn">
     <img src="/images/icons8-cart-54.png" alt="상품판매 아이콘">
     <span>상품판매</span>
   </a>
@@ -12,8 +12,26 @@
     <img src="/images/icons8-ticket-52 (2).png" alt="이용권 판매 아이콘">
     <span>이용권 판매</span>
   </a>
-  <a href="/usage">
+  <a href="#" id="showUsersBtn">
     <img src="/images/icons8-user-check-54 (2).png" alt="사용회원 아이콘">
     <span>사용회원</span>
   </a>
+  <!-- ✅ 모달 창 -->
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>현재 사용 중인 회원</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>사용회원</th>
+            <th>남은시간</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- 동적 생성 -->
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

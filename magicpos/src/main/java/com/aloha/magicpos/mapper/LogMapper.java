@@ -1,38 +1,41 @@
 package com.aloha.magicpos.mapper;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.aloha.magicpos.domain.Logs;
-
 @Mapper
 public interface LogMapper {
-    // 로그 등록
-    int insert(Logs logs);
 
-    // 전체 로그 조회
-    List<Logs> findAll();
-
-    // 유저 번호로 조회
-    List<Logs> findByUserNo(Long uNo);
-
-    // 이름(username)으로 조회
-    List<Logs> findByUsername(String username);
-
-    // 아이디(id)로 조회
-    List<Logs> findByUserId(String id);
-
-    // 좌석번호로 조회
-    List<Logs> findBySeatId(String seatId);
-
-    // 로그 유형별 조회
-    List<Logs> findByActionType(String actionType);
-
-    // 로그 유형 + 이름/아이디/좌석번호로 검색 (일치 조건)
-    List<Logs> searchLogsByActionTypeAndKeyword(
-        @Param("actionType") String actionType,
-        @Param("keyword") String keyword
+    void insertLog(
+    @Param("uNo") Long uNo,
+    @Param("seatId") String seatId,
+    @Param("actionType") String actionType,
+    @Param("description") String description
     );
+
+    // 🔍 검색 포함
+    List<Map<String, Object>> searchLoginLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("keyword") String keyword);
+
+    List<Map<String, Object>> searchJoinLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("keyword") String keyword);
+
+    List<Map<String, Object>> searchTicketLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,  @Param("keyword") String keyword);
+
+    List<Map<String, Object>> searchProductLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,  @Param("keyword") String keyword);
+
+    List<Map<String, Object>> searchAllLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate,  @Param("keyword") String keyword);
+
+    // 📄 검색 없이
+    List<Map<String, Object>> findLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    List<Map<String, Object>> findLoginLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    List<Map<String, Object>> findJoinLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    List<Map<String, Object>> findTicketLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    List<Map<String, Object>> findProductLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

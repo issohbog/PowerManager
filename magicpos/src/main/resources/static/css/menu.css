@@ -616,3 +616,8 @@
   opacity: 0;
   pointer-events: none;
 }
+.add-cart-btn.sold-out {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #888;
+}

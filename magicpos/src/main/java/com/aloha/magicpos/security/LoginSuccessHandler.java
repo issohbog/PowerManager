@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.aloha.magicpos.domain.CustomUser;
 import com.aloha.magicpos.domain.Users;
+import com.aloha.magicpos.mapper.LogMapper;
+import com.aloha.magicpos.mapper.SeatMapper;
 import com.aloha.magicpos.mapper.UserTicketMapper;
 
 import jakarta.servlet.ServletException;
@@ -28,6 +30,12 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
     @Autowired
     private UserTicketMapper userTicketMapper;
+
+    @Autowired
+    private LogMapper logMapper;
+
+    @Autowired
+    private SeatMapper seatMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -67,18 +75,56 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         }
 
         if (isAdmin) {
+            CustomUser customUser = (CustomUser) authentication.getPrincipal();
+            Users user = customUser.getUser();
+            
+
+            request.getSession().setAttribute("userNo", user.getNo());
+            log.info("🌟 세션에 userNo 저장됨 = {}", user.getNo());
+            request.getSession().setAttribute("usageInfo", user);
             redirectUrl = "/admin";
         } else if (isUser) {
             CustomUser customUser = (CustomUser) authentication.getPrincipal();
             Users user = customUser.getUser();
+            Long userNo = user.getNo();
+            String userName = user.getUsername();
 
 
             // int remainingTime = userTicketMapper.findRemainTimeByUserNo(user.getNo());
             Integer remain = userTicketMapper.findRemainTimeByUserNo(user.getNo());
             int remainingTime = (remain != null) ? remain : 0;
 
+            // ✍️ 로그인 로그 저장
+            logMapper.insertLog(
+                userNo,
+                null,
+                "로그인/로그아웃",
+                userName + "님이 로그인하셨습니다."
+            );
+
             request.getSession().setAttribute("userNo", user.getNo());
             request.getSession().setAttribute("usageInfo", user);
+            String seatId = request.getParameter("seatId"); 
+            if (seatId != null) {
+                seatId = seatId.trim().toUpperCase(); // " s1 " → "S1"
+            }
+            log.info("입력된 seatId = '{}'", seatId);
+            
+            int seatStatus = seatMapper.getSeatStatus(seatId);
+
+            if (seatStatus == 1 || seatStatus == 2) {
+                log.warn("⛔ 좌석 사용 불가 (seatId={}, status={})", seatId, seatStatus);
+                response.sendRedirect("/login?error=seatInUse");
+                return; // 로그인 중단
+            }
+
+            // ✅ 좌석 사용 가능 → 예약 등록 + 상태 변경
+            Long ticketNo = userTicketMapper.findLatestTicketNoByUserNo(userNo);
+            seatMapper.insertSeatReservation(userNo, seatId, ticketNo, (long)remainingTime);
+            seatMapper.updateSeatStatusToInUse(seatId);
+
+
+            request.getSession().setAttribute("seatId", seatId);
 
 //             int remainingTime = userTicketMapper.findRemainTimeByUserNo(user.getNo());
 

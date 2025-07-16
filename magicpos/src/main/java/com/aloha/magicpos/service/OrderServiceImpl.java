@@ -118,4 +118,10 @@ public class OrderServiceImpl implements OrderService{
     public boolean decreaseQuantity(Long oNo, Long pNo) throws Exception {
         return orderDetailMapper.decreaseQuantity(oNo, pNo) > 0;
     }
+    
+    @Override
+    public Long getQuantityByOrderAndProduct(Long oNo, Long pNo) {
+        return orderDetailMapper.getQuantityByOrderAndProduct(oNo, pNo);
+    }
+
 }
