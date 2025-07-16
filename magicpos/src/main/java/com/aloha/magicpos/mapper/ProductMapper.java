@@ -48,4 +48,7 @@ public interface ProductMapper {
 
     // 상품 재고 조회
     Long selectStockByPNo(@Param("pNo") Long pNo);
+
+    // 상품 리스트 + 분류 이름
+    List<Map<String, Object>> getProductListWithCategory();
 }

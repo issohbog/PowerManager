@@ -52,6 +52,19 @@
         ORDER BY no DESC
     </select>
 
+    <select id="getProductListWithCategory" resultType="map">
+        SELECT 
+            p.no AS no,
+            p.p_name AS pName,
+            p.p_price AS pPrice,
+            p.stock AS stock,
+            c.c_name AS categoryName
+        FROM products p
+        JOIN categories c ON p.c_no = c.no
+        ORDER BY p.no DESC
+    </select>
+
+
     <!-- 상품 단건에 대해 당일 판매량 계산   -->
     <select id="findTodaySalesMap" resultType="map">
         SELECT 

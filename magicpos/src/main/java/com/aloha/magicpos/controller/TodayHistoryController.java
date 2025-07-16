@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/history/today")
+@RequestMapping("/admin/history/today")
 public class TodayHistoryController {
 
     

@@ -5,73 +5,135 @@
 
 <mapper namespace="com.aloha.magicpos.mapper.LogMapper">
 
-    <!-- 로그 등록 -->
-    <insert id="insert" useGeneratedKeys="true" keyProperty="no">
-        INSERT INTO logs (u_no, seat_id, action_type, description)
-        VALUES (#{uNo}, #{seatId}, #{actionType}, #{description})
-    </insert>
+<!-- 로그 등록 -->
+<insert id="insertLog">
+    INSERT INTO logs (u_no, seat_id, action_type, description, created_at)
+    VALUES (#{uNo}, #{seatId}, #{actionType}, #{description}, NOW())
+</insert>
 
-    <!-- 전체 로그 조회 -->
-    <select id="findAll" resultType="Logs">
-        SELECT *
-        FROM logs
-        ORDER BY created_at DESC
-    </select>
+<!-- ✅ 전체 로그 (검색 X) -->
+<select id="findLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id
+FROM logs l
+JOIN users u ON l.u_no = u.no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+ORDER BY l.created_at DESC
+</select>
 
-    <!-- 유저 번호로 조회 -->
-    <select id="findByUserNo" resultType="Logs">
-        SELECT *
-        FROM logs
-        WHERE u_no = #{uNo}
-        ORDER BY created_at DESC
-    </select>
+<!-- ✅ 전체 로그 (검색 O) -->
+<select id="searchAllLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id
+FROM logs l
+JOIN users u ON l.u_no = u.no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+  AND (
+    u.username LIKE CONCAT('%', #{keyword}, '%')
+    OR u.id LIKE CONCAT('%', #{keyword}, '%')
+    OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+  )
+ORDER BY l.created_at DESC
+</select>
 
-    <!-- 이름(username)으로 조회 -->
-    <select id="findByUsername" resultType="Logs">
-        SELECT l.*
-        FROM logs l
-        JOIN users u ON l.u_no = u.no
-        WHERE u.username LIKE CONCAT('%', #{username}, '%')
-        ORDER BY l.created_at DESC
-    </select>
+<!-- ✅ 로그인 로그 -->
+<select id="findLoginLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id
+FROM logs l
+JOIN users u ON l.u_no = u.no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+  AND l.action_type = '로그인/로그아웃'
+ORDER BY l.created_at DESC
+</select>
 
-    <!-- 아이디(id)로 조회 -->
-    <select id="findByUserId" resultType="Logs">
-        SELECT l.*
-        FROM logs l
-        JOIN users u ON l.u_no = u.no
-        WHERE u.id LIKE CONCAT('%', #{id}, '%')
-        ORDER BY l.created_at DESC
-    </select>
+<select id="searchLoginLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id
+FROM logs l
+JOIN users u ON l.u_no = u.no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+  AND l.action_type = '로그인/로그아웃'
+  AND (
+    u.username LIKE CONCAT('%', #{keyword}, '%')
+    OR u.id LIKE CONCAT('%', #{keyword}, '%')
+    OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+  )
+ORDER BY l.created_at DESC
+</select>
 
-    <!-- 좌석번호로 조회 -->
-    <select id="findBySeatId" resultType="Logs">
-        SELECT *
-        FROM logs
-        WHERE seat_id = #{seatId}
-        ORDER BY created_at DESC
-    </select>
+<!-- ✅ 회원가입 로그 -->
+<select id="findJoinLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id
+FROM logs l
+JOIN users u ON l.u_no = u.no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+  AND l.action_type = '회원가입'
+ORDER BY l.created_at DESC
+</select>
 
-    <!-- 로그 유형별 조회 -->
-    <select id="findByActionType" resultType="Logs">
-        SELECT *
-        FROM logs
-        WHERE action_type = #{actionType}
-        ORDER BY created_at DESC
-    </select>
-    
-    <!-- 로그 분류 + 이름/아이디/좌석번호로 검색 -->
-    <select id="searchLogsByActionTypeAndKeyword" resultType="Logs">
-    SELECT l.*
-    FROM logs l
-    JOIN users u ON l.u_no = u.no
-    WHERE l.action_type = #{actionType}
-      AND (
-            u.username = #{keyword}
-         OR u.id = #{keyword}
-         OR l.seat_id = #{keyword}
-      )
-    ORDER BY l.created_at DESC
+<select id="searchJoinLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id
+FROM logs l
+JOIN users u ON l.u_no = u.no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+  AND l.action_type = '회원가입'
+  AND (
+    u.username LIKE CONCAT('%', #{keyword}, '%')
+    OR u.id LIKE CONCAT('%', #{keyword}, '%')
+    OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+  )
+ORDER BY l.created_at DESC
+</select>
+
+<!-- ✅ 이용권 로그 (user_tickets 기준 price join) -->
+<select id="findTicketLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id, t.price
+FROM logs l
+JOIN users u ON l.u_no = u.no
+LEFT JOIN user_tickets ut ON l.u_no = ut.u_no
+LEFT JOIN tickets t ON ut.t_no = t.no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+  AND l.action_type = '이용권 구매'
+ORDER BY l.created_at DESC
+</select>
+
+<select id="searchTicketLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id, t.price
+FROM logs l
+JOIN users u ON l.u_no = u.no
+LEFT JOIN user_tickets ut ON l.u_no = ut.u_no
+LEFT JOIN tickets t ON ut.t_no = t.no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+  AND l.action_type = '이용권 구매'
+  AND (
+    u.username LIKE CONCAT('%', #{keyword}, '%')
+    OR u.id LIKE CONCAT('%', #{keyword}, '%')
+    OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+  )
+ORDER BY l.created_at DESC
+</select>
+
+<!-- ✅ 상품 로그 (orders 기준 price join) -->
+<select id="findProductLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id, o.total_price AS price
+FROM logs l
+JOIN users u ON l.u_no = u.no
+LEFT JOIN orders o ON l.u_no = o.u_no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+  AND l.action_type = '상품 구매'
+ORDER BY l.created_at DESC
+</select>
+
+<select id="searchProductLogsByDate" resultType="map">
+SELECT l.*, u.username, u.id AS user_id, o.total_price AS price
+FROM logs l
+JOIN users u ON l.u_no = u.no
+LEFT JOIN orders o ON l.u_no = o.u_no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+  AND l.action_type = '상품 구매'
+  AND (
+    u.username LIKE CONCAT('%', #{keyword}, '%')
+    OR u.id LIKE CONCAT('%', #{keyword}, '%')
+    OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+  )
+ORDER BY l.created_at DESC
 </select>
 
 </mapper>

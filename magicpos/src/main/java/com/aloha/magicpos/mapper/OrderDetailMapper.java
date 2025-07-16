@@ -39,4 +39,8 @@ public interface OrderDetailMapper {
 
     // 상품 재고 증가
     int increaseProductStock(@Param("pNo") Long pNo, @Param("quantity") Long quantity);
+
+    // 재고 조회
+    Long getQuantityByOrderAndProduct(@Param("oNo") Long oNo, @Param("pNo") Long pNo);
+
 }

@@ -34,5 +34,24 @@ public interface SeatMapper {
     // 로그인한 유저 기준 좌석 사용 정보 조회
     Map<String, Object> findSeatUsageInfoByUser(@Param("userNo") Long userNo);
 
+    // 로그아웃시 end_time 업데이트
+    void updateSeatEndTime(@Param("userNo") Long userNo);
+
+    // 로그아웃시 seat_status 업데이트
+    void releaseSeatStatus(@Param("userNo") Long userNo);
+
+    // 좌석 상태 조회 
+    int getSeatStatus(@Param("seatId") String seatId);
+
+    // 좌석 예약 테이블 추가
+        void insertSeatReservation(
+        @Param("userNo") Long userNo,
+        @Param("seatId") String seatId,
+        @Param("ticketNo") Long ticketNo,
+        @Param("remainTime") Long remainTime
+    );
+
+    // 좌석 사용중 업데이트
+    void updateSeatStatusToInUse(@Param("seatId") String seatId);
 
 }

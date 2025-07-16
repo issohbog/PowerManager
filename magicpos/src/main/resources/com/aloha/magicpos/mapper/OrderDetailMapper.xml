@@ -75,4 +75,12 @@
         WHERE no = #{pNo}
     </update>
 
+    <!-- 상품 번호와 주문 번호 따라 재고 조회 -->
+    <select id="getQuantityByOrderAndProduct" resultType="long">
+        SELECT quantity
+        FROM orders_details
+        WHERE o_no = #{oNo} AND p_no = #{pNo}
+    </select>
+
+
 </mapper>

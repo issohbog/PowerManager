@@ -34,10 +34,11 @@
                         <span style=" font-size: 13px;">남은시간</span><br><strong style="color: #f1c40f;" th:text="${usageInfo.remain_time}">10:45</strong>
                     </div>
                     <div style="width: 100px; height: 60px; background-color: #1e2b38; padding: 5px 10px; border-radius: 5px; text-align: center; font-size: 16px;">
-                        <span style=" font-size: 13px;">사용종료</span><br>
-                        <a href="/logout">
-                            <img th:src="@{/images/전원.png}" style="width: 23px;" alt="logout">
-                        </a>
+                        <form action="/logout" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" style="all: unset; font-size: 13px;">사용종료</span><br>
+                            <img th:src="@{/images/전원.png}" style="width: 23px; margin-top: 5px;" alt="logout">
+                        </form>
                     </div>
                 </div>
 

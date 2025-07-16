@@ -378,7 +378,8 @@ document.addEventListener("click", (e) => {
       document.querySelectorAll(".number-tab1, .number-tab2").forEach(el => {
         el.classList.remove("active-tab");
       });
-      target.classList.add("active-tab");
+      const matchingTab = document.querySelector(`a[href='${url}']`);
+      if (matchingTab) matchingTab.classList.add("active-tab");
     })
     .catch(err => {
       console.error("❌ 탭 내용 불러오기 실패", err);

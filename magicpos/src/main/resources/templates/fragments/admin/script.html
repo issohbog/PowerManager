@@ -5,6 +5,11 @@
   <!-- 상품목록용 -->
   <!-- <script src="/js/admin_product_list.js"></script> -->
    <script src="/js/admin_ticket.js"></script>
+   <script src="/js/admin_sellcounter.js"></script>
+   <script src="/js/admin_usinguser.js"></script>
+  <script th:if="${error}" th:inline="javascript">
+    alert([[${error}]]);
+  </script>
 
   <!-- 공통 스크립트 : 관리자 헤더(사용중 좌석) -->
 <script>

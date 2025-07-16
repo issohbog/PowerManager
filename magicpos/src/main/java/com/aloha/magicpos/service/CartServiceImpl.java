@@ -84,4 +84,9 @@ public class CartServiceImpl implements CartService{
     public boolean deleteAllByUserNo(Long userNo) throws Exception {
         return cartMapper.deleteAllByUserNo(userNo) > 0;
     }
+
+    @Override
+    public List<Map<String, Object>> findCartWithProductByUser(Long userNo) {
+        return cartMapper.findCartWithProductByUser(userNo);
+    }
 }

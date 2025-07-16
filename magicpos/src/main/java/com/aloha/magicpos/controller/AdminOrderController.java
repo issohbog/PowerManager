@@ -106,6 +106,13 @@ public class AdminOrderController {
     // 🔸 주문 삭제 (주문 + 상세 함께 삭제)
     @PostMapping("/delete")
     public String deleteOrder(@RequestParam("orderNo") Long orderNo) throws Exception {
+        // 🔍 삭제 전에 해당 주문의 모든 상품 수량을 조회
+        List<Map<String, Object>> details = orderService.findDetailsWithProductNames(orderNo);
+        for (Map<String, Object> detail : details) {
+            Long pNo = ((Number) detail.get("p_no")).longValue();
+            Long quantity = ((Number) detail.get("quantity")).longValue();
+            productService.increaseStock(pNo, quantity);
+    }
         orderService.deleteOrder(orderNo);
         return "redirect:/admin/orderpopup/fetch?status=0";
     }
@@ -113,7 +120,9 @@ public class AdminOrderController {
     // 🔸 주문 상세 삭제 (단일 상품)
     @PostMapping("/delete/detail")
     public String deleteOrderDetail(@RequestParam("oNo") Long oNo, @RequestParam("pNo") Long pNo, Model model, RedirectAttributes redirectAttributes) throws Exception{
+        Long quantity = orderService.getQuantityByOrderAndProduct(oNo, pNo);
         orderService.deleteOrderDetail(oNo, pNo);
+        productService.increaseStock(pNo, quantity);
         // 🔥 주문정보 다시 조회
         Orders order = orderService.findOrderByNo(oNo);
         if (order == null) {
@@ -134,14 +143,16 @@ public class AdminOrderController {
     public String increaseOrderDetailQuantity(@RequestParam("oNo") Long orderNo,
                                                @RequestParam("pNo") Long productNo) throws Exception {
         orderService.increaseQuantity(orderNo, productNo);
+        productService.decreaseStock(productNo, 1L);
         return "redirect:/admin/orderpopup/fetch?status=0";
     }
-
+    
     // 🔸 주문 상세 1 수량 감소
     @PostMapping("/decreaseQuantity")
     public String decreaseOrderDetailQuantity(@RequestParam("oNo") Long orderNo,
-                                               @RequestParam("pNo") Long productNo) throws Exception {
+    @RequestParam("pNo") Long productNo) throws Exception {
         orderService.decreaseQuantity(orderNo, productNo);
+        productService.increaseStock(productNo, 1L);
         return "redirect:/admin/orderpopup/fetch?status=0";
     }
     
@@ -258,5 +269,10 @@ public class AdminOrderController {
         return counts;
     }
 
-
-    }
+    @GetMapping("/cart/json")
+    @ResponseBody
+    public List<Map<String, Object>> getCartList(HttpSession session) {
+    Long userNo = (Long) session.getAttribute("userNo");
+    return cartService.findCartWithProductByUser(userNo);
+}
+}

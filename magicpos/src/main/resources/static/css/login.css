@@ -95,40 +95,87 @@
     z-index: 10;
   }
 
-    .banner img {
-      width: 450px;
-    }
-    .login-form-right{
-        width: 15%;
-        background-color: #5D6D7E;
-        display: flex;
-        flex-direction: column; 
-        align-items: center;
-        justify-content: center;
-    }
-    .ticket-purchase-text{
-        font-size: 13px; 
-        margin-bottom: 5px; 
-        color: #D5D8DC;
-    }
-    .ticket-purchase-btn{
-      width: 80%;
-      height: 80px;
-      font-size: 18px;
-        background-color: #F4D03F;
-        border: none; 
-        padding: 10px 16px; 
-        border-radius: 4px; 
-        font-weight: bold; 
-        cursor: pointer;
-    }
-    .login-option{
-      width: 90%;
-      display: flex; 
-      justify-content: flex-end; 
-      align-items: center; 
-      gap: 20px; 
-      font-size: 15px; 
-      color: #D5D8DC;
+.banner img {
+  width: 450px;
+}
+.login-form-right{
+    width: 15%;
+    background-color: #5D6D7E;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+}
+.ticket-purchase-text{
+    font-size: 13px; 
+    margin-bottom: 5px; 
+    color: #D5D8DC;
+}
+.ticket-purchase-btn{
+  width: 80%;
+  height: 80px;
+  font-size: 18px;
+    background-color: #F4D03F;
+    border: none; 
+    padding: 10px 16px; 
+    border-radius: 4px; 
+    font-weight: bold; 
+    cursor: pointer;
+}
+.login-option{
+  width: 90%;
+  display: flex; 
+  justify-content: flex-end; 
+  align-items: center; 
+  gap: 20px; 
+  font-size: 15px; 
+  color: #D5D8DC;
 
-    }
+}
+
+.inputSeatId {
+  position: fixed;
+  top: 30px;
+  left: 30px;
+  z-index: 1000;
+  background-color: #F4D03F; /* 노란색 배경 */
+  font-size: 24px;
+  color: #2C3E50; /* 진한 회색 텍스트 */
+  padding: 20px 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 320px;
+}
+
+.inputSeatId label {
+  font-weight: bold;
+  font-size: 24px;
+  color: #2C3E50;
+}
+
+.inputSeatId .seatId {
+  width: 100%;
+  padding: 14px 20px;
+  border: 2px solid #ccc;
+  background-color: #ffffff;
+  border-radius: 10px;
+  color: #2C3E50;
+  box-sizing: border-box;
+  font-size: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputSeatId .seatId:focus {
+  outline: none;
+  border-color: #2980b9;
+  box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.2);
+}
+
+.inputSeatId .seatId::placeholder {
+  color: #a0a0a0;
+  font-size: 14px;
+}

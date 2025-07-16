@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import com.aloha.magicpos.security.CustomAccessDeniedHandler;
 import com.aloha.magicpos.security.LoginFailureHandler;
 import com.aloha.magicpos.security.LoginSuccessHandler;
+import com.aloha.magicpos.security.CustomLogoutSuccessHandler;
 import com.aloha.magicpos.service.UserDetailServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,9 @@ public class SecurityConfig {
     @Autowired 
     private CustomAccessDeniedHandler customAccessDeniedHandler;
 
+    @Autowired
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
+
 
     // 🔐 스프링 시큐리티 설정 메소드
 	@Bean
@@ -62,9 +66,7 @@ public class SecurityConfig {
                                 .requestMatchers("/products/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/categories/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/usertickets/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/logs/**").hasRole("ADMIN")
                                 .requestMatchers("/seats/**").hasRole("ADMIN")
-                                .requestMatchers("/history/today/**").hasRole("ADMIN")
                                 .requestMatchers("/menu", "/menu/**","/carts", "/carts/**", "/users/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/userticket/insert").hasAnyRole("USER","ADMIN")
                                 .anyRequest().permitAll()
@@ -119,7 +121,7 @@ public class SecurityConfig {
                             .logoutSuccessUrl("/login?logout=true") // 로그아웃 성공 시 URL
                             .invalidateHttpSession(true)        // 세션 초기화
                             .deleteCookies("remember-id")       // 로그아웃 시, 아이디저장 쿠키 삭제
-                            // .logoutSuccessHandler(null)         // 로그아웃 성공 핸들러 설정
+                            .logoutSuccessHandler(customLogoutSuccessHandler)         // 로그아웃 성공 핸들러 설정
                     );
 
         return http.build();

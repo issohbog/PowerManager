@@ -44,4 +44,7 @@ public interface ProductService {
 
     // 상품 재고 조회
     public Long selectStockByPNo(Long pNo) throws Exception;
+
+    // 상품 리스트 + 분류 이름 조회
+    List<Map<String, Object>> getProductListWithCategory() throws Exception;
 }

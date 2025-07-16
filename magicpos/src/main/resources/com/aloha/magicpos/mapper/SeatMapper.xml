@@ -92,4 +92,66 @@
     <select id="countAllSeats" resultType="int">
         SELECT COUNT(*) FROM seats
     </select>
+
+    <!-- 로그아웃시 end_time 업데이트 -->
+    <update id="updateSeatEndTime">
+        UPDATE seats_reservations
+        SET end_time = NOW()
+        WHERE u_no = #{userNo}
+        AND end_time IS NULL
+    </update>
+
+    <!-- 로그아웃시 seats 테이블 사용 가능 -->
+    <update id="releaseSeatStatus">
+        UPDATE seats
+        SET seat_status = 3
+        WHERE seat_id = (
+            SELECT seat_id
+            FROM seats_reservations
+            WHERE u_no = #{userNo}
+            AND end_time IS NULL
+            ORDER BY start_time DESC
+            LIMIT 1
+        )
+    </update>
+
+    <!-- 좌석 상태 조회 쿼리 -->
+    <select id="getSeatStatus" resultType="int">
+        SELECT seat_status FROM seats WHERE seat_id = #{seatId}
+    </select>
+
+    <!-- 좌석 예약 테이블 추가 -->
+    <insert id="insertSeatReservation" parameterType="map">
+        INSERT INTO seats_reservations (u_no, seat_id, t_no, start_time, end_time)
+        VALUES (
+            #{userNo},
+            #{seatId},
+            #{ticketNo},
+            NOW(),
+            DATE_ADD(NOW(), INTERVAL #{remainTime} MINUTE)
+        )
+    </insert>
+
+    <!-- 좌석 사용중 업데이트 -->
+    <update id="updateSeatStatusToInUse">
+        UPDATE seats
+        SET seat_status = 1
+        WHERE seat_id = #{seatId}
+    </update>
+
+    <!-- 이용중인 회원 -->
+    <select id="findInUseUsers" resultType="map">
+        SELECT 
+            u.username, 
+            u.id AS userId
+        FROM seats s
+        JOIN seats_reservations sr ON s.seat_id = sr.seat_id
+        JOIN users u ON sr.u_no = u.no
+        WHERE s.seat_status = 1
+        AND sr.end_time > NOW()
+    </select>
+
+
+
+
 </mapper>
