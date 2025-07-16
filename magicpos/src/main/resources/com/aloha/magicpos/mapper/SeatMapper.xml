@@ -19,12 +19,13 @@
             s.seat_name, 
             s.seat_status, 
             u.username, 
-            ut.remain_time AS remainTime
+            SUM(ut.remain_time) AS remainTime
         FROM seats s 
         LEFT JOIN seats_reservations sr ON s.seat_id = sr.seat_id 
         LEFT JOIN users u ON sr.u_no = u.no 
         LEFT JOIN user_tickets ut ON u.no = ut.u_no
-        ORDER BY s.seat_id;
+        GROUP BY s.seat_id, s.seat_name, s.seat_status, u.username
+        ORDER BY CAST(SUBSTRING(s.seat_id, 2) AS UNSIGNED);
     </select>
 
 
@@ -92,4 +93,12 @@
     <select id="countAllSeats" resultType="int">
         SELECT COUNT(*) FROM seats
     </select>
+
+    
+    <!-- 좌석 상태 업데이트 (청소중[3] -> 이용가능[0]) -->
+    <update id="clearSeat">
+        UPDATE seats
+        SET seat_status = 0
+        WHERE seat_id = #{seatId}
+    </update>
 </mapper>

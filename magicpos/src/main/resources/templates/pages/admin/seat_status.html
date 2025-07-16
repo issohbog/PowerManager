@@ -3,7 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/admin/main_layout}"
       >
-
+  <head>
+    <!-- 기존 head 내용들(타이틀, 스타일 등) 위/아래 어디든 OK -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  </head>
  
  <body layout:fragment="content">
     <div class="seat-dashboard">
@@ -23,7 +27,7 @@
                 th:text="|${#numbers.formatInteger(seat.remainTime / 60, 2)}:${#numbers.formatInteger(seat.remainTime % 60, 2)} 남음|">
             </div>
 
-            <button class="clear-btn" th:if="${seat.className == 'cleaning'}">
+            <button class="clear-btn" th:if="${seat.className == 'cleaning'}" th:attr="data-seat-id=${seat.seatId}">
               <img th:src="@{/images/trash.png}" alt="휴지통" />
             </button>
           </div>
@@ -44,7 +48,7 @@
                 th:text="|${#numbers.formatInteger(seat.remainTime / 60, 2)}:${#numbers.formatInteger(seat.remainTime % 60, 2)} 남음|">
             </div>
 
-            <button class="clear-btn" th:if="${seat.className == 'cleaning'}">
+            <button class="clear-btn" th:if="${seat.className == 'cleaning'}" th:attr="data-seat-id=${seat.seatId}">
               <img th:src="@{/images/trash.png}" alt="휴지통" />
             </button>
           </div>
@@ -66,7 +70,7 @@
                 th:text="|${#numbers.formatInteger(seat.remainTime / 60, 2)}:${#numbers.formatInteger(seat.remainTime % 60, 2)} 남음|">
             </div>
 
-            <button class="clear-btn" th:if="${seat.className == 'cleaning'}">
+            <button class="clear-btn" th:if="${seat.className == 'cleaning'}" th:attr="data-seat-id=${seat.seatId}">
               <img th:src="@{/images/trash.png}" alt="휴지통" />
             </button>
           </div>

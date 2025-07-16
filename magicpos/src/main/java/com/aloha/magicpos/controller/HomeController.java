@@ -6,15 +6,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.aloha.magicpos.domain.Categories;
+import com.aloha.magicpos.domain.CustomUser;
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.Products;
-import com.aloha.magicpos.domain.Seats;
 import com.aloha.magicpos.domain.Tickets;
 import com.aloha.magicpos.service.CartService;
 import com.aloha.magicpos.service.CategoryService;
@@ -64,13 +66,18 @@ public class HomeController {
     public String menulist(@RequestParam(name = "selectedCategory", required = false) Long selectedCategory, @RequestParam(name = "keyword", required = false) String keyword, Model model, HttpSession session) throws Exception {
 
         // ✅ 1. 세션에서 userNo 가져오기
-        Long userNo = (Long) session.getAttribute("userNo");
+        // Long userNo = (Long) session.getAttribute("userNo");
 
         // // ✅ 2. 세션에 없으면 임시 userNo로 설정
         // if (userNo == null) {
         //     userNo = 1L; // 임시 유저 번호
         //     session.setAttribute("userNo", userNo);
         // }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUser customUser = (CustomUser) auth.getPrincipal();           // CustomUser로 캐스팅
+        Long userNo = customUser.getUser().getNo();                         // 실제 Users 객체에서 no 추출
+        log.info("✅ 로그인한 사용자 번호 (userNo): {}", userNo);
 
         // ✅ 3. userNo로 모든 사용자 정보 + 좌석 정보 + 남은 시간 조회
         Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);

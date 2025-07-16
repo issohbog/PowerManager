@@ -3,7 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/admin/main_layout}"
       >
-
+  <head>
+    <!-- 기존 head 내용들(타이틀, 스타일 등) 위/아래 어디든 OK -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  </head>
  
  <body layout:fragment="content">
   <div class="content">
@@ -73,7 +77,7 @@
   <div class="modal-content large">
     <div class="modal-header">
       <span id="modal-title">회원등록</span>
-      <span class="close-btn" onclick="closeModal()">×</span>
+      <span class="close-btn" onclick="closeUserModal()">×</span>
     </div>
     <form id="user-form" method="post" th:action="@{/users/save}">
         <!-- ✅ 등록/수정/조회 구분용 hidden -->
@@ -151,7 +155,7 @@
         </div>
 
         <div class="modal-footer" id="modal-footer">
-          <button type="button" onclick="closeModal()">취소</button>
+          <button type="button" onclick="closeUserModal()">취소</button>
           <button type="submit" id="modal-submit-btn">저장</button>
         </div>
 

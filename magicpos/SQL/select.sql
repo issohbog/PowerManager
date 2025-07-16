@@ -1,3 +1,5 @@
+USE magicpos;
+
 SELECT * FROM users;
 SELECT * FROM tickets;
 SELECT * FROM categories;

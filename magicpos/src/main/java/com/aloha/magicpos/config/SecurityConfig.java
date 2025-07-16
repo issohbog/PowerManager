@@ -62,6 +62,7 @@ public class SecurityConfig {
                                 .requestMatchers("/products/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/categories/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/usertickets/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/usertickets/ticket/**").hasRole("ADMIN")
                                 .requestMatchers("/logs/**").hasRole("ADMIN")
                                 .requestMatchers("/seats/**").hasRole("ADMIN")
                                 .requestMatchers("/history/today/**").hasRole("ADMIN")

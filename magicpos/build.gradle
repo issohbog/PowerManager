@@ -42,8 +42,10 @@ dependencies {
 	implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:2.1.0'
 	// 타임리프 다이얼렉트 레이아웃
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	
+ 
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+	useJUnitPlatform() 
 }

@@ -27,6 +27,9 @@ public interface SeatService {
     // 좌석 상태 업데이트
     public boolean updateStatus(String seatId, String seatStatus) throws Exception;
 
+    // 좌석 상태 업데이트 (청소중 -> 이용가능)
+    public boolean clearSeat(String seatId) throws Exception;
+
     // 좌석 사용 정보 조회 (사용자, 남은 시간 등) throws Exception
     public Map<String, Object> findSeatUsageInfo(String seatId) throws Exception;
 

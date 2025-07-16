@@ -20,4 +20,7 @@ public interface UserTicketService {
     // 특정 사용자 총 남은 시간 
     public Long getTotalRemainTime(Long userNo);
     
+    // 티켓 정보 조회 후 요금제 구매 (관리자용)
+    public boolean insertUserTicketByAdmin(UserTickets userTicket) throws Exception;
+    
 }

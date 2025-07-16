@@ -1,7 +1,32 @@
+// HTML <meta>에서 CSRF 토큰 정보 읽기
+const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
 document.addEventListener("DOMContentLoaded", () => {
   initCategoryModal();
   initProductModal();
   initUpdateModal();
+
+  document.addEventListener("click", function(e) {
+    if (e.target.classList.contains("category-close-btn")) {
+      const modal = document.getElementById("category-modal");
+      console.log("카테고리 X 클릭!", modal);
+      closeProModal(modal);
+    }
+    if (e.target.classList.contains("product-close-btn")) {
+      const productModal = document.getElementById("product-modal");
+      const editModal = document.getElementById("edit-product-modal");
+      if (productModal && productModal.style.display !== "none") {
+        console.log("상품등록 X 클릭!", productModal);
+        resetProductForm();
+        closeProModal(productModal);
+      }
+      if (editModal && editModal.style.display !== "none") {
+        console.log("상품수정 X 클릭!", editModal);
+        closeProModal(editModal);
+      }
+    }
+  });
 
 
   const imageBtn = document.querySelector('.image-btn');
@@ -34,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const description = document.getElementById("product-desc").value;
   if (!category || !name || !price) {
   alert("상품분류, 상품명, 상품가격은 필수 항목입니다.");
-  return;zzzzz
+  return;ㅋ
   }
 
   formData.append("cNo", category);
@@ -54,7 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fetch("/products/admin/create", {
     method: "POST",
-    body: formData
+    body: formData,
+    headers: {
+      [csrfHeader]: csrfToken
+    }
   })
     .then(res => res.ok ? res.text() : Promise.reject("상품 등록 실패"))
     .then(result => {
@@ -123,10 +151,12 @@ function initCategoryModal() {
     modal.style.display = "flex";
   });
 
-  document.querySelector(".category-close-btn")?.addEventListener("click", () => closeModal(modal));
-  document.querySelector(".category-button-group .cancel-btn")?.addEventListener("click", () => closeModal(modal));
+  document.querySelectorAll(".category-close-btn")?.forEach(btn => {
+    btn.addEventListener("click", () => closeProModal(modal));
+  });
+  document.querySelector(".category-button-group .cancel-btn")?.addEventListener("click", () => closeProModal(modal));
   modal.addEventListener("click", e => {
-    if (e.target === modal) closeModal(modal);
+    if (e.target === modal) closeProModal(modal);
   });
 }
 
@@ -142,18 +172,18 @@ function initProductModal() {
 
   document.querySelector(".product-close-btn")?.addEventListener("click", () => {
     resetProductForm();
-    closeModal(modal);
+    closeProModal(modal);
   });
 
   document.querySelector(".product-button-group .cancel-btn")?.addEventListener("click", () => {
     resetProductForm();
-    closeModal(modal);
+    closeProModal(modal);
   });
 
   modal.addEventListener("click", e => {
     if (e.target === modal) {
       resetProductForm();
-      closeModal(modal);
+      closeProModal(modal);
     }
   });
 }
@@ -244,13 +274,13 @@ function initUpdateModal() {
 
   // ✅ 닫기 버튼 클릭 시
   modal.querySelector(".product-close-btn")?.addEventListener("click", () => {
-    closeModal(modal);
+    closeProModal(modal);
   });
 
   // ✅ 모달 외부 클릭 시 닫기
   modal.addEventListener("click", (e) => {
     if (e.target === modal) {
-      closeModal(modal);
+      closeProModal(modal);
     }
   });
 
@@ -275,7 +305,10 @@ function initUpdateModal() {
 
     fetch("/products/admin/update", {
       method: "POST",
-      body: formData
+      body: formData,
+      headers: {
+        [csrfHeader]: csrfToken
+      }
     })
       .then(res => res.ok ? res.text() : Promise.reject("상품 수정 실패"))
       .then(msg => {
@@ -291,7 +324,10 @@ function deleteProduct(productNo) {
   if (!confirm("정말 삭제하시겠습니까?")) return;
 
   fetch(`/products/admin/${productNo}/delete`, {
-    method: "POST" // or DELETE if RESTful
+    method: "POST", // or DELETE if RESTful
+    headers: {
+      [csrfHeader]: csrfToken
+    }
   }).then(res => {
     if (res.ok) {
       alert("삭제 완료");
@@ -321,8 +357,9 @@ function deleteSelectedProducts() {
 
   fetch("/products/admin/deleteAll", {
     method: "POST",
-    body: formData,
+    body: formData, 
     headers: {
+      [csrfHeader]: csrfToken,
       "Content-Type": "application/x-www-form-urlencoded"
     }
   })
@@ -341,7 +378,8 @@ function deleteSelectedProducts() {
 
 
 
-function closeModal(modal) {
+function closeProModal(modal) {
+  console.log("closeProModal 실행됨!", modal);
   modal.classList.remove("fade-in");
   modal.classList.add("fade-out");
   setTimeout(() => {
@@ -349,6 +387,7 @@ function closeModal(modal) {
     modal.classList.remove("fade-out");
   }, 300);
 }
+
 
 // 상품 등록 후 입력 창 초기화 
 function resetProductForm() {
@@ -379,7 +418,10 @@ function addCategory() {
   // ✅ fetch로 전송 (Content-Type은 자동 설정됨)
   fetch('/categories/admin/create', {
     method: 'POST',
-    body: formData
+    body: formData,
+    headers: {
+      [csrfHeader]: csrfToken
+    }
   })
   .then(response => response.text())
   .then(result => {
@@ -444,7 +486,10 @@ function updateCategoryName(no, newName, wrapper) {
 
   fetch("/categories/admin/update", {
     method: "POST",
-    body: formData
+    body: formData,
+    headers: {
+      [csrfHeader]: csrfToken
+    }
   })
     .then(res => res.text())
     .then(result => {
@@ -481,7 +526,10 @@ function deleteCategoryRow(button) {
 
   fetch("/categories/admin/delete", {
     method: "POST",
-    body: formData
+    body: formData,
+    headers: {
+      [csrfHeader]: csrfToken
+    }
   })
     .then(res => res.text())
     .then(result => {
@@ -497,3 +545,4 @@ function deleteCategoryRow(button) {
       alert("삭제에 실패했습니다.");
     });
 }
+
