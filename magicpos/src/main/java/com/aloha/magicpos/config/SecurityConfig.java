@@ -67,7 +67,7 @@ public class SecurityConfig {
                                 .requestMatchers("/categories/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/usertickets/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/usertickets/ticket/**").hasRole("ADMIN")
-                                .requestMatchers("/seats/**").hasRole("ADMIN")
+                                .requestMatchers("/seats/**").hasRole("ADMwIN")
                                 .requestMatchers("/menu", "/menu/**","/carts", "/carts/**", "/users/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/userticket/insert").hasAnyRole("USER","ADMIN")
                                 .anyRequest().permitAll()

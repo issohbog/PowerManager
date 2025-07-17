@@ -87,6 +87,7 @@ public class HomeController {
 
         // ✅ 3. userNo로 모든 사용자 정보 + 좌석 정보 + 남은 시간 조회
         Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
+        log.info("usageInfo : {}", usageInfo);
         // null 값에 기본값 세팅
         if (usageInfo.get("seat_id") == null) usageInfo.put("seat_id", "");
         if (usageInfo.get("user_no") == null) usageInfo.put("user_no", "");

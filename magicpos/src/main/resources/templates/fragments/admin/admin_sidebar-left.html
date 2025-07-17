@@ -17,15 +17,16 @@
     <span>사용회원</span>
   </a>
 <!-- 사용자 목록 모달 -->
-<div id="userModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <span class="close" id="closeUserModal">&times;</span>
-    <h2>사용회원 목록</h2>
+<div id="userModal" class="usingmodal" style="display:none;">
+  <div class="usingmodal-content">
+    <span class="usingclose" id="closeUserModal">&times;</span>
 
     <!-- 🔍 검색창 -->
-    <div class="search-box">
+    <div class="using-search-box">
       <input type="text" id="userSearchInput" placeholder="이름/전화번호/아이디">
-      <button id="userSearchBtn">🔍</button>
+      <button id="userSearchBtn">
+        <img src="/images/search.png" alt="검색버튼">
+      </button>
     </div>
 
     <!-- 사용자 목록 출력 영역 -->

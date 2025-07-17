@@ -61,7 +61,9 @@ document.addEventListener("click", (e) => {
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').content;
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-    // 👉 fetch로 장바구니 추가 요청
+
+    
+    // 👉 fetch로 장바구니 추가  요청
     fetch("/admin/sellcounter/add", {
       method: "POST",
       headers: {
@@ -199,6 +201,7 @@ document.getElementById("submitOrderBtn").addEventListener("click", async () => 
   // CSRF 처리
   const csrfToken = document.querySelector('meta[name="_csrf"]').content;
   const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+  // alert(csrfHeader  + ":" + csrfToken)
 
   const formData = new FormData();
   formData.append("seatId", seatId);
@@ -209,9 +212,7 @@ document.getElementById("submitOrderBtn").addEventListener("click", async () => 
   quantityList.forEach(v => formData.append("quantityList", v));
   pNameList.forEach(v => formData.append("pNameList", v));
   stockList.forEach(v => formData.append("stockList", v));
-
-  // CSRF도 formData에 포함
-  formData.append(csrfHeader, csrfToken);
+ 
 
   console.log("🧾 FormData 전송 데이터:");
   for (let pair of formData.entries()) {
@@ -219,15 +220,19 @@ document.getElementById("submitOrderBtn").addEventListener("click", async () => 
   }
 
   try {
+    
     const res = await fetch("/admin/sellcounter/create", {
       method: "POST",
       credentials: "same-origin", // 💡 세션 쿠키 포함
-      body: formData
+      body: formData,
+      headers: {
+        [csrfHeader]: csrfToken // 예: 'X-CSRF-TOKEN': 'abc123'
+      }
     });
 
     if (res.ok) {
       alert("✅ 주문이 완료되었습니다!");
-      location.reload(); // 또는 cart 다시 불러오기
+      // location.reload(); // 또는 cart 다시 불러오기
     } else {
       alert("❌ 주문 실패");
     }
