@@ -101,7 +101,7 @@ public class OrderController {
         String username = (user != null) ? user.getUsername() : "알 수 없음";
 
         String description = username + "님이 " + order.getTotalPrice() + "원어치 상품을 주문하였습니다.";
-        logService.insertLog(userNo, seatId, "product", description);
+        logService.insertLog(userNo, seatId, "상품 구매", description);
         
         rttr.addFlashAttribute("orderSuccess", true);
         return "redirect:/menu";

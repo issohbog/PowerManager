@@ -41,4 +41,8 @@ public interface SeatService {
 
     // 예약되지 않은 좌석ID만 반환
     List<String> findAvailableSeatIds();
+
+    // 사용회원 검색
+    List<Map<String, Object>> searchActiveUsers(String keyword);
+
 }

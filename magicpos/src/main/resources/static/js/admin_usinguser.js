@@ -1,34 +1,48 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("userModal");
-  const closeBtn = document.querySelector(".close");
-  const openBtn = document.getElementById("showUsersBtn");
-  const tableBody = document.getElementById("userTableBody");
+document.addEventListener("DOMContentLoaded", function () {
+  const showUsersBtn = document.getElementById("showUsersBtn");
+  const userModal = document.getElementById("userModal");
+  const closeUserModal = document.getElementById("closeUserModal");
+  const userListContainer = document.getElementById("userListContainer");
+  const searchBtn = document.getElementById("userSearchBtn");
+  const searchInput = document.getElementById("userSearchInput");
 
-  openBtn.addEventListener("click", () => {
-    fetch("/admin/seats/inuse")
-      .then(res => res.json())
-      .then(data => {
-        tableBody.innerHTML = ""; // 초기화
-        data.forEach(user => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${user.username}(${user.userId})</td>
-            <td>${user.remainTime}분</td>
-          `;
-          tableBody.appendChild(row);
-        });
-        modal.style.display = "block";
-      })
-      .catch(err => console.error("회원 목록 불러오기 실패:", err));
+  // 모달 열기
+  showUsersBtn.addEventListener("click", function () {
+    fetchUserList(""); // 전체 사용자 불러오기
+    userModal.style.display = "block";
   });
 
-  closeBtn.addEventListener("click", () => {
-    modal.style.display = "none";
+  // 모달 닫기
+  closeUserModal.addEventListener("click", function () {
+    userModal.style.display = "none";
   });
 
-  window.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.style.display = "none";
+  // 검색 버튼
+  searchBtn.addEventListener("click", function () {
+    const keyword = searchInput.value;
+    fetchUserList(keyword);
+  });
+
+  // Enter 키로도 검색
+  searchInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      searchBtn.click();
+    }
+  });
+
+  // 사용자 목록 요청 함수
+  function fetchUserList(keyword) {
+    fetch(`/admin/users/modal?keyword=${encodeURIComponent(keyword)}`)
+      .then(response => response.text())
+      .then(html => {
+        userListContainer.innerHTML = html;
+      });
+  }
+
+  // 모달 외부 클릭 시 닫기
+  window.addEventListener("click", function (event) {
+    if (event.target === userModal) {
+      userModal.style.display = "none";
     }
   });
 });

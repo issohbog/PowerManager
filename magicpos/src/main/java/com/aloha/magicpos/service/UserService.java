@@ -65,5 +65,5 @@ public interface UserService {
 
     // 👮‍♀️ 관리자 확인
     public boolean isAdmin() throws Exception;
-    // 선생님 코드 끝
+
 }
