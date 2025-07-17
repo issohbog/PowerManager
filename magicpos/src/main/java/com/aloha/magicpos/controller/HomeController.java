@@ -11,7 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.magicpos.domain.Categories;
 import com.aloha.magicpos.domain.CustomUser;
@@ -86,7 +89,12 @@ public class HomeController {
         log.info("✅ 로그인한 사용자 번호 (userNo): {}", userNo);
 
         // ✅ 3. userNo로 모든 사용자 정보 + 좌석 정보 + 남은 시간 조회
+
         Map<String, Object> usageInfo = seatReservationService.findSeatReserveByUser(userNo);
+
+
+        // Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
+        log.info("usageInfo : {}", usageInfo);
 
         // null 값에 기본값 세팅
         if (usageInfo.get("seat_id") == null) usageInfo.put("seat_id", "");
@@ -167,4 +175,10 @@ public class HomeController {
 
         return "menu";
     }
+    @PostMapping("/users/orders/temp")
+    @ResponseBody
+    public void storeTempOrder(@RequestBody Map<String, Object> params, HttpSession session) {
+        session.setAttribute("tempOrder", params);
+    }
+
 }

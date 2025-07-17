@@ -324,8 +324,9 @@ public class AdminController {
     @GetMapping("/admin/users/modal")
     public String getUserListModal(@RequestParam(name = "keyword", required = false) String keyword, Model model) {
         List<Map<String, Object>> users = seatService.searchActiveUsers(keyword);
+        System.out.println("사용자 수: " + users.size());
         model.addAttribute("users", users);
-        return "fragments/userlistcontent :: fragment";
+        return "fragments/admin/modal/userlistcontent :: userlistcontent";
     }
 
 
