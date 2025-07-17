@@ -31,17 +31,17 @@ public class SeatReservationServiceImpl implements SeatReservationService {
     @Override
     public SeatsReservations autoReserveRandomSeatForUser(Long userNo, String seatId) throws Exception {
         // 0. 사용자가 이미 이용중인 좌석이 있는지 확인 
-        int usingCount = this.countUsingSeatByUser(userNo);
-        if (usingCount > 0) {
-            throw new IllegalStateException("이미 이용중인 좌석이 있습니다.");
-        }
+        // int usingCount = this.countUsingSeatByUser(userNo);
+        // if (usingCount > 0) {
+        //     throw new IllegalStateException("이미 이용중인 좌석이 있습니다.");
+        // }
 
         
         // 1. 예약되지 않은 seat_id 조회 
-        List<String> availableSeats = seatService.findAvailableSeatIds();
-        if(availableSeats == null || availableSeats.isEmpty()){
-            throw new IllegalStateException("예약 가능한 좌석이 없습니다.");
-        }
+        // List<String> availableSeats = seatService.findAvailableSeatIds();
+        // if(availableSeats == null || availableSeats.isEmpty()){
+        //     throw new IllegalStateException("예약 가능한 좌석이 없습니다.");
+        // }
 
         
 
@@ -56,12 +56,12 @@ public class SeatReservationServiceImpl implements SeatReservationService {
         LocalDateTime endTime = startTime.plusMinutes(remainTime);
 
         // 6. seat_reservation 테이블에 예약 정보 저장 
-        this.insertSeatReservation(
-            seatId,
-            userNo,
-            Timestamp.valueOf(startTime),
-            Timestamp.valueOf(endTime)
-        );
+        // this.insertSeatReservation(
+        //     seatId,
+        //     userNo,
+        //     Timestamp.valueOf(startTime),
+        //     Timestamp.valueOf(endTime)
+        // );
 
         // 7. 예약 정보 반환 
         SeatsReservations seatReservation = new SeatsReservations();
@@ -74,14 +74,14 @@ public class SeatReservationServiceImpl implements SeatReservationService {
 
     }
 
-    @Override
-    public void insertSeatReservation(
-            @Param("seatId") String seatId, 
-            @Param("userNo") Long userNo, 
-            @Param("startTime") Timestamp startTime, 
-            @Param("endTime") Timestamp endTime) {
-        seatReservationMapper.insertSeatReservation(seatId, userNo, startTime, endTime);
-    }
+    // @Override
+    // public void insertSeatReservation(
+    //         @Param("seatId") String seatId, 
+    //         @Param("userNo") Long userNo, 
+    //         @Param("startTime") Timestamp startTime, 
+    //         @Param("endTime") Timestamp endTime) {
+    //     seatReservationMapper.insertSeatReservation(seatId, userNo, startTime, endTime);
+    // }
 
     @Override
     public int countUsingSeatByUser(Long userNo) throws Exception   {

@@ -12,10 +12,10 @@
     </select>
   
     <!-- 좌석 예약 정보 저장 -->
-    <insert id="insertSeatReservation">
+    <!-- <insert id="insertSeatReservation">
         INSERT INTO seats_reservations (seat_id, u_no, start_time, end_time)
         VALUES (#{seatId}, #{userNo}, #{startTime}, #{endTime})
-    </insert>
+    </insert> -->
 
     <!-- 사용자가 이미 이용중인 좌석이 있는지 확인 -->
     <select id="countUsingSeatByUser" resultType="int">

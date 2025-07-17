@@ -123,7 +123,6 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
             seatMapper.insertSeatReservation(userNo, seatId, ticketNo, (long)remainingTime);
             seatMapper.updateSeatStatusToInUse(seatId);
 
-
             request.getSession().setAttribute("seatId", seatId);
 
 //             int remainingTime = userTicketMapper.findRemainTimeByUserNo(user.getNo());
