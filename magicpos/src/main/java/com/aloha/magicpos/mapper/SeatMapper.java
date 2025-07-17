@@ -1,5 +1,7 @@
 package com.aloha.magicpos.mapper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +50,8 @@ public interface SeatMapper {
         void insertSeatReservation(
         @Param("userNo") Long userNo,
         @Param("seatId") String seatId,
-        @Param("ticketNo") Long ticketNo,
-        @Param("remainTime") Long remainTime
+        @Param("startTime") LocalDateTime startTime,
+        @Param("endTime") LocalDateTime endTime
     );
 
     // 좌석 사용중 업데이트
