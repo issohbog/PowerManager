@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.aloha.magicpos.domain.Seats;
 import com.aloha.magicpos.mapper.SeatMapper;
-import com.aloha.magicpos.mapper.UserMapper;
 
 import lombok.extern.slf4j.Slf4j;
 

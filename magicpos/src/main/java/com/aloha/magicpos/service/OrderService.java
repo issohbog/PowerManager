@@ -29,4 +29,7 @@ public interface OrderService {
     // 재고 조회
     public Long getQuantityByOrderAndProduct(Long oNo, Long pNo);
 
+    // 현금 pay_at 업데이트
+    void updateStatusWithPayAt(Long no, Long orderStatus, Long paymentStatus);
+
 }

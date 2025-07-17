@@ -141,12 +141,13 @@
 
     <!-- 이용중인 회원 검색-->
     <select id="searchInUseUsersByKeyword" parameterType="String" resultType="map">
-        SELECT 
+        SELECT DISTINCT
             u.no AS userNo,
-            u.username, 
+            u.username,
             u.id AS userId,
             u.phone,
-            ut.remain_time
+            ut.remain_time,
+            sr.start_time
         FROM seats s
         JOIN seats_reservations sr ON s.seat_id = sr.seat_id
         JOIN users u ON sr.u_no = u.no
@@ -158,7 +159,6 @@
             OR u.id LIKE #{keyword}
             OR u.phone LIKE #{keyword}
         )
-        GROUP BY u.no
         ORDER BY sr.start_time DESC
     </select>
 
