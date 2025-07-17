@@ -122,7 +122,7 @@
     </select>
 
     <!-- 좌석 예약 테이블 추가 -->
-    <insert id="insertSeatReservation" parameterType="map">
+    <insert id="insertSeatReservation">
         INSERT INTO seats_reservations (u_no, seat_id, t_no, start_time, end_time)
         VALUES (
             #{userNo},
