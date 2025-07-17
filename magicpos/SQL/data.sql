@@ -255,3 +255,4 @@ INSERT INTO logs (u_no, seat_id, action_type, description) VALUES
 (3, 'S3', 'LOGIN', '사용자3님이 로그인하셨습니다.'),
 (4, 'S4', 'LOGIN', '사용자4님이 로그인하셨습니다.'),
 (5, 'S5', 'LOGIN', '사용자5님이 로그인하셨습니다.');
+

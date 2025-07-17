@@ -123,11 +123,10 @@
 
     <!-- 좌석 예약 테이블 추가 -->
     <insert id="insertSeatReservation">
-        INSERT INTO seats_reservations (u_no, seat_id, t_no, start_time, end_time)
+        INSERT INTO seats_reservations (u_no, seat_id, start_time, end_time)
         VALUES (
             #{userNo},
             #{seatId},
-            #{ticketNo},
             NOW(),
             DATE_ADD(NOW(), INTERVAL #{remainTime} MINUTE)
         )
@@ -142,12 +141,13 @@
 
     <!-- 이용중인 회원 검색-->
     <select id="searchInUseUsersByKeyword" parameterType="String" resultType="map">
-        SELECT 
+        SELECT DISTINCT
             u.no AS userNo,
-            u.username, 
+            u.username,
             u.id AS userId,
             u.phone,
-            ut.remain_time
+            ut.remain_time,
+            sr.start_time
         FROM seats s
         JOIN seats_reservations sr ON s.seat_id = sr.seat_id
         JOIN users u ON sr.u_no = u.no
@@ -159,7 +159,6 @@
             OR u.id LIKE #{keyword}
             OR u.phone LIKE #{keyword}
         )
-        GROUP BY u.no
         ORDER BY sr.start_time DESC
     </select>
 

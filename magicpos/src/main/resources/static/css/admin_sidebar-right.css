@@ -48,3 +48,7 @@
   cursor: pointer;
   border-bottom: 1px solid white;
 }
+
+.sidebar-right a:hover {
+  background-color: #E6C100;
+}

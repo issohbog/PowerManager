@@ -1,9 +1,6 @@
 package com.aloha.magicpos.mapper;
 
-import java.time.LocalDateTime;
-
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface SeatReservationMapper {
