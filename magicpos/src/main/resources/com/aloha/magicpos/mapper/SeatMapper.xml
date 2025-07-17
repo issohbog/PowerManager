@@ -127,8 +127,8 @@
         VALUES (
             #{userNo},
             #{seatId},
-            NOW(),
-            DATE_ADD(NOW(), INTERVAL #{remainTime} MINUTE)
+            #{startTime},
+            #{endTime}
         )
     </insert>
 
