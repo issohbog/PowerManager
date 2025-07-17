@@ -31,6 +31,7 @@ import com.aloha.magicpos.service.CategoryService;
 import com.aloha.magicpos.service.OrderService;
 import com.aloha.magicpos.service.ProductService;
 import com.aloha.magicpos.service.SeatService;
+import com.aloha.magicpos.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,8 @@ public class AdminController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/admin/orderpopup/fetch")
     public String fetchOrderPopup(@RequestParam(name = "status", required = false) String status, Model model) throws Exception {
@@ -310,11 +313,14 @@ public class AdminController {
         return "fragments/admin/modal/orderCancel :: orderCancel";
     }
 
-    // @GetMapping("/admin/seats/inuse")
-    // @ResponseBody
-    // public List<Map<String, Object>> getUsingUsers() {
-    //     return seatService.findInUseUsers(); // username, userId, remainTime 포함된 Map 리스트
-    // }
+    // 사용중 회원 리스트
+    @GetMapping("/admin/users/modal")
+    public String getUserListModal(@RequestParam(name = "keyword", required = false) String keyword, Model model) {
+        List<Map<String, Object>> users = seatService.searchActiveUsers(keyword);
+        model.addAttribute("users", users);
+        return "fragments/userlistcontent :: fragment";
+    }
+
 
     // /**
     //  * 관리자 주문 팝업 - 준비중 주문 조회

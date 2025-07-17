@@ -64,5 +64,8 @@ public interface SeatMapper {
     // 예약되지 않은 좌석ID만 반환
     List<String> findAvailableSeatIds();
 
-
+    // 사용회원 검색
+    List<Map<String, Object>> searchInUseUsersByKeyword(String keyword);
+    // 사용회원 전체 조회
+    List<Map<String, Object>> findInUseUsers();
 }

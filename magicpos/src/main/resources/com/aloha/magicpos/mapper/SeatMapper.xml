@@ -140,17 +140,48 @@
         WHERE seat_id = #{seatId}
     </update>
 
-    <!-- 이용중인 회원 -->
-    <select id="findInUseUsers" resultType="map">
+    <!-- 이용중인 회원 검색-->
+    <select id="searchInUseUsersByKeyword" parameterType="String" resultType="map">
         SELECT 
+            u.no AS userNo,
             u.username, 
-            u.id AS userId
+            u.id AS userId,
+            u.phone,
+            ut.remain_time
         FROM seats s
         JOIN seats_reservations sr ON s.seat_id = sr.seat_id
         JOIN users u ON sr.u_no = u.no
+        LEFT JOIN user_tickets ut ON ut.u_no = u.no
         WHERE s.seat_status = 1
         AND sr.end_time > NOW()
+        AND (
+            u.username LIKE #{keyword}
+            OR u.id LIKE #{keyword}
+            OR u.phone LIKE #{keyword}
+        )
+        GROUP BY u.no
+        ORDER BY sr.start_time DESC
     </select>
+
+    <!-- 이용중인 전체 회원-->
+    <select id="findInUseUsers" resultType="map">
+        SELECT DISTINCT
+            u.no AS userNo,
+            u.username,
+            u.id AS userId,
+            u.phone,
+            ut.remain_time,
+            sr.start_time
+        FROM seats s
+        JOIN seats_reservations sr ON s.seat_id = sr.seat_id
+        JOIN users u ON sr.u_no = u.no
+        LEFT JOIN user_tickets ut ON ut.u_no = u.no
+        WHERE s.seat_status = 1
+        AND sr.end_time > NOW()
+        ORDER BY sr.start_time DESC
+    </select>
+
+
 
     
     <!-- 좌석 상태 업데이트 (청소중[3] -> 이용가능[0]) -->
