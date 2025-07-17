@@ -93,11 +93,11 @@ public class HomeController {
         Map<String, Object> usageInfo = seatReservationService.findSeatReserveByUser(userNo);
 
 
-<<<<<<< HEAD
+
         // Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
-=======
+
 //         Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
->>>>>>> 426af1e44cc020d270df0c41f7b497bea116d066
+
         log.info("usageInfo : {}", usageInfo);
 
         // null 값에 기본값 세팅

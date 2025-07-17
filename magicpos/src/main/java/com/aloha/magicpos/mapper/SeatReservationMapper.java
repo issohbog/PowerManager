@@ -1,20 +1,9 @@
 package com.aloha.magicpos.mapper;
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> 426af1e44cc020d270df0c41f7b497bea116d066
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-<<<<<<< HEAD
-=======
->>>>>>> main
-=======
 
->>>>>>> 426af1e44cc020d270df0c41f7b497bea116d066
 import org.apache.ibatis.annotations.Mapper;
 
 import com.aloha.magicpos.domain.SeatsReservations;
