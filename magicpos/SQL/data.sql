@@ -199,7 +199,6 @@ INSERT INTO seats (seat_id, seat_name, seat_status) VALUES
 ('S33', '좌석33', 0),
 ('S34', '좌석34', 0);
 
-
 INSERT INTO orders (u_no, seat_id, total_price, payment, message, order_status, payment_status, pay_at) VALUES
 (1, 'S1', 2000, 'CASH', '요청메시지1', 1, 1, NOW()),  -- 결제 완료
 (2, 'S2', 4000, 'CASH', '요청메시지2', 2, 0, NULL),   -- 결제 전
