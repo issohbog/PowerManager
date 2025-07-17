@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -309,11 +310,11 @@ public class AdminController {
         return "fragments/admin/modal/orderCancel :: orderCancel";
     }
 
-    @GetMapping("/admin/seats/inuse")
-    @ResponseBody
-    public List<Map<String, Object>> getUsingUsers() {
-        return seatService.findInUseUsers(); // username, userId, remainTime 포함된 Map 리스트
-    }
+    // @GetMapping("/admin/seats/inuse")
+    // @ResponseBody
+    // public List<Map<String, Object>> getUsingUsers() {
+    //     return seatService.findInUseUsers(); // username, userId, remainTime 포함된 Map 리스트
+    // }
 
     // /**
     //  * 관리자 주문 팝업 - 준비중 주문 조회
