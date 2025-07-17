@@ -126,6 +126,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const ticketItem = modal.querySelector(".ticket-item");
   const cards = modal.querySelectorAll(".plan-card");
 
+  // 자동으로 모달 띄우기 (로그인 리다이렉트 시)
+  const urlParams = new URLSearchParams(window.location.search);
+  const showModal = urlParams.get("showTicketModal");
+
+  if (showModal === "true") {
+    modal.style.display = "flex";
+    modal.classList.remove("fade-out");
+    ticketItem.innerHTML = ""; // 선택 초기화
+  }
+
     if (openBtn && modal) {
     openBtn.addEventListener("click", () => {
       modal.style.display = "flex";

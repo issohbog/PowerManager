@@ -1,6 +1,7 @@
 package com.aloha.magicpos.security;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
             request.getSession().setAttribute("userNo", user.getNo());
             log.info("🌟 세션에 userNo 저장됨 = {}", user.getNo());
-            request.getSession().setAttribute("usageInfo", user);
+            // request.getSession().setAttribute("usageInfo", user);
             redirectUrl = "/admin";
         } else if (isUser) {
             CustomUser customUser = (CustomUser) authentication.getPrincipal();
@@ -89,10 +90,9 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
             Long userNo = user.getNo();
             String userName = user.getUsername();
 
-
-            // int remainingTime = userTicketMapper.findRemainTimeByUserNo(user.getNo());
-            Integer remain = userTicketMapper.findRemainTimeByUserNo(user.getNo());
-            int remainingTime = (remain != null) ? remain : 0;
+            // 로그인 한 사용자의 총 남은 시간 
+            Long remain = userTicketMapper.subRemainTimeByUser(user.getNo());
+            int remainingTime = (remain != null) ? remain.intValue() : 0;
 
             // ✍️ 로그인 로그 저장
             logMapper.insertLog(
@@ -103,13 +103,16 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
             );
 
             request.getSession().setAttribute("userNo", user.getNo());
-            request.getSession().setAttribute("usageInfo", user);
+            // request.getSession().setAttribute("usageInfo", user);
+
+            // 좌석 아이디 처리 
             String seatId = request.getParameter("seatId"); 
             if (seatId != null) {
                 seatId = seatId.trim().toUpperCase(); // " s1 " → "S1"
             }
             log.info("입력된 seatId = '{}'", seatId);
             
+            // 좌석 상태 확인
             int seatStatus = seatMapper.getSeatStatus(seatId);
 
             if (seatStatus == 1 || seatStatus == 2) {
@@ -118,19 +121,19 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
                 return; // 로그인 중단
             }
 
-            // ✅ 좌석 사용 가능 → 예약 등록 + 상태 변경
-            Long ticketNo = userTicketMapper.findLatestTicketNoByUserNo(userNo);
-            seatMapper.insertSeatReservation(userNo, seatId, ticketNo, (long)remainingTime);
+            // ✅ 좌석 사용 가능 → 예약 등록 + 상태 변경   
+            LocalDateTime startTime = LocalDateTime.now();
+            LocalDateTime endTime = startTime.plusMinutes(remainingTime);     
+
+            seatMapper.insertSeatReservation(userNo, seatId, startTime, endTime);
             seatMapper.updateSeatStatusToInUse(seatId);
 
             request.getSession().setAttribute("seatId", seatId);
 
-//             int remainingTime = userTicketMapper.findRemainTimeByUserNo(user.getNo());
-
             log.info("🎫 남은 시간: {}분", remainingTime);
 
             if (remainingTime <= 0) {
-                redirectUrl = "/ticket?message=noTime";
+                redirectUrl = "/menu?showTicketModal=true";
             } else {
                 redirectUrl = "/menu";
             }
