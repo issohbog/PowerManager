@@ -37,3 +37,18 @@ WHERE u.no = 2
 ORDER BY sr.end_time DESC
 LIMIT 1
 ;
+
+SELECT *
+FROM users u
+WHERE u.no = 2
+;
+
+SELECT *
+FROM seats s
+WHERE u.no = 2
+;
+
+SELECT *
+FROM seats_reservations s
+
+;

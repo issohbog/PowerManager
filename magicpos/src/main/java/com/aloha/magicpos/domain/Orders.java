@@ -1,6 +1,7 @@
 package com.aloha.magicpos.domain;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -15,4 +16,5 @@ public class Orders {
     private String message;
     private Long orderStatus;
     private Long paymentStatus;
+    private LocalDateTime payAt;
 }

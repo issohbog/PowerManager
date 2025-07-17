@@ -299,3 +299,13 @@
     transform: translateY(0);
   }
 }
+
+.paid-text {
+  background-color: #f0f0f0;
+  color: #555;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 19px;
+  font-weight: 500;
+  margin-left: 6px;
+}

@@ -34,4 +34,7 @@ public interface OrderMapper {
     List<Orders> findOrdersByStatus(@Param("orderStatus") List<Long> orderStatus);
 
     Long getQuantityByOrderAndProduct(Long oNo, Long pNo);
+
+    // 현금만 pay_at 업데이트
+    void updatePayAtNow(@Param("no") Long no);
 }

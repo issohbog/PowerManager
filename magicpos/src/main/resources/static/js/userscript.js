@@ -101,9 +101,13 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-
 // 주문 완료 모달 열기
 document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("orderSuccess") === "true") {
+    window.orderSuccess = true;
+  }
+
   if (window.orderSuccess) {
     const modal = document.getElementById('orderCompleteModal');
     if (modal) modal.style.display = 'flex';
@@ -116,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
 
 
 // 요금제 구매 모달 열기 
