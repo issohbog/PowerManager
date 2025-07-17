@@ -20,6 +20,8 @@ public class SeatServiceImpl implements SeatService {
     
     @Autowired private SeatMapper seatMapper;
 
+    @Autowired private SeatReservationService seatReservationService;
+
     @Override
     public List<Seats> findAll() throws Exception {
         return seatMapper.findAll();
@@ -51,8 +53,25 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public Map<String, List<Seats>> getSeatSections() {
+    public Map<String, List<Seats>> getSeatSections() throws Exception {
         List<Seats> allSeats = findAllSeatWithUsage();
+
+        // 현재 사용 중인 좌석 사용자 정보 불러오기
+        List<Map<String, Object>> currentUsage = seatReservationService.findCurrentSeatUsage();
+
+        // ✅ 좌석별로 사용자 정보 매핑
+        for (Seats seat : allSeats) {
+            for (Map<String, Object> usage : currentUsage) {
+                if (seat.getSeatId().equals(usage.get("seat_id"))) {
+                    seat.setUsername((String) usage.get("username"));
+                    Object value = usage.get("remain_time");
+                    if (value != null) {
+                        seat.setRemainTime(Long.parseLong(value.toString()));
+                    }
+                    break;
+                }
+            }
+        }
 
         List<Seats> top = new ArrayList<>();
         List<Seats> middle = new ArrayList<>();

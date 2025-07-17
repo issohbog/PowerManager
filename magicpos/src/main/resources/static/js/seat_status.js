@@ -33,4 +33,35 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+});
+
+// ⏱ 시간 포맷 함수: 초 → "hh:mm:ss"
+function formatRemainTime(seconds) {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
+
+// ✅ 남은 시간 표시 + 매초 갱신
+document.addEventListener("DOMContentLoaded", () => {
+  const timeElements = document.querySelectorAll(".time-left");
+
+  timeElements.forEach(el => {
+    let remaining = parseInt(el.dataset.remaining, 10) * 60; // 분 → 초로 환산
+
+    function updateTime() {
+      if (remaining <= 0) {
+        el.textContent = "만료됨";
+        return;
+      }
+
+      el.textContent = `${formatRemainTime(remaining)} 남음`;
+      remaining--;
+    }
+
+    updateTime(); // 최초 실행
+    setInterval(updateTime, 1000); // 매초 갱신
+  });
 });

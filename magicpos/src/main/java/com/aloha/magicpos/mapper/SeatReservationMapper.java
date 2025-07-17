@@ -1,9 +1,13 @@
 package com.aloha.magicpos.mapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import com.aloha.magicpos.domain.SeatsReservations;
 
 @Mapper
 public interface SeatReservationMapper {
@@ -18,4 +22,10 @@ public interface SeatReservationMapper {
     // );
 
     int countUsingSeatByUser(Long userNo);
+
+    // 유저의 가장 최근 예약 정보 가져오기
+    SeatsReservations findCurrentReservationByUser(Long userNo);
+
+    // 현재 이용중인 좌석 조회(관리자용)
+    List<Map<String, Object>> findCurrentSeatUsage();
 } 

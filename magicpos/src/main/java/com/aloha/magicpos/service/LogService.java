@@ -10,6 +10,9 @@ public interface LogService {
     // ✅ 로그 삽입
     public void insertLog(Long uNo, String seatId, String actionType, String description);
 
+    // 로그 삽입(seatid 없는 경우 )
+    public void insertLogNoSeatId(Long uNo, String actionType, String description);
+
     // 🔍 검색 포함
     public List<Map<String, Object>> searchLoginLogsByDate(LocalDate startDate, LocalDate endDate, String keyword) throws Exception;
     public List<Map<String, Object>> searchJoinLogsByDate(LocalDate startDate, LocalDate endDate, String keyword) throws Exception;

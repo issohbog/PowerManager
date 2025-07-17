@@ -86,7 +86,8 @@ public class HomeController {
         log.info("✅ 로그인한 사용자 번호 (userNo): {}", userNo);
 
         // ✅ 3. userNo로 모든 사용자 정보 + 좌석 정보 + 남은 시간 조회
-        Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
+        Map<String, Object> usageInfo = seatReservationService.findSeatReserveByUser(userNo);
+
         // null 값에 기본값 세팅
         if (usageInfo.get("seat_id") == null) usageInfo.put("seat_id", "");
         if (usageInfo.get("user_no") == null) usageInfo.put("user_no", "");
@@ -94,12 +95,9 @@ public class HomeController {
         if (usageInfo.get("remain_time") == null) usageInfo.put("remain_time", "00:00");
         if (usageInfo.get("start_time") == null) usageInfo.put("start_time", "");
         if (usageInfo.get("end_time") == null) usageInfo.put("end_time", "");
-        model.addAttribute("usageInfo", usageInfo);
 
-        String seatId = "S8";
-        // 시간 기능 구현 
-        SeatsReservations seatReservation = seatReservationService.autoReserveRandomSeatForUser(userNo, seatId);
-        model.addAttribute("seatReservation", seatReservation);
+        model.addAttribute("usageInfo", usageInfo);
+        log.info("usageinfo : {}" ,usageInfo);
 
 
         // ✅ 4. 카테고리 불러오기

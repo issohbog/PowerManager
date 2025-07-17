@@ -12,7 +12,6 @@
  <body layout:fragment="content">
     <div class="seat-dashboard">
       <div class="row-container">
-        <!-- <div th:text="${seat.remainTime}"></div> -->
 
         <!-- ✅ 상단 12개 좌석 -->
         <div class="seat-row row-6">
@@ -25,7 +24,7 @@
 
             <div class="time-left"
                 th:if="${seat.className != null and seat.className.contains('in-use') and seat.remainTime != null}"
-                th:text="|${#numbers.formatInteger(seat.remainTime / 60, 2)}:${#numbers.formatInteger(seat.remainTime % 60, 2)} 남음|">
+                th:attr="data-remaining=${seat.remainTime}">
             </div>
 
             <button class="clear-btn" th:if="${seat.className == 'cleaning'}" th:attr="data-seat-id=${seat.seatId}">
@@ -46,7 +45,7 @@
 
             <div class="time-left"
                 th:if="${seat.className != null and seat.className.contains('in-use') and seat.remainTime != null}"
-                th:text="|${#numbers.formatInteger(seat.remainTime / 60, 2)}:${#numbers.formatInteger(seat.remainTime % 60, 2)} 남음|">
+                th:attr="data-remaining=${seat.remainTime}">
             </div>
 
             <button class="clear-btn" th:if="${seat.className == 'cleaning'}" th:attr="data-seat-id=${seat.seatId}">
@@ -65,10 +64,10 @@
 
             <div class="member-name"
                 th:if="${seat.username}" th:text="${seat.username}"></div>
-
+                  
             <div class="time-left"
                 th:if="${seat.className != null and seat.className.contains('in-use') and seat.remainTime != null}"
-                th:text="|${#numbers.formatInteger(seat.remainTime / 60, 2)}:${#numbers.formatInteger(seat.remainTime % 60, 2)} 남음|">
+                th:attr="data-remaining=${seat.remainTime}">
             </div>
 
             <button class="clear-btn" th:if="${seat.className == 'cleaning'}" th:attr="data-seat-id=${seat.seatId}">
