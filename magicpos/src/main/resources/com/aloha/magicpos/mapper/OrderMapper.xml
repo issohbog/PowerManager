@@ -9,11 +9,11 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="no">
         INSERT INTO orders (
             u_no, seat_id, total_price, payment, message,
-            order_status, payment_status
+            order_status, payment_status, pay_at
         )
         VALUES (
             #{uNo}, #{seatId}, #{totalPrice}, #{payment}, #{message},
-            #{orderStatus}, #{paymentStatus}
+            #{orderStatus}, #{paymentStatus}, #{payAt}
         )
     </insert>
 
@@ -78,5 +78,11 @@
         ORDER BY order_time DESC
     </select>
 
+    <!-- 현금만 pay_at 업데이트 -->
+    <update id="updatePayAtNow">
+        UPDATE orders
+        SET pay_at = NOW()
+        WHERE no = #{no}
+    </update>
 </mapper>
 

@@ -1,12 +1,19 @@
 package com.aloha.magicpos.controller;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.OrdersDetails;
@@ -15,6 +22,7 @@ import com.aloha.magicpos.service.CartService;
 import com.aloha.magicpos.service.LogService;
 import com.aloha.magicpos.service.OrderService;
 import com.aloha.magicpos.service.ProductService;
+import com.aloha.magicpos.service.UserService;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -38,6 +46,9 @@ public class OrderController {
 
     @Autowired
     private LogService logService;
+
+    @Autowired
+    private UserService userService;
     
     // 🔸 주문 등록
     @PostMapping("/create")
@@ -106,4 +117,34 @@ public class OrderController {
         rttr.addFlashAttribute("orderSuccess", true);
         return "redirect:/menu";
     }
+
+    @PostMapping("/payment-info")
+    @ResponseBody
+    public Map<String, Object> getProductOrderPaymentInfo(@RequestBody Map<String, Object> params) {
+        String seatId = params.get("seatId").toString();
+        int totalPrice = Integer.parseInt(params.get("totalPrice").toString());
+        String payment = params.get("payment").toString();
+        Long userNo = Long.valueOf(params.get("userNo").toString());
+        Users user = userService.findByNo(userNo);  
+        String customerName = user.getUsername();  
+
+        // 상품명 최대 2개만 보여줌
+        List<String> productNames = ((List<?>) params.get("pNameList")).stream()
+                                                        .map(Object::toString)
+                                                        .collect(Collectors.toList());
+        String orderName = productNames.stream().limit(2).collect(Collectors.joining(", ")) + (productNames.size() > 2 ? " 외" : "");
+
+        String orderId = "order-" + System.currentTimeMillis() + "_seat" + seatId;
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("orderId", orderId);
+        result.put("orderName", orderName);
+        result.put("amount", totalPrice);
+        result.put("customerName", customerName); // 또는 로그인 유저 이름 등
+        result.put("successUrl", "http://localhost:8080/users/payment/product/success");
+        result.put("failUrl", "http://localhost:8080/users/payment/product/fail");
+
+        return result;
+    }
+
     }

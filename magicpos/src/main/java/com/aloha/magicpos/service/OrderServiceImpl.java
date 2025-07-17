@@ -124,4 +124,23 @@ public class OrderServiceImpl implements OrderService{
         return orderDetailMapper.getQuantityByOrderAndProduct(oNo, pNo);
     }
 
+    @Override
+    public void updateStatusWithPayAt(Long no, Long orderStatus, Long paymentStatus) {
+        orderMapper.updateStatus(no, orderStatus, paymentStatus);
+
+        Orders order = orderMapper.findByNo(no); // 💡 주문 전체 정보 가져오기
+        String payment = order.getPayment();          // 💳 결제 방식 (ex. "현금", "카드")
+
+        Long newPaymentStatus = paymentStatus;
+        if (orderStatus == 2L) {
+            newPaymentStatus = 1L; // 전달완료되면 결제 완료 처리
+        }
+
+        orderMapper.updateStatus(no, orderStatus, newPaymentStatus);
+
+        // 💡 현금이면서 전달완료일 때만 pay_at 설정
+        if ("현금".equals(payment) && orderStatus == 2L) {
+            orderMapper.updatePayAtNow(no);
+        }
+    }
 }

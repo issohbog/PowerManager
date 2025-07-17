@@ -251,7 +251,7 @@ public class AdminOrderController {
                 return "fail";
             }
 
-            orderService.updateStatus(no, orderStatus, paymentStatus);
+            orderService.updateStatusWithPayAt(no, orderStatus, paymentStatus);
             return "ok";
         } catch (Exception e) {
             log.error("❗ 상태 변경 중 오류 발생", e);

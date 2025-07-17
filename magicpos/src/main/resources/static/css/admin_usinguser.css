@@ -52,7 +52,7 @@ th, td {
 /* 검색창 스타일 */
 .using-search-box {
   position: relative;
-  width: 100%;
+  width: 80%;
 }
 
 .using-search-box input[type="text"] {
@@ -65,7 +65,7 @@ th, td {
 
 .using-search-box button {
   position: absolute;
-  left: calc(74%); /* input의 80% 너비 + 간격 */
+  left: calc(73%); /* input의 80% 너비 + 간격 */
   top: 50%;
   transform: translateY(-50%);
   border: none;

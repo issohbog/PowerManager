@@ -116,7 +116,7 @@
                     </div>
                 </div>
                 <div class="total-price">
-                    총 주문금액 <span th:text="${totalPrice}" style="font-weight: bold;">16,000원</span>
+                    총 주문금액 <span th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')}" style="font-weight: bold;">16,000원</span>
                 </div>
             </div>
 
@@ -343,6 +343,97 @@
     <script th:inline="javascript">
     const userNo = /*[[${usageInfo.user_no}]]*/ null;
     </script>
+
+    <!-- 결제 js -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const orderForm = document.getElementById('orderForm');
+    const orderBtn = orderForm.querySelector('.order-button');
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const tossPayments = TossPayments("test_ck_ZLKGPx4M3MGPnBZkRAlwrBaWypv1");
+
+    orderBtn.addEventListener('click', async function (e) {
+        e.preventDefault(); // 기존 폼 제출 막기
+
+        const paymentMethod = orderForm.querySelector('input[name="payment"]:checked')?.value;
+        if (!paymentMethod) {
+        alert("결제 수단을 선택해주세요.");
+        return;
+        }
+
+        if (paymentMethod === "현금") {
+        orderForm.submit();
+        return;
+        }
+
+        const seatId = orderForm.querySelector('input[name="seatId"]').value;
+        const totalPrice = orderForm.querySelector('input[name="totalPrice"]').value;
+        const pNos = [...orderForm.querySelectorAll('input[name="pNoList"]')].map(el => el.value);
+        const quantities = [...orderForm.querySelectorAll('input[name="quantityList"]')].map(el => el.value);
+        const pNames = [...orderForm.querySelectorAll('input[name="pNameList"]')].map(el => el.value);
+
+        try {
+        // ✅ 1. 세션에 주문 데이터 미리 저장
+        await fetch('/users/orders/temp', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({
+            seatId,
+            pNoList: pNos,
+            quantityList: quantities,
+            pNameList: pNames,
+            totalPrice,
+            payment: paymentMethod,
+            userNo
+            })
+        });
+
+        // ✅ 2. 결제 정보 요청
+        const res = await fetch('/users/orders/payment-info', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({
+            seatId,
+            pNoList: pNos,
+            quantityList: quantities,
+            pNameList: pNames,
+            totalPrice,
+            payment: paymentMethod,
+            userNo 
+            })
+        });
+
+        if (!res.ok) {
+            alert("결제 정보 요청 실패");
+            return;
+        }
+
+        const paymentInfo = await res.json();
+
+        tossPayments.requestPayment(paymentMethod, {
+            amount: paymentInfo.amount,
+            orderId: paymentInfo.orderId,
+            orderName: paymentInfo.orderName,
+            customerName: paymentInfo.customerName,
+            successUrl: paymentInfo.successUrl,
+            failUrl: paymentInfo.failUrl
+        });
+
+        } catch (err) {
+        console.error("결제 중 오류 발생!", err);
+        alert("결제 도중 문제가 발생했습니다.");
+        }
+    });
+    });
+</script>
+
 
 </body>
 </html>

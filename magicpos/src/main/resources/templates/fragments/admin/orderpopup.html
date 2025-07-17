@@ -50,6 +50,7 @@
                 <div class="price-box">
                   <span class="price" th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')} + '원'">0원</span>
                   <span class="paytype" th:text="'(' + ${order.payment} + ')'">(card)</span>
+                  <span th:if="${order.paymentStatus == 1}" class="paid-text">결제완료</span>
                 </div>
                   <div class="status-badges">
                     <span class="badge preparing"
