@@ -11,6 +11,12 @@
     VALUES (#{uNo}, #{seatId}, #{actionType}, #{description}, NOW())
 </insert>
 
+<!-- 로그 등록 - seat_id = null  -->
+<insert id="insertLogNoSeatId">
+    INSERT INTO logs (u_no, action_type, description, created_at)
+    VALUES (#{uNo}, #{actionType}, #{description}, NOW())
+</insert>
+
 <!-- ✅ 전체 로그 (검색 X) -->
 <select id="findLogsByDate" resultType="map">
 SELECT l.*, u.username, u.id AS user_id

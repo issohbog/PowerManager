@@ -17,6 +17,12 @@ public interface LogMapper {
     @Param("description") String description
     );
 
+    void insertLogNoSeatId(
+        @Param("uNo") Long uNo,
+        @Param("actionType") String actionType,
+        @Param("description") String description
+    );
+
     // 🔍 검색 포함
     List<Map<String, Object>> searchLoginLogsByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("keyword") String keyword);
 

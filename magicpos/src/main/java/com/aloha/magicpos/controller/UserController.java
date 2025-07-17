@@ -22,11 +22,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.aloha.magicpos.domain.Auths;
 import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.service.AuthService;
+import com.aloha.magicpos.service.LogService;
 import com.aloha.magicpos.service.SeatReservationService;
 import com.aloha.magicpos.service.UserService;
 import com.aloha.magicpos.service.UserTicketService;
 import com.aloha.magicpos.util.PasswordUtil;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -52,6 +54,9 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+    @Autowired
+    private LogService logService;
+
     // ✅ 전체 회원 목록
     @GetMapping("/admin/userlist")
     public String list(
@@ -87,7 +92,7 @@ public class UserController {
 
     // 회원가입 처리( 사용자 용 )
     @PostMapping("/signup")
-    public String signup(@ModelAttribute Users user) throws Exception {         // @ModelAttribute Users user : html form 에서 입력한 내용을 Users 객체에 자동으로 담아줌 
+    public String signup(@ModelAttribute Users user, HttpSession session) throws Exception {         // @ModelAttribute Users user : html form 에서 입력한 내용을 Users 객체에 자동으로 담아줌 
         log.info("회원 가입 요청: {}", user);
         
         // 1. 비밀번호 암호화 (서비스에서만 진행)
@@ -111,6 +116,13 @@ public class UserController {
         log.info("👉 사용자 번호: {}", savedUser.getNo());
 
         log.info("✅ 회원가입 끝났고, /login으로 리다이렉트 예정");
+
+        // ✅ 로그 추가
+        // Users loguser = (Users) session.getAttribute("user");
+        String username = (user != null) ? user.getUsername() : "알 수 없음";
+
+        String description = username + "님이 " +  "회원 가입 하였습니다.";
+        logService.insertLogNoSeatId(user.getNo(), "회원 가입", description);
 
         // 4. 리다이렉트 
         return "redirect:/login";

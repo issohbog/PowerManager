@@ -23,6 +23,13 @@ public class LogServiceImpl implements LogService{
         logMapper.insertLog(uNo, seatId, actionType, description);
     }
 
+    // 로그 삽입 seat_id : X
+    @Override
+    public void insertLogNoSeatId(Long uNo, String actionType, String description) {
+        logMapper.insertLogNoSeatId(uNo, actionType, description);
+    }
+    
+
     // 🔍 검색 포함
     @Override
     public List<Map<String, Object>> searchLoginLogsByDate(LocalDate startDate, LocalDate endDate, String keyword) throws Exception {
@@ -74,5 +81,6 @@ public class LogServiceImpl implements LogService{
     public List<Map<String, Object>> findProductLogsByDate(LocalDate startDate, LocalDate endDate) throws Exception {
         return logMapper.findProductLogsByDate(startDate,endDate);
     }
-    
+
+
 }

@@ -30,6 +30,7 @@ import com.aloha.magicpos.service.CartService;
 import com.aloha.magicpos.service.CategoryService;
 import com.aloha.magicpos.service.OrderService;
 import com.aloha.magicpos.service.ProductService;
+import com.aloha.magicpos.service.SeatReservationService;
 import com.aloha.magicpos.service.SeatService;
 import com.aloha.magicpos.service.UserService;
 
@@ -61,6 +62,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SeatReservationService seatReservationService;
 
     @GetMapping("/admin/orderpopup/fetch")
     public String fetchOrderPopup(@RequestParam(name = "status", required = false) String status, Model model) throws Exception {
@@ -121,6 +125,9 @@ public class AdminController {
         model.addAttribute("topSeats", seatMap.get("topSeats"));
         model.addAttribute("middleSeats", seatMap.get("middleSeats"));
         model.addAttribute("bottomSeats", seatMap.get("bottomSeats"));
+
+        List<Map<String, Object>> currentUsage = seatReservationService.findCurrentSeatUsage();
+        model.addAttribute("currentUsage", currentUsage);
 
         
         return "pages/admin/seat_status";
