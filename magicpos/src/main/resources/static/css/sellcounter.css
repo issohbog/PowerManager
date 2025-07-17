@@ -9,7 +9,7 @@ img {
 }
 button {
   /* all: unset; 이 코드 삭제해도 되나요??  */
-  all: unset;
+  /* all: unset; */
   cursor: pointer;
 }
 button img {
