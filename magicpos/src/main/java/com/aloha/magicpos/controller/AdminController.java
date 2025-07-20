@@ -152,9 +152,16 @@ public class AdminController {
 
     @GetMapping("/admin/sell/counter")
     public String sellcounter(@RequestParam(name = "keyword", required = false) String keyword,Model model, HttpSession session) throws Exception {
-        // ✅ 1. 세션에서 userNo 가져오기
-        Long userNo = (Long) session.getAttribute("userNo");
-
+        // ✅ 1. 세션에서 userNo 안전하게 변환
+        Object userNoObj = session.getAttribute("userNo");
+        Long userNo = null;
+        if (userNoObj instanceof Integer) {
+            userNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            userNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            userNo = Long.valueOf(userNoObj.toString());
+        }
         // ✅ 2. 세션에 없으면 임시 userNo로 설정
         if (userNo == null) {
             userNo = 1L; // 임시 유저 번호
@@ -197,7 +204,16 @@ public class AdminController {
     @PostMapping("/admin/sellcounter/add")
     @ResponseBody
     public String addToCart(Carts carts, HttpSession session) throws Exception {
-        Long uNo = (Long) session.getAttribute("userNo"); // 로그인 시 저장해뒀던 세션에서 꺼냄
+        // userNo 안전하게 변환
+        Object userNoObj = session.getAttribute("userNo");
+        Long uNo = null;
+        if (userNoObj instanceof Integer) {
+            uNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            uNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            uNo = Long.valueOf(userNoObj.toString());
+        }
         System.out.println("userNo 세션 값: " + uNo);
         carts.setUNo(uNo); // 서버에서 직접 넣어줌
         if (carts.getQuantity() == null) {
@@ -219,7 +235,16 @@ public class AdminController {
     @PostMapping("/admin/sellcounter/increase")
     @ResponseBody
     public String increaseQuantity(@RequestParam("pNo") Long pNo, HttpSession session) throws Exception{
-        Long uNo = (Long) session.getAttribute("userNo");
+        // userNo 안전하게 변환
+        Object userNoObj = session.getAttribute("userNo");
+        Long uNo = null;
+        if (userNoObj instanceof Integer) {
+            uNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            uNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            uNo = Long.valueOf(userNoObj.toString());
+        }
         cartService.increaseQuantity(uNo, pNo);
         return "ok";
     }
@@ -228,7 +253,16 @@ public class AdminController {
     @PostMapping("/admin/sellcounter/decrease")
     @ResponseBody
     public String decreaseQuantity(@RequestParam("pNo") Long pNo, HttpSession session) throws Exception{
-        Long uNo = (Long) session.getAttribute("userNo");
+        // userNo 안전하게 변환
+        Object userNoObj = session.getAttribute("userNo");
+        Long uNo = null;
+        if (userNoObj instanceof Integer) {
+            uNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            uNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            uNo = Long.valueOf(userNoObj.toString());
+        }
         cartService.decreaseQuantity(uNo,pNo);
         return "ok";
     }
@@ -278,8 +312,16 @@ public class AdminController {
         log.info("payment = {}", payment);
         log.info("stockList = {}", stockList);
 
-        // ✅ 세션 유저 설정
-        Long userNo = (Long) session.getAttribute("userNo");
+        // ✅ 세션 유저 설정 (안전하게 변환)
+        Object userNoObj = session.getAttribute("userNo");
+        Long userNo = null;
+        if (userNoObj instanceof Integer) {
+            userNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            userNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            userNo = Long.valueOf(userNoObj.toString());
+        }
         if (userNo == null) {
             userNo = 1L; // 테스트용 기본값
             session.setAttribute("userNo", userNo);
@@ -394,8 +436,16 @@ public class AdminController {
         result.put("amount", totalPrice);
         result.put("customerName", customerName); // 또는 로그인 유저 이름 등
         result.put("successUrl", "http://localhost:8080/admin/payment/product/success");
+        result.put("failUrl", "http://localhost:8080/admin/payment/product/fail");
 
         return result;
+    }
+
+    @PostMapping("/admin/orders/temp")
+    @ResponseBody
+    public String saveAdminTempOrder(@RequestBody Map<String, Object> tempOrder, HttpSession session) {
+        session.setAttribute("tempOrder", tempOrder);
+        return "ok";
     }
 }
     

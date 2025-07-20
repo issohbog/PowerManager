@@ -33,6 +33,10 @@ import com.aloha.magicpos.service.TicketService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+import java.time.Duration;
+import java.sql.Timestamp;
+
 @Slf4j
 @Controller
 public class HomeController {
@@ -74,14 +78,7 @@ public class HomeController {
     @GetMapping({"/menu", "/menu/search"})
     public String menulist(@RequestParam(name = "selectedCategory", required = false) Long selectedCategory, @RequestParam(name = "keyword", required = false) String keyword, Model model, HttpSession session) throws Exception {
 
-        // ✅ 1. 세션에서 userNo 가져오기
-        // Long userNo = (Long) session.getAttribute("userNo");
 
-        // // ✅ 2. 세션에 없으면 임시 userNo로 설정
-        // if (userNo == null) {
-        //     userNo = 1L; // 임시 유저 번호
-        //     session.setAttribute("userNo", userNo);
-        // }
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         CustomUser customUser = (CustomUser) auth.getPrincipal();           // CustomUser로 캐스팅
@@ -92,11 +89,6 @@ public class HomeController {
 
         Map<String, Object> usageInfo = seatReservationService.findSeatReserveByUser(userNo);
 
-
-
-        // Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
-
-//         Map<String, Object> usageInfo = seatService.findSeatUsageInfoByUser(userNo);
 
         log.info("usageInfo : {}", usageInfo);
 
@@ -176,6 +168,14 @@ public class HomeController {
         // 요금제 모달 
         List<Tickets> ticketList = ticketService.findAll();    
         model.addAttribute("ticketList", ticketList);
+
+        // 좌석 사용 시간 계산
+        Map<String, Object> seatInfo = seatReservationService.findSeatReserveByUser(userNo);
+        long usedMinutes = (long) seatInfo.getOrDefault("used_time", 0L);
+        long remainMinutes = (long) seatInfo.getOrDefault("remain_time", 0L);
+
+        model.addAttribute("usedTime", usedMinutes);
+        model.addAttribute("remainTime", remainMinutes);
 
         return "menu";
     }

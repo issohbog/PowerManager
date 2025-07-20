@@ -372,3 +372,44 @@ document.body.addEventListener("click", async (e) => {
     }
   }
 });
+
+// 결제 버튼 클릭 이벤트 등에서 호출
+async function saveAdminTempOrder({
+    seatId,
+    pNoList,
+    quantityList,
+    pNameList,
+    totalPrice,
+    payment,
+    userNo,
+    csrfHeader,
+    csrfToken
+}) {
+    try {
+        const response = await fetch('/admin/orders/temp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({
+                seatId,
+                pNoList,
+                quantityList,
+                pNameList,
+                totalPrice,
+                payment,
+                userNo
+            })
+        });
+        if (!response.ok) {
+            throw new Error('주문 정보 세션 저장 실패');
+        }
+        // 성공 시 추가 동작(필요시)
+        // 예: 결제창 오픈 등
+    } catch (err) {
+        alert('주문 정보 세션 저장 중 오류 발생: ' + err.message);
+        return false;
+    }
+    return true;
+}

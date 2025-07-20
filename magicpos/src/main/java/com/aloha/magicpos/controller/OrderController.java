@@ -61,9 +61,16 @@ public class OrderController {
         RedirectAttributes rttr, // 리다이렉트 시 플래시 속성 사용
         HttpSession session // 세션에서 사용자 정보 가져오기
         ) throws Exception {
-            // ✅ 1. 세션에서 userNo 가져오기
-            Long userNo = (Long) session.getAttribute("userNo");
-            
+            // ✅ 1. 세션에서 userNo 안전하게 변환
+            Object userNoObj = session.getAttribute("userNo");
+            Long userNo = null;
+            if (userNoObj instanceof Integer) {
+                userNo = ((Integer) userNoObj).longValue();
+            } else if (userNoObj instanceof Long) {
+                userNo = (Long) userNoObj;
+            } else if (userNoObj != null) {
+                userNo = Long.valueOf(userNoObj.toString());
+            }
             // ✅ 2. 세션에 없으면 임시 userNo로 설정
             if (userNo == null) {
                 userNo = 1L; // 임시 유저 번호
@@ -124,7 +131,16 @@ public class OrderController {
         String seatId = params.get("seatId").toString();
         int totalPrice = Integer.parseInt(params.get("totalPrice").toString());
         String payment = params.get("payment").toString();
-        Long userNo = Long.valueOf(params.get("userNo").toString());
+        // userNo 안전하게 변환
+        Object userNoObj = params.get("userNo");
+        Long userNo = null;
+        if (userNoObj instanceof Integer) {
+            userNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            userNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            userNo = Long.valueOf(userNoObj.toString());
+        }
         Users user = userService.findByNo(userNo);  
         String customerName = user.getUsername();  
 

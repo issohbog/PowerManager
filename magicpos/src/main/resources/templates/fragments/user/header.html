@@ -28,10 +28,11 @@
                         <span style=" font-size: 13px;">자리번호</span><br><strong th:text="'no. ' + ${usageInfo.seat_id}">no. 50</strong>
                     </div>
                     <div style="width: 100px; height: 60px; background-color: #1e2b38; padding: 5px 10px; border-radius: 5px; text-align: center; font-size: 16px;">
-                        <span style=" font-size: 13px;">사용시간</span><br><strong th:text="${usedTime}">00:01</strong>
+                        <span style=" font-size: 13px;">사용시간</span><br><strong id="usedTime" th:attr="data-used-min=${usedTime}">00:00</strong>
                     </div>
                     <div style="width: 100px; height: 60px; background-color: #1e2b38; padding: 5px 10px; border-radius: 5px; text-align: center; font-size: 16px;">
-                        <span style=" font-size: 13px;">남은시간</span><br><strong style="color: #f1c40f;" th:text="${usageInfo.remain_time}">10:45</strong>
+                        <span style=" font-size: 13px;">남은시간</span><br>
+                        <strong id="remainTime" th:attr="data-remain-min=${remainTime}" style="color: #f1c40f;">00:00</strong>
                     </div>
                     <div style="width: 100px; height: 60px; background-color: #1e2b38; padding: 5px 10px; border-radius: 5px; text-align: center; font-size: 16px;">
                         <form action="/logout" method="post">
