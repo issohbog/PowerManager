@@ -63,9 +63,6 @@ public class UserTicketController {
         }).collect(Collectors.toList());
     }
     
-
-
-
     
      // 🔸 이용권 등록 (결제 시) - 사용자 화면용
     @PostMapping("/insert")
@@ -95,6 +92,7 @@ public class UserTicketController {
     public List<UserTickets> getUserTicketsByUserNo(@PathVariable long uNo) throws Exception {
         return userticketService.findByUserNo(uNo);
     }
+
 
     // 🔸 특정 유저의 남은 시간 조회
     @GetMapping("/user/{uNo}/remain-time")

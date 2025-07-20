@@ -5,6 +5,7 @@ import java.util.Map;
 
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.aloha.magicpos.domain.SeatsReservations;
 
@@ -27,4 +28,10 @@ public interface SeatReservationMapper {
 
     // 현재 이용중인 좌석 조회(관리자용)
     List<Map<String, Object>> findCurrentSeatUsage();
+
+    // 로그아웃 할 회원의 endtime을 현재시간으로 갱신
+    int updateEndTime(@Param("uNo") Long uNo, @Param("now") LocalDateTime now); 
+
+    // 기존 end_time 에 ticket 시간만큼 추가
+    int extendEndTime(@Param("userNo") Long userNo, @Param("minutes") long minutes);
 } 

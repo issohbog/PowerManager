@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.aloha.magicpos.domain.SeatsReservations;
 import com.aloha.magicpos.domain.Tickets;
 import com.aloha.magicpos.domain.UserTickets;
+import com.aloha.magicpos.mapper.SeatReservationMapper;
 import com.aloha.magicpos.mapper.UserTicketMapper;
 import com.aloha.magicpos.service.TicketService;
 
@@ -20,6 +23,7 @@ public class UserTicketServiceImpl implements UserTicketService {
     
     @Autowired TicketService ticketService;
 
+    @Autowired SeatReservationMapper seatReservationMapper;
 
     @Override
     public boolean insert(UserTickets userTicket) throws Exception {
@@ -47,26 +51,30 @@ public class UserTicketServiceImpl implements UserTicketService {
     }
     
     @Override
+    @Transactional
     public boolean insertUserTicketByAdmin(UserTickets userTicket) throws Exception {
         log.info("🎫 서비스에서 티켓 정보 조회 및 요금제 구매 처리");
         
-        try {
-            // 티켓 정보 조회
-            Tickets ticket = ticketService.findById(userTicket.getTNo());
-            if (ticket != null) {
-                userTicket.setRemainTime(ticket.getTime()); // 티켓의 시간을 remainTime으로 설정
-                log.info("🎫 티켓 정보 조회 완료: {}분", ticket.getTime());
-            } else {
-                log.error("🔥 티켓을 찾을 수 없습니다: tNo = {}", userTicket.getTNo());
-                return false;
-            }
-        } catch (Exception e) {
-            log.error("🔥 티켓 정보 조회 중 오류: {}", e.getMessage());
-            return false;
-        }
-        
+        // 티켓 정보 조회
+        Tickets ticket = ticketService.findById(userTicket.getTNo());
+        if(ticket == null) return false;
+
+        long ticketMinutes = ticket.getTime();
+        userTicket.setRemainTime(ticketMinutes); // 티켓의 시간을 remainTime으로 설정
+
+        // userticket insert
+        int insertCount = userTicketMapper.insert(userTicket);
+        if(insertCount == 0) return false;
+
+        // 사용자 좌석 예약 중인지 확인 
+        SeatsReservations reservation = seatReservationMapper.findCurrentReservationByUser(userTicket.getUNo());
+        if (reservation != null) {
+            // 기존 end_time 에 ticket 시간만큼 추가
+            seatReservationMapper.extendEndTime(userTicket.getUNo(), ticketMinutes);
+        }   
+
         // 요금제 구매 처리
-        return userTicketMapper.insert(userTicket) > 0;
+        return true;
     }
     
 }
