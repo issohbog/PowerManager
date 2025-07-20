@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.aloha.magicpos.service.LogService;
+import com.aloha.magicpos.domain.Pagination;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,62 +32,88 @@ public class LogController {
         @RequestParam(name = "type", required = false) String type,
         @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
         @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+        @RequestParam(name = "page", defaultValue = "1") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size,
+        HttpServletRequest request,
         Model model
     ) throws Exception {
         List<Map<String, Object>> logList;
+        long total = 0;
 
-        if (startDate == null) {
-            startDate = LocalDate.now(); // 기본값: 오늘
-        }
-        if (endDate == null) {
-            endDate = LocalDate.now(); // 기본값: 오늘
-        }
+        if (startDate == null) startDate = LocalDate.now();
+        if (endDate == null) endDate = LocalDate.now();
         if (type == null) type = "";
+
+        String start = startDate.toString();
+        String end = endDate.toString();
+        int index = (page - 1) * size;
 
         if (keyword != null && !keyword.isEmpty()) {
             switch (type) {
                 case "loginhistory":
-                    logList = logService.searchLoginLogsByDate(startDate, endDate, keyword);
+                    total = logService.countSearchLoginLogsByDate(start, end, keyword);
+                    logList = logService.searchLoginLogsByDate(start, end, keyword, index, size);
                     break;
                 case "joinhistory":
-                    logList = logService.searchJoinLogsByDate(startDate, endDate, keyword);
+                    total = logService.countSearchJoinLogsByDate(start, end, keyword);
+                    logList = logService.searchJoinLogsByDate(start, end, keyword, index, size);
                     break;
                 case "tickethistory":
-                    logList = logService.searchTicketLogsByDate(startDate, endDate, keyword);
+                    total = logService.countSearchTicketLogsByDate(start, end, keyword);
+                    logList = logService.searchTicketLogsByDate(start, end, keyword, index, size);
                     break;
                 case "orderhistory":
-                    logList = logService.searchProductLogsByDate(startDate, endDate, keyword);
+                    total = logService.countSearchProductLogsByDate(start, end, keyword);
+                    logList = logService.searchProductLogsByDate(start, end, keyword, index, size);
                     break;
                 default:
-                    logList = logService.searchAllLogsByDate(startDate, endDate, keyword);
+                    total = logService.countSearchAllLogsByDate(start, end, keyword);
+                    logList = logService.searchAllLogsByDate(start, end, keyword, index, size);
             }
         } else {
             switch (type) {
                 case "loginhistory":
-                    logList = logService.findLoginLogsByDate(startDate, endDate);
+                    total = logService.countLoginLogsByDate(start, end);
+                    logList = logService.findLoginLogsByDate(start, end, index, size);
                     break;
                 case "joinhistory":
-                    logList = logService.findJoinLogsByDate(startDate, endDate);
+                    total = logService.countJoinLogsByDate(start, end);
+                    logList = logService.findJoinLogsByDate(start, end, index, size);
                     break;
                 case "tickethistory":
-                    logList = logService.findTicketLogsByDate(startDate, endDate);
+                    total = logService.countTicketLogsByDate(start, end);
+                    logList = logService.findTicketLogsByDate(start, end, index, size);
                     break;
                 case "orderhistory":
-                    logList = logService.findProductLogsByDate(startDate, endDate);
+                    total = logService.countProductLogsByDate(start, end);
+                    logList = logService.findProductLogsByDate(start, end, index, size);
                     break;
                 default:
-                    logList = logService.findLogsByDate(startDate, endDate);
+                    total = logService.countLogsByDate(start, end);
+                    logList = logService.findLogsByDate(start, end, index, size);
             }
         }
+
+        Pagination pagination = new Pagination(page, size, 10, total);
 
         model.addAttribute("logList", logList);
         model.addAttribute("keyword", keyword);
         model.addAttribute("type", type);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
+        model.addAttribute("pagination", pagination);
+        
+        boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+        log.info("조회된 로그 수: {} / 전체: {} (AJAX: {})", logList.size(), total, isAjax);
+        log.info("📌 현재 페이지: {}", page);
+        log.info("📌 페이지네이션 객체: {}", pagination);
 
-        log.info("조회된 로그 수: {}", logList.size());
+        if (isAjax) {
+            // ✅ AJAX 요청이면 fragment만 반환
+            return "pages/admin/admin_log_list :: logTableFragment";
+        }
 
-        return "pages/admin/admin_log_list";
+        return "pages/admin/admin_log_list"; // ✅ 일반 접근이면 전체 페이지
+
     }
 }

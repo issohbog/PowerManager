@@ -52,3 +52,4 @@ SELECT *
 FROM seats_reservations s
 
 ;
+

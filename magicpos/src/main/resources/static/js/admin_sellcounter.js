@@ -156,7 +156,9 @@ function loadCartItems() {
 }
 
 
-document.getElementById("submitOrderBtn").addEventListener("click", async () => {
+document.getElementById("submitOrderBtn").addEventListener("click", async (event) => {
+  event.preventDefault();
+
   const seatId = document.getElementById("seatIdInput").value;
   if (!seatId || seatId.trim() === "") {
     alert("좌석 ID를 입력해주세요!");
@@ -171,7 +173,6 @@ document.getElementById("submitOrderBtn").addEventListener("click", async () => 
 
   const cartContainer = document.querySelector(".sell-cart-items");
   const cartItems = cartContainer.querySelectorAll(".sell-cart-item");
-
   if (cartItems.length === 0) {
     alert("장바구니가 비어 있습니다!");
     return;
@@ -181,6 +182,7 @@ document.getElementById("submitOrderBtn").addEventListener("click", async () => 
   const quantityList = [];
   const pNameList = [];
   const stockList = [];
+  let hasInvalidValue = false;
 
   cartItems.forEach(item => {
     const pNo = item.querySelector("input[name='pNo']").value;
@@ -188,59 +190,123 @@ document.getElementById("submitOrderBtn").addEventListener("click", async () => 
     const pName = item.querySelector("input[name='pName']").value;
     const stock = item.querySelector("input[name='stock']").value;
 
+    if (!pNo || !quantity || !pName || !stock) {
+      console.warn("❗ 유효하지 않은 값 있음:", { pNo, quantity, pName, stock });
+      hasInvalidValue = true;
+      return;
+    }
     pNoList.push(parseInt(pNo));
     quantityList.push(parseInt(quantity));
     pNameList.push(pName);
     stockList.push(parseInt(stock));
   });
 
-  const totalPrice = document.querySelector(".total-price span").textContent
-    .replace("원", "")
-    .replace(/,/g, "");
+  if (hasInvalidValue) {
+    alert("장바구니에 유효하지 않은 상품이 있어요. 다시 확인해 주세요!");
+    return;
+  }
 
-  // CSRF 처리
+  const totalPrice = document.querySelector(".total-price span").textContent
+    .replace("원", "").replace(/,/g, "");
+
   const csrfToken = document.querySelector('meta[name="_csrf"]').content;
   const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-  // alert(csrfHeader  + ":" + csrfToken)
+  const userNo = document.getElementById("user-no").value;
 
-  const formData = new FormData();
-  formData.append("seatId", seatId);
-  formData.append("totalPrice", totalPrice);
-  formData.append("payment", paymentMethod.value);
-  
-  pNoList.forEach(v => formData.append("pNoList", v));
-  quantityList.forEach(v => formData.append("quantityList", v));
-  pNameList.forEach(v => formData.append("pNameList", v));
-  stockList.forEach(v => formData.append("stockList", v));
- 
+  // 💰 현금일 경우
+  if (paymentMethod.value === "현금") {
+    const params = new URLSearchParams();
+    params.append("seatId", seatId);
+    params.append("totalPrice", totalPrice);
+    params.append("payment", paymentMethod.value);
+    pNoList.forEach(v => params.append("pNoList", v));
+    quantityList.forEach(v => params.append("quantityList", String(v)));
+    pNameList.forEach(v => params.append("pNameList", v));
+    stockList.forEach(v => params.append("stockList", String(v)));
 
-  console.log("🧾 FormData 전송 데이터:");
-  for (let pair of formData.entries()) {
-    console.log(`${pair[0]} = ${pair[1]}`);
-  }
+    try {
+      const res = await fetch("/admin/sellcounter/create", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          [csrfHeader]: csrfToken
+        },
+        body: params
+      });
 
-  try {
-    
-    const res = await fetch("/admin/sellcounter/create", {
-      method: "POST",
-      credentials: "same-origin", // 💡 세션 쿠키 포함
-      body: formData,
-      headers: {
-        [csrfHeader]: csrfToken // 예: 'X-CSRF-TOKEN': 'abc123'
+      if (res.ok) {
+        alert("✅ 주문이 완료되었습니다!");
+        loadCartItems();
+      } else {
+        alert("❌ 주문 실패");
       }
-    });
-
-    if (res.ok) {
-      alert("✅ 주문이 완료되었습니다!");
-      // location.reload(); // 또는 cart 다시 불러오기
-    } else {
-      alert("❌ 주문 실패");
+    } catch (e) {
+      console.error("현금 주문 오류:", e);
+      alert("서버 오류 발생");
     }
-  } catch (e) {
-    console.error("주문 오류:", e);
-    alert("서버 오류 발생");
+
+    return;
   }
+
+// 💳 카드일 경우: 세션에 주문 정보 저장 후 토스 결제 호출
+if (paymentMethod.value === "카드") {
+  const orderData = {
+    userNo,
+    seatId,
+    pNoList,
+    quantityList,
+    pNameList,
+    stockList,
+    totalPrice,
+    payment: paymentMethod.value
+  };
+
+  sessionStorage.setItem("adminTempOrder", JSON.stringify(orderData));
+  console.log("🧾 adminTempOrder 세션 저장 완료:", orderData);
+}
+
+try {
+  const response = await fetch("/admin/sellcounter/payment-info", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      [csrfHeader]: csrfToken
+    },
+    body: JSON.stringify({
+      userNo,
+      seatId,
+      pNoList,
+      quantityList,
+      pNameList,
+      stockList,
+      totalPrice,
+      payment: paymentMethod.value
+    })
+  });
+
+  if (!response.ok) {
+    alert("❌ 결제정보 생성 실패");
+    return;
+  }
+
+  const paymentInfo = await response.json();
+
+  tossPayments.requestPayment(paymentMethod.value, {
+    amount: paymentInfo.amount,
+    orderId: paymentInfo.orderId,
+    orderName: paymentInfo.orderName,
+    customerName: paymentInfo.customerName,
+    successUrl: paymentInfo.successUrl,
+    failUrl: paymentInfo.failUrl
+  });
+} catch (err) {
+  console.error("❌ 결제 처리 중 오류:", err);
+  alert("서버 오류 발생!");
+}
+
 });
+
 
 
 // 수량 변경, 삭제
