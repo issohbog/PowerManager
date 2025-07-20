@@ -30,56 +30,90 @@ public class LogServiceImpl implements LogService{
     }
     
 
-    // 🔍 검색 포함
+    // 🔍 검색 포함 (페이지네이션)
     @Override
-    public List<Map<String, Object>> searchLoginLogsByDate(LocalDate startDate, LocalDate endDate, String keyword) throws Exception {
-        return logMapper.searchLoginLogsByDate(startDate,endDate, keyword);
+    public List<Map<String, Object>> searchLoginLogsByDate(String startDate, String endDate, String keyword, int index, int size) throws Exception {
+        return logMapper.searchLoginLogsByDate(startDate, endDate, keyword, index, size);
+    }
+    @Override
+    public List<Map<String, Object>> searchJoinLogsByDate(String startDate, String endDate, String keyword, int index, int size) throws Exception {
+        return logMapper.searchJoinLogsByDate(startDate, endDate, keyword, index, size);
+    }
+    @Override
+    public List<Map<String, Object>> searchTicketLogsByDate(String startDate, String endDate, String keyword, int index, int size) throws Exception {
+        return logMapper.searchTicketLogsByDate(startDate, endDate, keyword, index, size);
+    }
+    @Override
+    public List<Map<String, Object>> searchProductLogsByDate(String startDate, String endDate, String keyword, int index, int size) throws Exception {
+        return logMapper.searchProductLogsByDate(startDate, endDate, keyword, index, size);
+    }
+    @Override
+    public List<Map<String, Object>> searchAllLogsByDate(String startDate, String endDate, String keyword, int index, int size) throws Exception {
+        return logMapper.searchAllLogsByDate(startDate, endDate, keyword, index, size);
     }
 
+    // 📄 검색 없이 (페이지네이션)
     @Override
-    public List<Map<String, Object>> searchJoinLogsByDate(LocalDate startDate, LocalDate endDate, String keyword) throws Exception {
-        return logMapper.searchJoinLogsByDate(startDate,endDate, keyword);
+    public List<Map<String, Object>> findLogsByDate(String startDate, String endDate, int index, int size) throws Exception {
+        return logMapper.findLogsByDate(startDate, endDate, index, size);
+    }
+    @Override
+    public long countLogsByDate(String startDate, String endDate) throws Exception {
+        return logMapper.countLogsByDate(startDate, endDate);
+    }
+    @Override
+    public List<Map<String, Object>> findLoginLogsByDate(String startDate, String endDate, int index, int size) throws Exception {
+        return logMapper.findLoginLogsByDate(startDate, endDate, index, size);
+    }
+    @Override
+    public long countLoginLogsByDate(String startDate, String endDate) throws Exception {
+        return logMapper.countLoginLogsByDate(startDate, endDate);
+    }
+    @Override
+    public List<Map<String, Object>> findJoinLogsByDate(String startDate, String endDate, int index, int size) throws Exception {
+        return logMapper.findJoinLogsByDate(startDate, endDate, index, size);
+    }
+    @Override
+    public long countJoinLogsByDate(String startDate, String endDate) throws Exception {
+        return logMapper.countJoinLogsByDate(startDate, endDate);
+    }
+    @Override
+    public List<Map<String, Object>> findTicketLogsByDate(String startDate, String endDate, int index, int size) throws Exception {
+        return logMapper.findTicketLogsByDate(startDate, endDate, index, size);
+    }
+    @Override
+    public long countTicketLogsByDate(String startDate, String endDate) throws Exception {
+        return logMapper.countTicketLogsByDate(startDate, endDate);
+    }
+    @Override
+    public List<Map<String, Object>> findProductLogsByDate(String startDate, String endDate, int index, int size) throws Exception {
+        return logMapper.findProductLogsByDate(startDate, endDate, index, size);
+    }
+    @Override
+    public long countProductLogsByDate(String startDate, String endDate) throws Exception {
+        return logMapper.countProductLogsByDate(startDate, endDate);
     }
 
+    // 🔍 검색 포함 (페이지네이션)
     @Override
-    public List<Map<String, Object>> searchTicketLogsByDate(LocalDate startDate, LocalDate endDate, String keyword) throws Exception {
-        return logMapper.searchTicketLogsByDate(startDate,endDate, keyword);
+    public long countSearchLoginLogsByDate(String startDate, String endDate, String keyword) throws Exception {
+        return logMapper.countSearchLoginLogsByDate(startDate, endDate, keyword);
     }
-
     @Override
-    public List<Map<String, Object>> searchProductLogsByDate(LocalDate startDate, LocalDate endDate, String keyword) throws Exception {
-        return logMapper.searchProductLogsByDate(startDate,endDate, keyword);
+    public long countSearchJoinLogsByDate(String startDate, String endDate, String keyword) throws Exception {
+        return logMapper.countSearchJoinLogsByDate(startDate, endDate, keyword);
     }
-
     @Override
-    public List<Map<String, Object>> searchAllLogsByDate(LocalDate startDate, LocalDate endDate, String keyword) throws Exception {
-        return logMapper.searchAllLogsByDate(startDate,endDate, keyword);
+    public long countSearchTicketLogsByDate(String startDate, String endDate, String keyword) throws Exception {
+        return logMapper.countSearchTicketLogsByDate(startDate, endDate, keyword);
     }
-
-    // 📄 검색 없이
     @Override
-    public List<Map<String, Object>> findLogsByDate(LocalDate startDate, LocalDate endDate) throws Exception {
-        return logMapper.findLogsByDate(startDate,endDate);
+    public long countSearchProductLogsByDate(String startDate, String endDate, String keyword) throws Exception {
+        return logMapper.countSearchProductLogsByDate(startDate, endDate, keyword);
     }
-    
     @Override
-    public List<Map<String, Object>> findLoginLogsByDate(LocalDate startDate, LocalDate endDate) throws Exception {
-        return logMapper.findLoginLogsByDate(startDate,endDate);
-    }
-
-    @Override
-    public List<Map<String, Object>> findJoinLogsByDate(LocalDate startDate, LocalDate endDate) throws Exception {
-        return logMapper.findJoinLogsByDate(startDate,endDate);
-    }
-
-    @Override
-    public List<Map<String, Object>> findTicketLogsByDate(LocalDate startDate, LocalDate endDate) throws Exception {
-        return logMapper.findTicketLogsByDate(startDate,endDate);
-    }
-
-    @Override
-    public List<Map<String, Object>> findProductLogsByDate(LocalDate startDate, LocalDate endDate) throws Exception {
-        return logMapper.findProductLogsByDate(startDate,endDate);
+    public long countSearchAllLogsByDate(String startDate, String endDate, String keyword) throws Exception {
+        return logMapper.countSearchAllLogsByDate(startDate, endDate, keyword);
     }
 
 

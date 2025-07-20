@@ -30,6 +30,8 @@
         </form>
 
       </div>
+  <!-- ✅ 이 부분을 fragment로 지정 -->
+<div th:fragment="logTableFragment" id="logTableArea">
   <table>
     <thead>
       <tr>
@@ -45,7 +47,7 @@
     </thead>
     <tbody>
       <tr th:each="log, iterStat : ${logList}">
-        <td th:text="${iterStat.count}"></td> <!-- No -->
+        <td th:text="${(pagination.page - 1) * pagination.size + iterStat.count}">1</td>
         <td th:text="${log['action_type']}">로그분류</td>
         <td th:text="${log['username']}">이름</td>
         <td th:text="${log['user_id']}">아이디</td>
@@ -60,28 +62,83 @@
       </tr>
     </tbody>
   </table>
+  <div class="pagination">
+    <ul>
+      <li th:if="${pagination.page > 1}">
+        <a th:href="@{/admin/logs/logList(type=${type}, keyword=${keyword}, startDate=${startDate}, endDate=${endDate}, page=${pagination.page-1})}">« 이전</a>
+      </li>
+      <li th:each="i : ${#numbers.sequence(pagination.start, pagination.end)}"
+      th:classappend="${i == pagination.page} ? 'active'">
+      <a th:href="@{/admin/logs/logList(type=${type}, keyword=${keyword}, startDate=${startDate}, endDate=${endDate}, page=${i})}"
+      th:text="${i}">1</a>
+    </li>
+    <li th:if="${pagination.page < pagination.last}">
+      <a th:href="@{/admin/logs/logList(type=${type}, keyword=${keyword}, startDate=${startDate}, endDate=${endDate}, page=${pagination.page+1})}">다음 »</a>
+    </li>
+  </ul>
+</div>
+</div>
 
   </div>
   <script>
-document.addEventListener("DOMContentLoaded", function() {
+console.log("✅ 로그 JS 시작됨!");
+
+document.addEventListener("DOMContentLoaded", function () {
     const selectBox = document.getElementById("typeSelect");
 
-    selectBox.addEventListener("change", function() {
+    // ✅ 검색 조건 select 변경 시 동적 로딩
+    selectBox.addEventListener("change", function () {
         const selectedType = this.value;
         const keyword = document.querySelector("input[name='keyword']").value;
-        const selectedDate = document.querySelector("input[name='date']").value;
-        fetch(`/admin/logs/logList?type=${selectedType}&keyword=${keyword}&date=${selectedDate}`)
+        const startDate = document.querySelector("input[name='startDate']").value;
+        const endDate = document.querySelector("input[name='endDate']").value;
+
+        fetch(`/admin/logs/logList?type=${selectedType}&keyword=${keyword}&startDate=${startDate}&endDate=${endDate}`)
             .then(res => res.text())
             .then(html => {
-                // 파싱해서 테이블 tbody만 추출
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, "text/html");
-                const newTbody = doc.querySelector("tbody");
 
-                const currentTbody = document.querySelector("tbody");
-                currentTbody.innerHTML = newTbody.innerHTML;
+                const newFragment = doc.querySelector("#logTableArea");
+                const currentFragment = document.querySelector("#logTableArea");
+
+                if (newFragment && currentFragment) {
+                    currentFragment.innerHTML = newFragment.innerHTML;
+                    console.log("✅ 로그 테이블 영역 교체 완료!");
+                } else {
+                    console.warn("❗ #logTableArea를 찾지 못했어.");
+                    console.log("▶ 파싱된 HTML:", doc.documentElement.innerHTML);
+                }
             })
-            .catch(err => console.error("에러 발생:", err));
+            .catch(err => console.error("❌ 에러 발생:", err));
+    });
+
+    // ✅ 페이지네이션 클릭 시 동적 로딩
+    document.addEventListener("click", function (e) {
+        const anchor = e.target.closest('.pagination a');
+        if (anchor) {
+            e.preventDefault();
+            const url = anchor.getAttribute('href');
+
+            fetch(url)
+                .then(res => res.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, "text/html");
+
+                    const newFragment = doc.querySelector("#logTableArea");
+                    const currentFragment = document.querySelector("#logTableArea");
+
+                    if (newFragment && currentFragment) {
+                        currentFragment.innerHTML = newFragment.innerHTML;
+                        console.log("✅ 로그 페이지네이션 교체 완료!");
+                    } else {
+                        console.warn("❗ #logTableArea를 찾지 못했어.");
+                        console.log("▶ 파싱된 HTML:", doc.documentElement.innerHTML);
+                    }
+                })
+                .catch(err => console.error("❌ 에러 발생:", err));
+        }
     });
 });
 </script>

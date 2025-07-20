@@ -49,6 +49,7 @@
         SELECT *
         FROM products
         WHERE c_no = #{cNo}
+            AND sell_status = 1
         ORDER BY no DESC
     </select>
 
@@ -116,10 +117,12 @@
     <select id="searchProductsAll" resultType="Products">
         SELECT *
         FROM products
-        WHERE 
-            p_name LIKE CONCAT('%', #{keyword}, '%')
-            OR description LIKE CONCAT('%', #{keyword}, '%')
-            OR CAST(p_price AS CHAR) = #{keyword}
+        WHERE sell_status = 1
+            AND(
+                p_name LIKE CONCAT('%', #{keyword}, '%')
+                OR description LIKE CONCAT('%', #{keyword}, '%')
+                OR CAST(p_price AS CHAR) = #{keyword}
+            )
         ORDER BY no DESC
     </select>
 

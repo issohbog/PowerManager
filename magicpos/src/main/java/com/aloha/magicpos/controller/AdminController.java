@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -26,6 +27,8 @@ import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.OrdersDetails;
 import com.aloha.magicpos.domain.Products;
 import com.aloha.magicpos.domain.Seats;
+import com.aloha.magicpos.domain.Tickets;
+import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.service.CartService;
 import com.aloha.magicpos.service.CategoryService;
 import com.aloha.magicpos.service.OrderService;
@@ -38,6 +41,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @RequiredArgsConstructor
@@ -227,77 +232,108 @@ public class AdminController {
         cartService.decreaseQuantity(uNo,pNo);
         return "ok";
     }
-    // 🔸 주문 등록
+    // 주문 등록
     @PostMapping("/admin/sellcounter/create")
     @ResponseBody
     public ResponseEntity<String> insertOrder(
+        HttpServletRequest request,
         @RequestParam(value = "seatId", required = false) String seatId,
-        @RequestParam(value = "pNoList", required = false) List<Long> pNoList,
-        @RequestParam(value = "quantityList", required = false) List<Long> quantityList,
+        @RequestParam(value = "pNoList", required = false) List<String> pNoList,
+        @RequestParam(value = "quantityList", required = false) List<String> quantityListRaw,
         @RequestParam(value = "pNameList", required = false) List<String> pNameList,
         @RequestParam(value = "payment", required = false) String payment,
-        @RequestParam(value = "stockList", required = false) List<Long> stockList,
-        @RequestParam(value = "totalPrice", required = false) Long totalPrice,
+        @RequestParam(value = "stockList", required = false) List<String> stockList,
+        @RequestParam(value = "totalPrice", required = false) String totalPrice,
         HttpSession session
-        ) throws Exception {
-            log.info("🔥🔥🔥 insertOrder 진입됨");
-            
-            log.info("seatId = {}", seatId);
-            log.info("pNoList = {}", pNoList);
-            log.info("quantityList = {}", quantityList);
-            log.info("pNameList = {}", pNameList);
-            log.info("payment = {}", payment);
-            System.out.println("seatId: " + seatId);
-            System.out.println("pNoList: " + pNoList);
-            System.out.println("quantityList: " + quantityList);
-            System.out.println("pNameList: " + pNameList);
-            System.out.println("payment: " + payment);
-            System.out.println("stockList: " + stockList);
-            Long userNo = (Long) session.getAttribute("userNo");
+    ) throws Exception {
+
+        log.info("🔥🔥🔥 insertOrder 진입됨");
+
+        Map<String, String[]> paramMap = request.getParameterMap();
+        paramMap.forEach((k, v) -> log.info("{} = {}", k, Arrays.toString(v)));
+
+        // ✅ quantityListRaw → quantityList (Long 타입으로 파싱)
+        List<Long> quantityList = new ArrayList<>();
+        for (String q : quantityListRaw) {
+            try {
+                quantityList.add(Long.parseLong(q));
+            } catch (NumberFormatException e) {
+                return ResponseEntity.badRequest().body("수량 파싱 오류: " + q);
+            }
+        }
+
+        // ✅ 유효성 검사
+        if (pNoList == null || quantityList == null || pNameList == null || stockList == null ||
+            pNoList.size() != quantityList.size() || 
+            pNoList.size() != pNameList.size() || 
+            pNoList.size() != stockList.size()) {
+            return ResponseEntity.status(400).body("잘못된 요청입니다: 항목 수 불일치");
+        }
+
+        // ✅ 디버깅용 로그
+        log.info("seatId = {}", seatId);
+        log.info("pNoList = {}", pNoList);
+        log.info("quantityList = {}", quantityList);
+        log.info("pNameList = {}", pNameList);
+        log.info("payment = {}", payment);
+        log.info("stockList = {}", stockList);
+
+        // ✅ 세션 유저 설정
+        Long userNo = (Long) session.getAttribute("userNo");
         if (userNo == null) {
-            userNo = 1L;
+            userNo = 1L; // 테스트용 기본값
             session.setAttribute("userNo", userNo);
         }
-        
+
+        // ✅ 재고 확인
         for (int i = 0; i < pNoList.size(); i++) {
             Long quantity = quantityList.get(i);
             String pName = pNameList.get(i);
-            Long stock = stockList.get(i);
-            
+            Long stock = Long.parseLong(stockList.get(i)); // String을 Long으로 변환
+
             if (stock == null || stock < quantity) {
                 return ResponseEntity.status(400).body(pName + "의 재고가 부족합니다.");
             }
         }
-        
+
+        // ✅ 주문 저장
         Orders order = new Orders();
         order.setUNo(userNo);
         order.setOrderStatus(0L);
         order.setPaymentStatus(0L);
         order.setSeatId(seatId);
         order.setPayment(payment);
-        order.setTotalPrice(totalPrice);
+        order.setTotalPrice(Long.parseLong(totalPrice)); // String을 Long으로 변환
         order.setMessage("");
-        
+
         boolean inserted = orderService.insertOrder(order);
         log.info("🧩 inserted 결과: {}", inserted);
+        log.info("🧾 order.getNo(): {}", order.getNo());
         // if (!inserted) return ResponseEntity.status(500).body("주문 저장 실패");
+
         log.info("✅ insertOrder 끝까지 왔다");
-        
+
+        // ✅ 주문 상세 등록
         Long oNo = order.getNo();
         log.info("🧾 주문 번호: {}", oNo);
         log.info("🛒 상품 {}개 상세 등록 시도 중...", pNoList.size());
+
         for (int i = 0; i < pNoList.size(); i++) {
             OrdersDetails detail = new OrdersDetails();
             detail.setONo(oNo);
-            detail.setPNo(pNoList.get(i));
+            detail.setPNo(Long.parseLong(pNoList.get(i))); // String을 Long으로 변환
             detail.setQuantity(quantityList.get(i));
+
             orderService.insertOrderDetail(oNo, detail);
-            productService.decreaseStock(pNoList.get(i), quantityList.get(i));
+            productService.decreaseStock(Long.parseLong(pNoList.get(i)), quantityList.get(i));
         }
 
+        // ✅ 장바구니 비우기
         cartService.deleteAllByUserNo(userNo);
+
         return ResponseEntity.ok("success");
     }
+
 
     
 
@@ -326,150 +362,41 @@ public class AdminController {
         List<Map<String, Object>> users = seatService.searchActiveUsers(keyword);
         System.out.println("사용자 수: " + users.size());
         model.addAttribute("users", users);
+        System.out.println("🧪 조회된 사용자 수: " + users.size());
+        for (Map<String, Object> user : users) {
+            System.out.println(user);
+        }
         return "fragments/admin/modal/userlistcontent :: userlistcontent";
     }
 
+    // 🔸 사용자 결제 정보 반환 (TossPayments 연동용)
+    @PostMapping("/admin/sellcounter/payment-info")
+    @ResponseBody
+    public Map<String, Object> getProductOrderPaymentInfo(@RequestBody Map<String, Object> params) {
+        String seatId = params.get("seatId").toString();
+        int totalPrice = Integer.parseInt(params.get("totalPrice").toString());
+        String payment = params.get("payment").toString();
+        Long userNo = Long.valueOf(params.get("userNo").toString());
+        Users user = userService.findByNo(userNo);  
+        String customerName = user.getUsername();  
 
-    // /**
-    //  * 관리자 주문 팝업 - 준비중 주문 조회
-    //  * @param model
-    //  * @return
-    //  */
-    // @GetMapping("/admin/orderpopup/preparing")
-    // public String orderpopupPreparing(Model model, HttpServletRequest request) {
-    //     try {
-    //         model.addAttribute("requestURI", request.getRequestURI());
-    //         List<Orders> orderList = orderService.findOrdersByStatus(List.of(1L)); // 주문 상태가 1 인 주문만 조회
-    //         model.addAttribute("orderList", orderList);
+        // 상품명 최대 2개만 보여줌
+        List<String> productNames = ((List<?>) params.get("pNameList")).stream()
+                                                        .map(Object::toString)
+                                                        .collect(Collectors.toList());
+        String orderName = productNames.stream().limit(2).collect(Collectors.joining(", ")) + (productNames.size() > 2 ? " 외" : "");
 
-    //         Map<Long, List<Map<String, Object>>> orderDetailsMap = new HashMap<>();
-    //         for (Orders order : orderList) {
-    //             Long oNo = order.getNo();
-    //             List<Map<String, Object>> details = orderService.findDetailsWithProductNames(oNo);
-    //             if (details == null || details.isEmpty()) {
-    //                 log.warn("❗ 주문 상세 없음: orderNo = {}", oNo);
-    //                 details = new ArrayList<>();
-    //             }
-    //             orderDetailsMap.put(oNo, details);
-    //         }
-    //         // ✅ 여기부터 메뉴 이름 , 로 이어붙이기
-    //         Map<Long, String> menuNamesMap = new HashMap<>();
-        
-    //         for (Orders order : orderList) {
-    //             Long oNo = order.getNo();
-    //             List<Map<String, Object>> details = orderDetailsMap.get(oNo);
-        
-    //             if (details != null && !details.isEmpty()) {
-    //                 String names = details.stream()
-    //                     .map(d -> {
-    //                         String name = d.get("p_name").toString();
-    //                         Object quantityObj = d.get("quantity");
-    //                         int quantity = (quantityObj != null) ? Integer.parseInt(quantityObj.toString()) : 1;
-    //                         return name + "(" + quantity + ")";
-    //                     })
-    //                     .collect(Collectors.joining(", "));
-    //                 menuNamesMap.put(oNo, names);
-    //             } else {
-    //                 menuNamesMap.put(oNo, "");
-    //             }
-    //         }
-    //         model.addAttribute("menuNamesMap", menuNamesMap);
-    //         model.addAttribute("orderDetailsMap", orderDetailsMap);
-    //         model.addAttribute("orderCount", orderService.countByStatus(List.of(0L, 1L)));
-    //         model.addAttribute("preparingCount", orderService.countByStatus(List.of(1L)));
-    //         // 주문별 대기시간 계산 (현재시간 - orderTime)
-    //         Map<Long, Long> waitTimeMap = new HashMap<>();
-    //         long now = System.currentTimeMillis();
-    //         for (Orders order : orderList) {
-    //             if (order.getOrderTime() != null) {
-    //                 long waitMillis = now - order.getOrderTime().getTime();
-    //                 long waitMinutes = waitMillis / (60 * 1000);
-    //                 waitTimeMap.put(order.getNo(), waitMinutes);
-    //             } else {
-    //                 waitTimeMap.put(order.getNo(), 0L);
-    //             }
-    //         }
-    //         model.addAttribute("waitTime", waitTimeMap);
-    //     } catch (Exception e) {
-    //         log.error("❗ 관리자 주문팝업 오류", e);
-    //         model.addAttribute("errorMessage", "주문 정보를 불러오는 중 오류 발생");
-    //     }
+        String orderId = "order-" + System.currentTimeMillis() + "_seat" + seatId;
 
-    //     return "fragments/admin/orderpopup :: orderpopup";
+        Map<String, Object> result = new HashMap<>();
+        result.put("orderId", orderId);
+        result.put("orderName", orderName);
+        result.put("amount", totalPrice);
+        result.put("customerName", customerName); // 또는 로그인 유저 이름 등
+        result.put("successUrl", "http://localhost:8080/admin/payment/product/success");
 
-    // }
-
-
-
-    // /**
-    //  * 관리자 주문 팝업 - 전체 주문 조회
-    //  * @param model
-    //  * @return
-    //  */
-    // @GetMapping("/admin/orderpopup")
-    // public String orderpopup(Model model, HttpServletRequest request) {
-    //     try {
-    //         model.addAttribute("requestURI", request.getRequestURI());
-    //         List<Orders> orderList = orderService.findOrdersByStatus(List.of(0L, 1L)); // 주문 상태가 0, 1 인 주문만 조회
-    //         model.addAttribute("orderList", orderList);
-
-    //         Map<Long, List<Map<String, Object>>> orderDetailsMap = new HashMap<>();
-    //         for (Orders order : orderList) {
-    //             Long oNo = order.getNo();
-    //             List<Map<String, Object>> details = orderService.findDetailsWithProductNames(oNo);
-    //             if (details == null || details.isEmpty()) {
-    //                 log.warn("❗ 주문 상세 없음: orderNo = {}", oNo);
-    //                 details = new ArrayList<>();
-    //             }
-    //             orderDetailsMap.put(oNo, details);
-    //         }
-    //         // ✅ 여기부터 메뉴 이름 , 로 이어붙이기
-    //         Map<Long, String> menuNamesMap = new HashMap<>();
-
-    //         for (Orders order : orderList) {
-    //             Long oNo = order.getNo();
-    //             List<Map<String, Object>> details = orderDetailsMap.get(oNo);
-
-    //             if (details != null && !details.isEmpty()) {
-    //                 String names = details.stream()
-    //                     .map(d -> {
-    //                         String name = d.get("p_name").toString();
-    //                         Object quantityObj = d.get("quantity");
-    //                         int quantity = (quantityObj != null) ? Integer.parseInt(quantityObj.toString()) : 1;
-    //                         return name + "(" + quantity + ")";
-    //                     })
-    //                     .collect(Collectors.joining(", "));
-    //                 menuNamesMap.put(oNo, names);
-    //             } else {
-    //                 menuNamesMap.put(oNo, "");
-    //             }
-    //         }
-    //         model.addAttribute("menuNamesMap", menuNamesMap);
-
-    //         model.addAttribute("menuNamesMap", menuNamesMap);
-    //         model.addAttribute("orderDetailsMap", orderDetailsMap);
-    //         model.addAttribute("orderCount", orderService.countByStatus(List.of(0L, 1L)));
-    //         model.addAttribute("preparingCount", orderService.countByStatus(List.of(1L)));
-    //         // 주문별 대기시간 계산 (현재시간 - orderTime)
-    //         Map<Long, Long> waitTimeMap = new HashMap<>();
-    //         long now = System.currentTimeMillis();
-    //         for (Orders order : orderList) {
-    //             if (order.getOrderTime() != null) {
-    //                 long waitMillis = now - order.getOrderTime().getTime();
-    //                 long waitMinutes = waitMillis / (60 * 1000);
-    //                 waitTimeMap.put(order.getNo(), waitMinutes);
-    //             } else {
-    //                 waitTimeMap.put(order.getNo(), 0L);
-    //             }
-    //         }
-    //         model.addAttribute("waitTime", waitTimeMap);
-    //     } catch (Exception e) {
-    //         log.error("❗ 관리자 주문팝업 오류", e);
-    //         model.addAttribute("errorMessage", "주문 정보를 불러오는 중 오류 발생");
-    //     }
-
-    //     return "fragments/admin/orderpopup :: orderpopup";
-    // }
+        return result;
+    }
 }
     
 

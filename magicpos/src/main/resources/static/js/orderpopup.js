@@ -319,6 +319,18 @@ function closeOrderPopup() {
   }
 }
 
+// 모달 외부 클릭 시 닫기
+window.addEventListener("click", function (event) {
+  const popup = document.getElementById("orderPopup");
+  const box = document.querySelector(".order-popup-box");
+
+  if (!popup || !box) return;
+
+  if (popup.style.display === "flex" && !box.contains(event.target)) {
+    closeOrderPopup(); 
+  }
+});
+
 //sideright에서 누르면 모달 나오게 하는 것(loadOrderpopup이랑 연결)
 document.addEventListener("DOMContentLoaded", () => {
   const productBtn = document.getElementById("toggle-orderpopup");

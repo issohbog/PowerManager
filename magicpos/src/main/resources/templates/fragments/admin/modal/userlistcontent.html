@@ -7,14 +7,14 @@
         <th>남은시간</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- 사용자 있을 때 -->
-      <tr th:each="user : ${users}" th:if="${#lists.size(users) > 0}">
-        <td th:text="${user.username + ' (' + user.userId + ')'}">홍길동(hong123)</td>
+    <tbody th:if="${#lists.size(users) > 0}">
+      <tr th:each="user : ${users}">
+        <td th:text="${(user.username ?: '이름없음') + ' (' + (user.userId ?: '아이디없음') + ')'}">홍길동(hong123)</td>
         <td th:text="${user.remain_time != null ? user.remain_time + '분' : '없음'}">60분</td>
       </tr>
-      <!-- 사용자 없을 때 -->
-      <tr th:if="${#lists.isEmpty(users)}">
+    </tbody>
+    <tbody th:if="${#lists.isEmpty(users)}">
+      <tr>
         <td colspan="2" style="text-align: center;">사용 중인 회원이 없습니다</td>
       </tr>
     </tbody>

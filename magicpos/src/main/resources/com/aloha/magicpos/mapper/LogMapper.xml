@@ -19,18 +19,36 @@
 
 <!-- ✅ 전체 로그 (검색 X) -->
 <select id="findLogsByDate" resultType="map">
-SELECT l.*, u.username, u.id AS user_id
+SELECT l.*, u.username, u.id AS user_id,
+       CASE 
+          WHEN l.action_type = '상품 구매' THEN o.total_price
+          WHEN l.action_type = '이용권 구매' THEN t.price 
+          ELSE NULL
+        END AS price
 FROM logs l
 JOIN users u ON l.u_no = u.no
+LEFT JOIN orders o ON l.u_no = o.u_no
+LEFT JOIN user_tickets ut ON l.u_no = ut.u_no
+LEFT JOIN tickets t ON ut.t_no = t.no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
 </select>
+
 
 <!-- ✅ 전체 로그 (검색 O) -->
 <select id="searchAllLogsByDate" resultType="map">
-SELECT l.*, u.username, u.id AS user_id
+SELECT l.*, u.username, u.id AS user_id,
+       CASE 
+        WHEN l.action_type = '상품 구매' THEN o.total_price
+        WHEN l.action_type = '이용권 구매' THEN t.price 
+        ELSE NULL 
+       END AS price
 FROM logs l
 JOIN users u ON l.u_no = u.no
+LEFT JOIN orders o ON l.u_no = o.u_no
+LEFT JOIN user_tickets ut ON l.u_no = ut.u_no
+LEFT JOIN tickets t ON ut.t_no = t.no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND (
     u.username LIKE CONCAT('%', #{keyword}, '%')
@@ -38,7 +56,9 @@ WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
     OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
   )
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
 </select>
+
 
 <!-- ✅ 로그인 로그 -->
 <select id="findLoginLogsByDate" resultType="map">
@@ -48,6 +68,7 @@ JOIN users u ON l.u_no = u.no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND l.action_type = '로그인/로그아웃'
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
 </select>
 
 <select id="searchLoginLogsByDate" resultType="map">
@@ -62,6 +83,7 @@ WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
     OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
   )
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
 </select>
 
 <!-- ✅ 회원가입 로그 -->
@@ -72,6 +94,7 @@ JOIN users u ON l.u_no = u.no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND l.action_type = '회원가입'
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
 </select>
 
 <select id="searchJoinLogsByDate" resultType="map">
@@ -86,6 +109,7 @@ WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
     OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
   )
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
 </select>
 
 <!-- ✅ 이용권 로그 (user_tickets 기준 price join) -->
@@ -98,6 +122,7 @@ LEFT JOIN tickets t ON ut.t_no = t.no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND l.action_type = '이용권 구매'
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
 </select>
 
 <select id="searchTicketLogsByDate" resultType="map">
@@ -114,6 +139,7 @@ WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
     OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
   )
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
 </select>
 
 <!-- ✅ 상품 로그 (orders 기준 price join) -->
@@ -125,6 +151,7 @@ LEFT JOIN orders o ON l.u_no = o.u_no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND l.action_type = '상품 구매'
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
 </select>
 
 <select id="searchProductLogsByDate" resultType="map">
@@ -140,6 +167,110 @@ WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
     OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
   )
 ORDER BY l.created_at DESC
+LIMIT #{index}, #{size}
+</select>
+
+<select id="countLogsByDate" resultType="long">
+SELECT COUNT(*)
+FROM logs l
+JOIN users u ON l.u_no = u.no
+WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+</select>
+
+<select id="countLoginLogsByDate" resultType="long">
+  SELECT COUNT(*)
+  FROM logs l
+  JOIN users u ON l.u_no = u.no
+  WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+    AND l.action_type = '로그인/로그아웃'
+</select>
+
+<select id="countJoinLogsByDate" resultType="long">
+  SELECT COUNT(*)
+  FROM logs l
+  JOIN users u ON l.u_no = u.no
+  WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+    AND l.action_type = '회원가입'
+</select>
+
+<select id="countTicketLogsByDate" resultType="long">
+  SELECT COUNT(*)
+  FROM logs l
+  JOIN users u ON l.u_no = u.no
+  WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+    AND l.action_type = '이용권 구매'
+</select>
+
+<select id="countProductLogsByDate" resultType="long">
+  SELECT COUNT(*)
+  FROM logs l
+  JOIN users u ON l.u_no = u.no
+  WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+    AND l.action_type = '상품 구매'
+</select>
+
+<select id="countSearchLoginLogsByDate" resultType="long">
+  SELECT COUNT(*)
+  FROM logs l
+  JOIN users u ON l.u_no = u.no
+  WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+    AND l.action_type = '로그인/로그아웃'
+    AND (
+      u.username LIKE CONCAT('%', #{keyword}, '%')
+      OR u.id LIKE CONCAT('%', #{keyword}, '%')
+      OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+    )
+</select>
+
+<select id="countSearchJoinLogsByDate" resultType="long">
+  SELECT COUNT(*)
+  FROM logs l
+  JOIN users u ON l.u_no = u.no
+  WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+    AND l.action_type = '회원가입'
+    AND (
+      u.username LIKE CONCAT('%', #{keyword}, '%')
+      OR u.id LIKE CONCAT('%', #{keyword}, '%')
+      OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+    )
+</select>
+
+<select id="countSearchTicketLogsByDate" resultType="long">
+  SELECT COUNT(*)
+  FROM logs l
+  JOIN users u ON l.u_no = u.no
+  WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+    AND l.action_type = '이용권 구매'
+    AND (
+      u.username LIKE CONCAT('%', #{keyword}, '%')
+      OR u.id LIKE CONCAT('%', #{keyword}, '%')
+      OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+    )
+</select>
+
+<select id="countSearchProductLogsByDate" resultType="long">
+  SELECT COUNT(*)
+  FROM logs l
+  JOIN users u ON l.u_no = u.no
+  WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+    AND l.action_type = '상품 구매'
+    AND (
+      u.username LIKE CONCAT('%', #{keyword}, '%')
+      OR u.id LIKE CONCAT('%', #{keyword}, '%')
+      OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+    )
+</select>
+
+<select id="countSearchAllLogsByDate" resultType="long">
+  SELECT COUNT(*)
+  FROM logs l
+  JOIN users u ON l.u_no = u.no
+  WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
+    AND (
+      u.username LIKE CONCAT('%', #{keyword}, '%')
+      OR u.id LIKE CONCAT('%', #{keyword}, '%')
+      OR l.seat_id LIKE CONCAT('%', #{keyword}, '%')
+    )
 </select>
 
 </mapper>

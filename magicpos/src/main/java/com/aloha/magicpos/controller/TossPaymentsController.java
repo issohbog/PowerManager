@@ -169,21 +169,64 @@ public class TossPaymentsController {
     
     // 관리자 상품 결제 성공
     @GetMapping("/admin/payment/product/success")
-    public String adminProductPaymentSuccess(@RequestParam("paymentKey") String paymentKey,
-                                          @RequestParam("orderId") String orderId,
-                                          @RequestParam("amount") int amount,
-                                          Model model) throws Exception {
+    public String adminProductPaymentSuccess(
+            @RequestParam("paymentKey") String paymentKey,
+            @RequestParam("orderId") String orderId,
+            @RequestParam("amount") int amount,
+            HttpSession session,
+            Model model
+    ) throws Exception {
         log.info("💳 관리자 상품 결제 성공: paymentKey={}, orderId={}, amount={}", paymentKey, orderId, amount);
-        
-        // 관리자 상품 결제 처리 로직
-        // TODO: 관리자 상품 결제 처리 구현
-        
+
+        // ✅ 세션에서 결제 전에 저장했던 주문 정보 꺼내기
+        Map<String, Object> tempOrder = (Map<String, Object>) session.getAttribute("adminTempOrder");
+
+        if (tempOrder == null) {
+            model.addAttribute("message", "세션에 주문 정보가 없습니다.");
+            return "payment/fail";
+        }
+
+        // ✅ 주문 객체 생성
+        Orders order = new Orders();
+        order.setUNo(Long.valueOf(tempOrder.get("userNo").toString()));
+        order.setSeatId(tempOrder.get("seatId").toString());
+        order.setTotalPrice(Long.valueOf(tempOrder.get("totalPrice").toString()));
+        order.setPayment(tempOrder.get("payment").toString());
+        order.setOrderStatus(0L);
+        order.setPaymentStatus(1L); // 💳 결제 성공
+        order.setMessage("");
+
+        // ✅ DB에 주문 저장
+        boolean inserted = orderService.insertOrder(order);
+        Long oNo = order.getNo();
+
+        List<String> pNoList = (List<String>) tempOrder.get("pNoList");
+        List<String> quantityList = (List<String>) tempOrder.get("quantityList");
+
+        for (int i = 0; i < pNoList.size(); i++) {
+            OrdersDetails detail = new OrdersDetails();
+            detail.setONo(oNo);
+            detail.setPNo(Long.valueOf(pNoList.get(i)));
+            detail.setQuantity(Long.valueOf(quantityList.get(i)));
+            orderService.insertOrderDetail(oNo, detail);
+            productService.decreaseStock(Long.valueOf(pNoList.get(i)), Long.valueOf(quantityList.get(i)));
+        }
+
+        // ✅ 장바구니 삭제
+        cartService.deleteAllByUserNo(order.getUNo());
+
+        // ✅ 세션에서 임시 주문 삭제
+        session.removeAttribute("adminTempOrder");
+
+        // ✅ 성공 메시지 전달
         model.addAttribute("message", "관리자 상품 결제가 성공적으로 완료되었습니다.");
         model.addAttribute("orderId", orderId);
         model.addAttribute("amount", amount);
         model.addAttribute("paymentKey", paymentKey);
-        return "payment/success";
+
+        return "/admin";
     }
+
     
     // 관리자 상품 결제 실패
     @GetMapping("/admin/payment/product/fail")

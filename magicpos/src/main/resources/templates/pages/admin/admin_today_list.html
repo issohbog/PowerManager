@@ -25,6 +25,8 @@
         </form>
 
       </div>
+<!-- ✅ 이 부분을 fragment로 지정 -->
+<div th:fragment="todayTableFragment" id="todayTableArea">
   <table>
     <thead>
       <tr>
@@ -40,7 +42,7 @@
     </thead>
     <tbody>
       <tr th:each="item, iterStat : ${todayList}">
-        <td th:text="${iterStat.count}"></td> <!-- No -->
+        <td th:text="${(pagination.page - 1) * pagination.size + iterStat.count}">1</td>
         <td th:text="${item['history_type']}">내역분류</td>
         <td th:text="${item['item_name']}">내역명</td>
         <td th:text="${item['username']}">이름</td>
@@ -52,30 +54,87 @@
     </tbody>
   </table>
 
+  <div class="pagination">
+    <ul>
+      <li th:if="${pagination.page > 1}">
+        <a th:href="@{/admin/history/today/all(type=${type}, keyword=${keyword}, page=${pagination.page-1})}">« 이전</a>
+      </li>
+      <li th:each="i : ${#numbers.sequence(pagination.start, pagination.end)}"
+          th:classappend="${i == pagination.page} ? 'active'">
+        <a th:href="@{/admin/history/today/all(type=${type}, keyword=${keyword}, page=${i})}"
+          th:text="${i}">1</a>
+      </li>
+      <li th:if="${pagination.page < pagination.last}">
+        <a th:href="@{/admin/history/today/all(type=${type}, keyword=${keyword}, page=${pagination.page+1})}">다음 »</a>
+      </li>
+    </ul>
   </div>
-  <script>
-document.addEventListener("DOMContentLoaded", function() {
+</div>
+
+
+  </div>
+<script>
+console.log("✅ 당일내역 JS 시작됨!");
+
+document.addEventListener("DOMContentLoaded", function () {
     const selectBox = document.getElementById("typeSelect");
 
-    selectBox.addEventListener("change", function() {
+    // ✅ 검색 조건 select 변경 시 동적 로딩
+    selectBox.addEventListener("change", function () {
         const selectedType = this.value;
         const keyword = document.querySelector("input[name='keyword']").value;
 
         fetch(`/admin/history/today/all?type=${selectedType}&keyword=${keyword}`)
             .then(res => res.text())
             .then(html => {
-                // 파싱해서 테이블 tbody만 추출
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, "text/html");
-                const newTbody = doc.querySelector("tbody");
 
-                const currentTbody = document.querySelector("tbody");
-                currentTbody.innerHTML = newTbody.innerHTML;
+                const newFragment = doc.querySelector("#todayTableArea");
+                const currentFragment = document.querySelector("#todayTableArea");
+
+                if (newFragment && currentFragment) {
+                    currentFragment.innerHTML = newFragment.innerHTML;
+                    console.log("✅ 테이블 영역 교체 완료!");
+                } else {
+                    console.warn("❗ #todayTableArea를 찾지 못했어.");
+                    console.log("▶ 파싱된 HTML:", doc.documentElement.innerHTML);
+                }
             })
-            .catch(err => console.error("에러 발생:", err));
+            .catch(err => console.error("❌ 에러 발생:", err));
+    });
+
+    // ✅ 페이지네이션 클릭 시 동적 로딩
+    document.addEventListener("click", function (e) {
+        const anchor = e.target.closest('.pagination a');
+        if (anchor) {
+            e.preventDefault();
+            const url = anchor.getAttribute('href');
+
+            fetch(url)
+                .then(res => res.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, "text/html");
+
+                    const newFragment = doc.querySelector("#todayTableArea");
+                    const currentFragment = document.querySelector("#todayTableArea");
+
+                    if (newFragment && currentFragment) {
+                        currentFragment.innerHTML = newFragment.innerHTML;
+                        console.log("✅ 페이지네이션 교체 완료!");
+                    } else {
+                        console.warn("❗ #todayTableArea를 찾지 못했어.");
+                        console.log("▶ 파싱된 HTML:", doc.documentElement.innerHTML);
+                    }
+                })
+                .catch(err => console.error("❌ 에러 발생:", err));
+        }
     });
 });
 </script>
+
+
 
 </body>
 </html>
