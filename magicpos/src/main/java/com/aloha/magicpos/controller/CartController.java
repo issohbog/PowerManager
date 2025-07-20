@@ -26,7 +26,16 @@ public class CartController {
     // 장바구니에 항목 추가
     @PostMapping("/add")
     public String addToCart(Carts carts, HttpSession session) throws Exception {
-        Long uNo = (Long) session.getAttribute("userNo"); // 로그인 시 저장해뒀던 세션에서 꺼냄
+        // userNo 안전하게 변환
+        Object userNoObj = session.getAttribute("userNo");
+        Long uNo = null;
+        if (userNoObj instanceof Integer) {
+            uNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            uNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            uNo = Long.valueOf(userNoObj.toString());
+        }
         carts.setUNo(uNo); // 서버에서 직접 넣어줌
         log.info("🧪 세션 userNo: {}", uNo);
         if (carts.getQuantity() == null) {
@@ -46,7 +55,16 @@ public class CartController {
     // 장바구니 수량 증가
     @PostMapping("/increase")
     public String increaseQuantity(@RequestParam("pNo") Long pNo, HttpSession session) throws Exception{
-        Long uNo = (Long) session.getAttribute("userNo");
+        // userNo 안전하게 변환
+        Object userNoObj = session.getAttribute("userNo");
+        Long uNo = null;
+        if (userNoObj instanceof Integer) {
+            uNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            uNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            uNo = Long.valueOf(userNoObj.toString());
+        }
         cartService.increaseQuantity(uNo, pNo);
         return "redirect:/menu";
     }
@@ -54,7 +72,16 @@ public class CartController {
     // 장바구니 수량 감소
     @PostMapping("/decrease")
     public String decreaseQuantity(@RequestParam("pNo") Long pNo, HttpSession session) throws Exception{
-        Long uNo = (Long) session.getAttribute("userNo");
+        // userNo 안전하게 변환
+        Object userNoObj = session.getAttribute("userNo");
+        Long uNo = null;
+        if (userNoObj instanceof Integer) {
+            uNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            uNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            uNo = Long.valueOf(userNoObj.toString());
+        }
         cartService.decreaseQuantity(uNo,pNo);
         return "redirect:/menu";
     }

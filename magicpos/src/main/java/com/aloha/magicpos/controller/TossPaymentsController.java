@@ -169,63 +169,86 @@ public class TossPaymentsController {
     
     // 관리자 상품 결제 성공
     @GetMapping("/admin/payment/product/success")
-    public String adminProductPaymentSuccess(
-            @RequestParam("paymentKey") String paymentKey,
-            @RequestParam("orderId") String orderId,
-            @RequestParam("amount") int amount,
-            HttpSession session,
-            Model model
-    ) throws Exception {
-        log.info("💳 관리자 상품 결제 성공: paymentKey={}, orderId={}, amount={}", paymentKey, orderId, amount);
+    public String adminProductPaymentSuccess(@RequestParam("paymentKey") String paymentKey,
+    @RequestParam("orderId") String orderId,
+    @RequestParam("amount") int amount,
+    HttpSession session,
+    RedirectAttributes rttr) throws Exception {
 
-        // ✅ 세션에서 결제 전에 저장했던 주문 정보 꺼내기
-        Map<String, Object> tempOrder = (Map<String, Object>) session.getAttribute("adminTempOrder");
+    log.info("💳 사용자 상품 결제 성공: paymentKey={}, orderId={}, amount={}", paymentKey, orderId, amount);
 
-        if (tempOrder == null) {
-            model.addAttribute("message", "세션에 주문 정보가 없습니다.");
-            return "payment/fail";
-        }
-
-        // ✅ 주문 객체 생성
-        Orders order = new Orders();
-        order.setUNo(Long.valueOf(tempOrder.get("userNo").toString()));
-        order.setSeatId(tempOrder.get("seatId").toString());
-        order.setTotalPrice(Long.valueOf(tempOrder.get("totalPrice").toString()));
-        order.setPayment(tempOrder.get("payment").toString());
-        order.setOrderStatus(0L);
-        order.setPaymentStatus(1L); // 💳 결제 성공
-        order.setMessage("");
-
-        // ✅ DB에 주문 저장
-        boolean inserted = orderService.insertOrder(order);
-        Long oNo = order.getNo();
-
-        List<String> pNoList = (List<String>) tempOrder.get("pNoList");
-        List<String> quantityList = (List<String>) tempOrder.get("quantityList");
-
-        for (int i = 0; i < pNoList.size(); i++) {
-            OrdersDetails detail = new OrdersDetails();
-            detail.setONo(oNo);
-            detail.setPNo(Long.valueOf(pNoList.get(i)));
-            detail.setQuantity(Long.valueOf(quantityList.get(i)));
-            orderService.insertOrderDetail(oNo, detail);
-            productService.decreaseStock(Long.valueOf(pNoList.get(i)), Long.valueOf(quantityList.get(i)));
-        }
-
-        // ✅ 장바구니 삭제
-        cartService.deleteAllByUserNo(order.getUNo());
-
-        // ✅ 세션에서 임시 주문 삭제
-        session.removeAttribute("adminTempOrder");
-
-        // ✅ 성공 메시지 전달
-        model.addAttribute("message", "관리자 상품 결제가 성공적으로 완료되었습니다.");
-        model.addAttribute("orderId", orderId);
-        model.addAttribute("amount", amount);
-        model.addAttribute("paymentKey", paymentKey);
-
-        return "/admin";
+    // ✅ 1. 세션에서 임시 주문 정보 꺼냄
+    Map<String, Object> temp = (Map<String, Object>) session.getAttribute("tempOrder");
+    if (temp == null) {
+    rttr.addFlashAttribute("error", "주문 정보가 유실되었습니다.");
+    return "redirect:/admin";
     }
+
+    // ✅ 2. 주문 기본 정보
+    String seatId = temp.get("seatId").toString();
+
+    Object userNoObj = session.getAttribute("userNo");
+
+    Long userNo = null;
+    if (userNoObj instanceof Integer) {
+    userNo = ((Integer) userNoObj).longValue();
+    } else if (userNoObj instanceof Long) {
+    userNo = (Long) userNoObj;
+    } else if (userNoObj != null) {
+    userNo = Long.valueOf(userNoObj.toString());
+    }
+    String payment = (String) temp.get("payment");
+    // ✅ 3. 주문 insert
+    Orders order = new Orders();
+    order.setUNo(userNo);
+    order.setSeatId(seatId);
+    order.setTotalPrice((long) amount);
+    order.setOrderStatus(0L);
+    order.setPaymentStatus(1L); // 카드 결제 성공
+    order.setPayment(payment);
+    order.setPayAt(LocalDateTime.now());
+    orderService.insertOrder(order);
+    Long oNo = order.getNo();
+
+    // ✅ 4. 상세정보 insert + 재고 감소
+    List<Object> pNoObjs = (List<Object>) temp.get("pNoList");
+    List<Integer> pNos = pNoObjs.stream()
+    .map(obj -> Integer.parseInt(obj.toString()))
+    .collect(Collectors.toList());
+
+    List<Object> quantityObjs = (List<Object>) temp.get("quantityList");
+    List<Integer> quantities = quantityObjs.stream()
+        .map(obj -> Integer.parseInt(obj.toString()))
+        .collect(Collectors.toList());
+
+    List<String> pNames = (List<String>) temp.get("pNameList");
+
+    for (int i = 0; i < pNos.size(); i++) {
+    OrdersDetails detail = new OrdersDetails();
+    detail.setONo(oNo);
+    detail.setPNo(Long.valueOf(pNos.get(i)));
+    detail.setQuantity(Long.valueOf(quantities.get(i)));
+    orderService.insertOrderDetail(oNo, detail);
+    productService.decreaseStock(Long.valueOf(pNos.get(i)), Long.valueOf(quantities.get(i)));
+    }
+
+    // 장바구니 비우기
+    cartService.deleteAllByUserNo(userNo);
+
+
+    // ✅ 5. 로그 남기기
+    Users user = (Users) session.getAttribute("usageInfo");
+    String username = (user != null) ? user.getUsername() : "알 수 없음";
+    String desc = username + "님이 " + amount + "원어치 상품을 결제했습니다.";
+    logService.insertLog(userNo, seatId, "상품 구매", desc);
+
+    // ✅ 6. 세션에서 temp 제거
+    session.removeAttribute("tempOrder");
+
+    // ✅ 7. 주문 완료 모달 뜨게 redirect
+    return "redirect:/menu?orderSuccess=true";
+}
+    
 
     
     // 관리자 상품 결제 실패
@@ -259,9 +282,17 @@ public class TossPaymentsController {
 
         // ✅ 2. 주문 기본 정보
         String seatId = temp.get("seatId").toString();
-        Long userNo = (Long) session.getAttribute("userNo");
-        if (userNo == null) userNo = 1L;
 
+        Object userNoObj = session.getAttribute("userNo");
+
+        Long userNo = null;
+        if (userNoObj instanceof Integer) {
+            userNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            userNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            userNo = Long.valueOf(userNoObj.toString());
+        }
         String payment = (String) temp.get("payment");
         // ✅ 3. 주문 insert
         Orders order = new Orders();

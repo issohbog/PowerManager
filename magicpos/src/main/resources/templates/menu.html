@@ -434,6 +434,35 @@
     });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 서버에서 받아온 분 단위 값을 초로 변환
+    let usedTimeEl = document.getElementById('usedTime');
+    let remainTimeEl = document.getElementById('remainTime');
+
+    let usedSeconds = parseInt(usedTimeEl.dataset.usedMin, 10) * 60;
+    let remainSeconds = parseInt(remainTimeEl.dataset.remainMin, 10) * 60;
+
+    function pad(n) { return n < 10 ? '0' + n : n; }
+
+    function formatTime(seconds) {
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        return `${pad(hrs)}:${pad(mins)}`;
+    }
+
+    function updateTimes() {
+        usedTimeEl.textContent = formatTime(usedSeconds);
+        remainTimeEl.textContent = remainSeconds > 0 ? formatTime(remainSeconds) : "만료됨";
+        usedSeconds++;
+        if (remainSeconds > 0) remainSeconds--;
+    }
+
+    updateTimes(); // 최초 실행
+    setInterval(updateTimes, 1000); // 1초마다 갱신
+});
+</script>
+
 
 </body>
 </html>

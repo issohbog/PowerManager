@@ -272,7 +272,15 @@ public class AdminOrderController {
     @GetMapping("/cart/json")
     @ResponseBody
     public List<Map<String, Object>> getCartList(HttpSession session) {
-    Long userNo = (Long) session.getAttribute("userNo");
-    return cartService.findCartWithProductByUser(userNo);
-}
+        Object userNoObj = session.getAttribute("userNo");
+        Long userNo = null;
+        if (userNoObj instanceof Integer) {
+            userNo = ((Integer) userNoObj).longValue();
+        } else if (userNoObj instanceof Long) {
+            userNo = (Long) userNoObj;
+        } else if (userNoObj != null) {
+            userNo = Long.valueOf(userNoObj.toString());
+        }
+        return cartService.findCartWithProductByUser(userNo);
+    }
 }
