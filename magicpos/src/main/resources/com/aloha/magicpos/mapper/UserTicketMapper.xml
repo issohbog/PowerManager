@@ -58,4 +58,22 @@
         WHERE u_no = #{userNo}
     </select>
 
+    <!-- 사용자가 가진 user_tickets 중 남은 시간이 0보다 큰 것만 오래된 순서로 조회 -->
+    <select id="findUserTicketsOrderByOldest" resultType="UserTickets">
+        <![CDATA[
+            SELECT *
+            FROM user_tickets
+            WHERE u_no = #{userNo}
+            AND remain_time > 0
+            ORDER BY pay_at ASC
+        ]]>
+    </select>
+
+    <!-- 특정 티켓의 remain_time 값을 원하는 값으로 갱신 -->
+    <update id="updateRemainTime">
+        UPDATE user_tickets
+        SET remain_time = #{remainTime}
+        WHERE no = #{no}
+    </update>
+
 </mapper>

@@ -50,8 +50,11 @@ public class SeatReservationServiceImpl implements SeatReservationService {
             LocalDateTime end = endTs.toLocalDateTime();
             LocalDateTime now = LocalDateTime.now();
 
+
             long usedMinutes = Duration.between(start, now).toMinutes();
             long remainMinutes = Duration.between(now, end).toMinutes();
+
+            String username = reservation.getUsername();
 
             info.put("seat_id", seatId);
             info.put("start_time", start); 
@@ -59,6 +62,7 @@ public class SeatReservationServiceImpl implements SeatReservationService {
             info.put("used_time", usedMinutes);
             info.put("remain_time", remainMinutes);
             info.put("user_no", userNo);
+            info.put("username", username);
         } else {
             // 사용 중인 좌석 없으면 기본값
             info.put("seat_id", "");

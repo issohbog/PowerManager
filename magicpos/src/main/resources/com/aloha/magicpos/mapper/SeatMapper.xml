@@ -14,18 +14,21 @@
 
     <!-- 전체 좌석 조회 (좌석 데시보드 용 - 사용자 정보, 남은시간 도 조회) -->
     <select id="findAllSeatWithUsage" resultType="Seats">
-        SELECT 
-            s.seat_id, 
-            s.seat_name, 
-            s.seat_status, 
-            u.username, 
-            SUM(ut.remain_time) AS remainTime
-        FROM seats s 
-        LEFT JOIN seats_reservations sr ON s.seat_id = sr.seat_id 
-        LEFT JOIN users u ON sr.u_no = u.no 
-        LEFT JOIN user_tickets ut ON u.no = ut.u_no
-        GROUP BY s.seat_id, s.seat_name, s.seat_status, u.username
-        ORDER BY CAST(SUBSTRING(s.seat_id, 2) AS UNSIGNED);
+        <![CDATA[
+            SELECT 
+                s.seat_id, 
+                s.seat_name, 
+                s.seat_status, 
+                u.username, 
+                SUM(ut.remain_time) AS remainTime
+            FROM seats s 
+            LEFT JOIN seats_reservations sr 
+            ON s.seat_id = sr.seat_id AND sr.end_time > NOW()
+            LEFT JOIN users u ON sr.u_no = u.no 
+            LEFT JOIN user_tickets ut ON u.no = ut.u_no
+            GROUP BY s.seat_id, s.seat_name, s.seat_status, u.username
+            ORDER BY CAST(SUBSTRING(s.seat_id, 2) AS UNSIGNED)
+        ]]>
     </select>
 
 
@@ -104,16 +107,18 @@
 
     <!-- 로그아웃시 seats 테이블 사용 가능 -->
     <update id="releaseSeatStatus">
-        UPDATE seats
-        SET seat_status = 3
-        WHERE seat_id = (
-            SELECT seat_id
-            FROM seats_reservations
-            WHERE u_no = #{userNo}
-            AND end_time IS NULL
-            ORDER BY start_time DESC
-            LIMIT 1
-        )
+        <![CDATA[
+            UPDATE seats
+            SET seat_status = 3
+            WHERE seat_id = (
+                SELECT seat_id
+                FROM seats_reservations
+                WHERE u_no = #{userNo}
+                AND end_time > NOW()
+                ORDER BY start_time DESC
+                LIMIT 1
+            )
+        ]]>
     </update>
 
     <!-- 좌석 상태 조회 쿼리 -->

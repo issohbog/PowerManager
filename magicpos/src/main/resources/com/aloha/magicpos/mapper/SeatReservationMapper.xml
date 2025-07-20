@@ -22,11 +22,12 @@
     <!-- 사용자용 좌석 예약 내역 조회  -->
     <select id="findCurrentReservationByUser">
         <![CDATA[
-            SELECT seat_id, start_time, end_time
-            FROM seats_reservations
-            WHERE u_no = #{userNo}
-            AND end_time > NOW()
-            ORDER BY start_time DESC
+            SELECT sr.seat_id, sr.start_time, sr.end_time, u.username
+            FROM seats_reservations sr
+            JOIN users u ON sr.u_no = u.no
+            WHERE sr.u_no = #{userNo}
+            AND sr.end_time > NOW()
+            ORDER BY sr.start_time DESC
             LIMIT 1
         ]]>
     </select>
@@ -44,5 +45,25 @@
             WHERE sr.end_time > NOW()
         ]]>
     </select>
+
+    <update id="updateEndTime">
+        <![CDATA[
+            UPDATE seats_reservations
+            SET end_time = #{now}
+            WHERE u_no = #{uNo}
+            AND end_time > NOW()
+        ]]>
+    </update>
+
+    <update id="extendEndTime">
+        <![CDATA[
+            UPDATE seats_reservations
+            SET end_time = DATE_ADD(end_time, INTERVAL #{minutes} MINUTE)
+            WHERE u_no = #{userNo}
+            AND end_time > NOW()
+            ORDER BY start_time DESC
+            LIMIT 1
+        ]]>
+    </update>
 
 </mapper>

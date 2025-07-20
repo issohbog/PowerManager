@@ -11,4 +11,7 @@ public class SeatsReservations {
     private Long uNo;
     private Timestamp startTime;
     private Timestamp endTime;
+
+    // 좌석 이용 시간 조회 사용자용 - 사용자 이름 
+    private String username;
 }

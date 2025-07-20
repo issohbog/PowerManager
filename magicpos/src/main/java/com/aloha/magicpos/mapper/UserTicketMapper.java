@@ -27,5 +27,10 @@ public interface UserTicketMapper {
 
     // 특정 사용자 최근 이용권 조회
     Long findLatestTicketNoByUserNo(@Param("uNo") Long uNo);
-    
+
+    // 사용자가 가진 user_tickets 중 남은 시간이 0보다 큰 것만 오래된 순서로 조회
+    List<UserTickets> findUserTicketsOrderByOldest(@Param("userNo") Long userNo);
+
+    // 특정 티켓의 remain_time 값을 원하는 값으로 갱신
+    int updateRemainTime(@Param("no") Long no, @Param("remainTime") Long remainTime);
 }
