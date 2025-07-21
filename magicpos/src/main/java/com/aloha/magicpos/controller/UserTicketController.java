@@ -119,6 +119,7 @@ public class UserTicketController {
 
         // 서비스에서 티켓 정보 조회 및 요금제 구매 처리
         boolean success = userticketService.insertUserTicketByAdmin(userTicket);
+        log.info("요금제 구매 성공 여부 : ", success);
         return success ? "success" : "fail";
     }
 

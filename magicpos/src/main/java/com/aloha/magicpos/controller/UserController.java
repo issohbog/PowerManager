@@ -118,7 +118,6 @@ public class UserController {
         log.info("✅ 회원가입 끝났고, /login으로 리다이렉트 예정");
 
         // ✅ 로그 추가
-        // Users loguser = (Users) session.getAttribute("user");
         String username = (user != null) ? user.getUsername() : "알 수 없음";
 
         String description = username + "님이 " +  "회원 가입 하였습니다.";

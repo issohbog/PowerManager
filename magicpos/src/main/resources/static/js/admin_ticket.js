@@ -217,7 +217,7 @@ function processAdminTicketPayment() {
   console.log("선택된 결제 방법:", selectedPaymentMethod);
 
     // 신용카드 선택 시 토스페이먼츠로 이동
-  if (selectedPaymentMethod === "신용카드") {
+  if (selectedPaymentMethod === "CARD") {
     // 백엔드에서 티켓 정보 조회
     console.log("💳 티켓 정보 조회 요청:", `/usertickets/ticket/${selectedTicketNo}`);
     fetch(`/usertickets/ticket/${selectedTicketNo}`)
@@ -267,7 +267,7 @@ function processAdminTicketPayment() {
   }
 
   // 현금 결제 시
-  if (selectedPaymentMethod === "현금") {
+  if (selectedPaymentMethod === "CASH") {
     // CSRF 토큰 가져오기
     const csrfToken = document.querySelector('input[name="_csrf"]').value;
 
@@ -275,7 +275,7 @@ function processAdminTicketPayment() {
     const paymentData = {
       uNo: parseInt(selectedUserNo),
       tNo: parseInt(selectedTicketNo),
-      paymentMethod: selectedPaymentMethod,
+      payment: selectedPaymentMethod,
       payAt: new Date().toISOString()
     };
 
@@ -291,7 +291,7 @@ function processAdminTicketPayment() {
     .then(response => response.text())
     .then(result => {
       if (result === "success") {
-        alert("요금제 구매가 완료되었습니다.");ㅔㅔㅔ
+        alert("요금제 구매가 완료되었습니다.");
         closeAdminTicketModal();
         // 모달 초기화
         document.getElementById("selected-user-no").value = "";
