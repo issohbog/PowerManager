@@ -33,21 +33,33 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
+    /**
+     * 전체 회원수 조회 
+     */
     @Override
-    public List<Users> selectAll() throws Exception {
-        return userMapper.selectAll();
+    public int countUsers(String type, String keyword) {
+        if (type == null || type.isBlank() || keyword == null || keyword.isBlank()){
+            return userMapper.countAll();
+        }
+        return userMapper.countBy(type, keyword);
     }
 
     @Override
-    public List<Users> searchUsers(String type, String keyword) {
+    public List<Users> selectAll(int index, int size) throws Exception {
+        return userMapper.selectAll(index, size);
+    }
+
+
+
+    @Override
+    public List<Users> searchUsers(String type, String keyword, int index, int size) {
         // 전체보기 (검색 조건 없을 때)
         if (keyword == null || keyword.isBlank() || type == null || type.isBlank()) {
-            return userMapper.selectAll();
+            return userMapper.selectAll(index, size);
         }
 
         // 검색어 있을 경우 
-        return userMapper.searchBy(type, keyword);
+        return userMapper.searchBy(type, keyword, index, size);
     }
 
 
@@ -231,6 +243,8 @@ public class UserServiceImpl implements UserService {
                     .map(GrantedAuthority::getAuthority)
                     .anyMatch(role -> role.equals("ROLE_ADMIN"));
     }
+
+
  
 
 

@@ -124,6 +124,7 @@
                 OR CAST(p_price AS CHAR) = #{keyword}
             )
         ORDER BY no DESC
+        LIMIT #{index}, #{size}
     </select>
 
     <!-- 상품 재고 조회 -->
@@ -133,6 +134,44 @@
         WHERE no = #{pNo}
     </select>
 
+    <!-- 상품 전체 개수 조회 (페이지네이션 total용) -->
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) 
+        FROM products
+    </select>
 
+    <!-- 상품 검색 결과 개수 (페이지네이션 용)-->
+    <select id="countByCategoryAndKeyword" resultType="int">
+        SELECT COUNT(*)
+        FROM products
+        WHERE c_no = #{cNo}
+            AND (
+            p_name LIKE CONCAT('%', #{keyword}, '%')
+            OR description LIKE CONCAT('%', #{keyword}, '%')
+            )
+    </select>
+
+    <!-- 상품 전체 조회 (관리자용 - 페이지네이션)-->
+    <select id="findAllforAdmin" resultType="Products">
+        SELECT *
+        FROM products
+        ORDER BY no DESC
+        LIMIT #{index}, #{size}
+    </select>
+
+    <!-- 🔍 상품 검색 (이름, 설명, 가격) + 분류 필터링 (관리자용 - 페이지네이션)-->
+    <select id="searchProductsforAdmin" resultType="Products">
+        SELECT *
+        FROM products
+        WHERE 
+            c_no = #{cNo}
+            AND (
+                p_name LIKE CONCAT('%', #{keyword}, '%') OR
+                description LIKE CONCAT('%', #{keyword}, '%') OR
+                CAST(p_price AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+            )
+        ORDER BY no DESC
+        LIMIT #{index}, #{size}
+    </select>
 
 </mapper>

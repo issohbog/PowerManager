@@ -9,10 +9,13 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface UserService {
     // 회원 전체 조회
-    public List<Users> selectAll() throws Exception;
+    public List<Users> selectAll(int index, int size) throws Exception;
+
+    // 전체 회원 수 
+    public int countUsers(String type, String keyword);
 
     // 조건 별 회원 조회(아이디, 이름, 전화번호로 검색)
-    public List<Users> searchUsers(String type, String keyword);
+    public List<Users> searchUsers(String type, String keyword, int index, int size);
 
     // 단일 회원 조회 (번호 기준)
     public Users selectByNo(long no) throws Exception;

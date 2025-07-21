@@ -99,6 +99,32 @@ public class ProductServiceImpl implements ProductService  {
     @Override
     public List<Map<String, Object>> getProductListWithCategory() throws Exception {
         return productMapper.getProductListWithCategory();
+    }
+
+    /**
+     * 전체 상품 수 조회 
+     */
+    @Override
+    public int countProducts(String type, String keyword) {
+        if(type == null || type.isBlank() || keyword == null || keyword.isBlank()){
+            return productMapper.countAll();
+        }
+        try {
+            Long cNo = Long.parseLong(type);
+            return productMapper.countByCategoryAndKeyword(cNo, keyword);
+        } catch (NumberFormatException e) {
+            return productMapper.countAll(); 
+    }
+    }
+
+    @Override
+    public List<Products> findAllforAdmin(int index, int size) throws Exception {
+        return productMapper.findAllforAdmin(index, size);
+    }
+
+    @Override
+    public List<Products> searchProductsforAdmin(Long cNo, String keyword, int index, int size) throws Exception {
+        return productMapper.searchProductsforAdmin(cNo, keyword, index, size);
     }   
     
 

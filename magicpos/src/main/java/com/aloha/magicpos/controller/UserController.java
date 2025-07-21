@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aloha.magicpos.domain.Auths;
+import com.aloha.magicpos.domain.Pagination;
 import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.service.AuthService;
 import com.aloha.magicpos.service.LogService;
@@ -63,10 +64,20 @@ public class UserController {
         @RequestParam(value = "type", required = false) String type, 
         @RequestParam(value = "keyword", required = false) String keyword, 
         @ModelAttribute("savedUser") Users savedUser,
+        @RequestParam(name = "page", defaultValue = "1") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size,
         Model model
         ) throws Exception {
 
-        List<Users> userList = userService.searchUsers(type, keyword);
+        // 전체 회원 수 
+        int total = userService.countUsers(type, keyword);
+
+        // 페이지 네이션 객체 생성 
+        Pagination pagination = new Pagination(page, size, 10, total);
+
+        // 사용자 목록 조회 
+        List<Users> userList = userService.searchUsers(type, keyword, (page - 1) * size, size);
+        
         // 🔥 사용자별 사용시간/남은시간 계산
         for (Users user : userList) {
             Long remain = userTicketService.getTotalRemainTime(user.getNo());
@@ -77,6 +88,7 @@ public class UserController {
         }
 
         model.addAttribute("users", userList);
+        model.addAttribute("pagination", pagination);
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
 
