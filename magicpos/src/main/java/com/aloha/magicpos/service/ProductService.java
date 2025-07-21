@@ -15,6 +15,15 @@ public interface ProductService {
     // 상품 삭제
     public boolean delete(Long no) throws Exception;
 
+    // 전체 상품 수 
+    public int countProducts(String type, String keyword);
+
+    // 전체 상품 조회
+    public List<Products> findAllforAdmin(int index, int size) throws Exception;
+
+    // 🔍 상품 검색 (분류 + 키워드) throws Exception
+    public List<Products> searchProductsforAdmin(Long cNo, String keyword, int index, int size) throws Exception;
+
     // 전체 상품 조회
     public List<Products> findAll() throws Exception;
 

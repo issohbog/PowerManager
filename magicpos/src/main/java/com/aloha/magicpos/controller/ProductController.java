@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.aloha.magicpos.domain.Categories;
+import com.aloha.magicpos.domain.Pagination;
 import com.aloha.magicpos.domain.Products;
 import com.aloha.magicpos.service.CategoryService;
 import com.aloha.magicpos.service.ProductService;
@@ -60,19 +61,29 @@ public class ProductController {
     @GetMapping("/admin/productlist")
     public String productlist(@RequestParam(name="type", required = false) String type,
                               @RequestParam(name = "keyword", required = false) String keyword,
+                              @RequestParam(name = "page", defaultValue = "1") int page,
+                              @RequestParam(name = "size", defaultValue = "10") int size,
                               Model model) throws Exception{
-        List<Products> products;
+        
 
+        // 전체 상품 수 
+        int total = productService.countProducts(type, keyword);
+
+        // 페이지 네이션 객체 생성 
+        Pagination pagination = new Pagination(page, size, 10, total);
+
+        // 상품 목록 조회 
+        List<Products> products;
         if (type != null && !type.isEmpty() && keyword != null && !keyword.isEmpty()) {
             try {
                 Long categoryNo = Long.parseLong(type);
-                products = productService.searchProducts(categoryNo, keyword);
+                products = productService.searchProductsforAdmin(categoryNo, keyword, (page - 1) * size, size);
             } catch (NumberFormatException e) {
                 // 잘못된 type 값일 경우 전체 목록으로 fallback
-                products = productService.findAll();
+                products = productService.findAllforAdmin((page - 1) * size, size);
             }
         } else {
-            products = productService.findAll();
+            products = productService.findAllforAdmin((page - 1) * size, size);
         }
 
         List<Categories> categories = categoryService.findAll();
@@ -92,7 +103,7 @@ public class ProductController {
 
         model.addAttribute("products", products);
         model.addAttribute("categoryMap", categoryMap);
-
+        model.addAttribute("pagination", pagination);
         model.addAttribute("type", type);       // 선택한 카테고리 유지
         model.addAttribute("keyword", keyword); // 검색어 유지
 

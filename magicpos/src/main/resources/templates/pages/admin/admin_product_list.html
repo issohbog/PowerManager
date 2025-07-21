@@ -64,7 +64,7 @@
                   data-stock=${product.stock}
                 ">
         <td><input type="checkbox" /></td>
-        <td th:text="${iterStat.index + 1}"></td>
+        <td th:text="${pagination != null ? (pagination.page - 1) * pagination.size + iterStat.count : iterStat.count}"></td>
         <td th:text="${categoryMap[product.cNo]}"></td> <!-- 상품분류: 카테고리 번호 -->
         <td th:text="${product.pName}"></td> <!-- 상품명 -->
         <td th:text="${product.description}"></td> <!-- 상품설명 -->
@@ -82,6 +82,23 @@
       </tr>
     </tbody>
   </table>
+
+  
+    <div class="pagination">
+      <ul>
+        <li th:if="${pagination.page > 1}">
+          <a th:href="@{/products/admin/productlist(type=${type}, keyword=${keyword}, page=${pagination.page-1})}">« 이전</a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(pagination.start, pagination.end)}"
+            th:classappend="${i == pagination.page} ? 'active'">
+          <a th:href="@{/products/admin/productlist(type=${type}, keyword=${keyword}, page=${i})}"
+            th:text="${i}">1</a>
+        </li>
+        <li th:if="${pagination.page < pagination.last}">
+          <a th:href="@{/products/admin/productlist(type=${type}, keyword=${keyword}, page=${pagination.page+1})}">다음 »</a>
+        </li>
+      </ul>
+    </div>
 
   </div>
 

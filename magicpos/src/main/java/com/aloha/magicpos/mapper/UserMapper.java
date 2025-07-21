@@ -10,11 +10,17 @@ import com.aloha.magicpos.domain.Users;
 
 @Mapper
 public interface UserMapper {
+    // 전체 회원 수 
+    int countAll();
+
+    // 검색 조건을 만족하는 회원 수 
+    int countBy(@Param("type") String type, @Param("keyword") String keyword);
+
     // 회원 전체 조회
-    List<Users> selectAll();
+    List<Users> selectAll(@Param("index") int index, @Param("size") int size);
 
     // 회원 조회시 검색기능
-    List<Users> searchBy(@Param("type") String type, @Param("keyword") String keyword);
+    List<Users> searchBy(@Param("type") String type, @Param("keyword") String keyword, @Param("index") int index, @Param("size") int size);
 
     // 단일 회원 조회 (번호 기준)
     Users selectByNo(@Param("no") long no);

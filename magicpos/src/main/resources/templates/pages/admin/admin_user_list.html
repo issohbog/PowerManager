@@ -54,7 +54,7 @@
     <tbody class="user-tbody">
       <tr th:each="user, iterStat : ${users}" th:attr="data-user-no=${user.no}">
         <td><input type="checkbox" /></td>
-        <td th:text="${iterStat.index + 1}"></td>
+        <td th:text="${pagination != null ? (pagination.page - 1) * pagination.size + iterStat.count : iterStat.count}"></td>
         <td th:text="${user.username}"></td>
         <td th:text="${user.id}"></td>
         <td th:text="${#dates.format(user.birth, 'yyyy.MM.dd')}"></td>
@@ -66,6 +66,22 @@
       </tr>
     </tbody>
   </table>
+
+    <div class="pagination">
+      <ul>
+        <li th:if="${pagination.page > 1}">
+          <a th:href="@{/users/admin/userlist(type=${type}, keyword=${keyword}, page=${pagination.page-1})}">« 이전</a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(pagination.start, pagination.end)}"
+            th:classappend="${i == pagination.page} ? 'active'">
+          <a th:href="@{/users/admin/userlist(type=${type}, keyword=${keyword}, page=${i})}"
+            th:text="${i}">1</a>
+        </li>
+        <li th:if="${pagination.page < pagination.last}">
+          <a th:href="@{/users/admin/userlist(type=${type}, keyword=${keyword}, page=${pagination.page+1})}">다음 »</a>
+        </li>
+      </ul>
+    </div>
 
   </div>
 
