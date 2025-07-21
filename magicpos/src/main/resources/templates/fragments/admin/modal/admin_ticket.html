@@ -14,15 +14,16 @@
       <!-- 좌측: 테이블 -->
       <div class="admin-ticket-left">
         <div class="admin-search-bar">
-          <input type="text" id="admin-user-search-input" placeholder="회원이름검색">
-          <button class="admin-search-btn">🔍</button>
+            <input type="text" id="admin-user-search-input" placeholder="회원이름검색" />
+            <button type="submit" class="search-icon admin-search-btn">
+              <img src="/images/search.png" alt="검색버튼">
+            </button>
 
-          <!-- 실시간 유저 검색 결과 -->
-          <ul id="admin-user-search-result" class="admin-user-search-result"></ul>
+            <!-- 실시간 유저 검색 결과 -->
+            <ul id="admin-user-search-result" class="admin-user-search-result"></ul>
 
-          <!-- 선택된 유저 번호 저장용 -->
-           <input type="hidden" id="selected-user-no" name="userNo">
-
+            <!-- 선택된 유저 번호 저장용 -->
+            <input type="hidden" id="selected-user-no" name="userNo">
         </div>
 
         <table class="admin-ticket-table">
@@ -53,8 +54,8 @@
         </div>
 
         <div class="admin-pay-methods">
-          <button class="admin-pay-btn" data-payment="현금">현금</button>
-          <button class="admin-pay-btn" data-payment="신용카드">신용카드</button>
+          <button class="admin-pay-btn" data-payment="CASH">현금</button>
+          <button class="admin-pay-btn" data-payment="CARD">신용카드</button>
         </div>
 
         <!-- 선택된 결제 방법 저장용 -->

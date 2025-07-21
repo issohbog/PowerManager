@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.aloha.magicpos.domain.SeatsReservations;
 import com.aloha.magicpos.domain.Tickets;
 import com.aloha.magicpos.domain.UserTickets;
+import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.mapper.SeatReservationMapper;
 import com.aloha.magicpos.mapper.UserTicketMapper;
 import com.aloha.magicpos.service.TicketService;
@@ -24,6 +25,10 @@ public class UserTicketServiceImpl implements UserTicketService {
     @Autowired TicketService ticketService;
 
     @Autowired SeatReservationMapper seatReservationMapper;
+
+    @Autowired UserService userService;
+
+    @Autowired LogService logService;
 
     @Override
     public boolean insert(UserTickets userTicket) throws Exception {
@@ -72,6 +77,15 @@ public class UserTicketServiceImpl implements UserTicketService {
             // 기존 end_time 에 ticket 시간만큼 추가
             seatReservationMapper.extendEndTime(userTicket.getUNo(), ticketMinutes);
         }   
+        
+        // user 정보 조회 
+        Users user = userService.selectByNo(userTicket.getUNo());
+
+        // ✅ 로그 추가
+        String username = (user != null) ? user.getUsername() : "알 수 없음";
+
+        String description = username + "님이 " +  "요금제 구매하였습니다.";
+        logService.insertLogNoSeatId(user.getNo(), "요금제 구매", description);
 
         // 요금제 구매 처리
         return true;
