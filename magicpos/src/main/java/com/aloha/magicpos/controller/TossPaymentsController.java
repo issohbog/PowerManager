@@ -246,7 +246,7 @@ public class TossPaymentsController {
     session.removeAttribute("tempOrder");
 
     // ✅ 7. 주문 완료 모달 뜨게 redirect
-    return "redirect:/menu?orderSuccess=true";
+    return "redirect:/admin";
 }
     
 
