@@ -126,16 +126,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, "text/html");
 
-                    const newFragment = doc.querySelector("#logTableArea");
-                    const currentFragment = document.querySelector("#logTableArea");
+                const newTbody = doc.querySelector("#logTableArea tbody");
+                const currentTbody = document.querySelector("#logTableArea tbody");
 
-                    if (newFragment && currentFragment) {
-                        currentFragment.innerHTML = newFragment.innerHTML;
-                        console.log("✅ 로그 페이지네이션 교체 완료!");
-                    } else {
-                        console.warn("❗ #logTableArea를 찾지 못했어.");
-                        console.log("▶ 파싱된 HTML:", doc.documentElement.innerHTML);
-                    }
+                if (newTbody && currentTbody) {
+                  currentTbody.innerHTML = newTbody.innerHTML;
+                  console.log("✅ tbody 교체 완료!");
+                } else {
+                  console.warn("❗ tbody를 찾지 못했어.");
+                }
                 })
                 .catch(err => console.error("❌ 에러 발생:", err));
         }

@@ -20,16 +20,25 @@
 <!-- ✅ 전체 로그 (검색 X) -->
 <select id="findLogsByDate" resultType="map">
 SELECT l.*, u.username, u.id AS user_id,
-       CASE 
-          WHEN l.action_type = '상품 구매' THEN o.total_price
-          WHEN l.action_type = '이용권 구매' THEN t.price 
-          ELSE NULL
+        CASE 
+            WHEN l.action_type = '상품 구매' THEN (
+                SELECT total_price
+                FROM orders 
+                WHERE order_time = l.created_at
+            )     
+            WHEN l.action_type = '이용권 구매' THEN (
+                SELECT t.price 
+                FROM user_tickets ut
+                JOIN tickets t ON ut.t_no = t.no
+                WHERE ut.u_no = l.u_no 
+                    AND DATE(ut.pay_at) = DATE(l.created_at)
+                ORDER BY ut.pay_at DESC 
+                LIMIT 1
+            )
+            ELSE NULL
         END AS price
 FROM logs l
 JOIN users u ON l.u_no = u.no
-LEFT JOIN orders o ON l.u_no = o.u_no
-LEFT JOIN user_tickets ut ON l.u_no = ut.u_no
-LEFT JOIN tickets t ON ut.t_no = t.no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
 ORDER BY l.created_at DESC
 LIMIT #{index}, #{size}

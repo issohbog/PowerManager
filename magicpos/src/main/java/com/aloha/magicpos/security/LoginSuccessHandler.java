@@ -82,7 +82,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
             request.getSession().setAttribute("userNo", user.getNo());
             log.info("🌟 세션에 userNo 저장됨 = {}", user.getNo());
-            // request.getSession().setAttribute("usageInfo", user);
+            request.getSession().setAttribute("usageInfo", user);
             redirectUrl = "/admin";
         } else if (isUser) {
             CustomUser customUser = (CustomUser) authentication.getPrincipal();
