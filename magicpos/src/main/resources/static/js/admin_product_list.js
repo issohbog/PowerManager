@@ -434,9 +434,13 @@ function addCategory() {
     const rowCount = table.rows.length;
 
     const newRow = document.createElement("tr");
+
+
     newRow.innerHTML = `
       <td>${rowCount + 1}</td>
-      <td><input type="text" value="${categoryName}" /></td>
+      <td class="category-edit-wrapper">
+        <span onclick="editCategory(this)" data-category-no="0">${categoryName}</span>
+      </td>
       <td>
         <button type="button" class="delete-category-btn"
                 onclick="deleteCategoryRow(this)">×</button>
@@ -444,6 +448,8 @@ function addCategory() {
     `;
     table.appendChild(newRow);
     input.value = "";
+
+    location.reload()
   })
   .catch(error => {
     console.error("카테고리 등록 실패:", error);
