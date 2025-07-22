@@ -1,5 +1,6 @@
 package com.aloha.magicpos.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,11 +77,17 @@ public class UserTicketServiceImpl implements UserTicketService {
         // 사용자 좌석 예약 중인지 확인 
         SeatsReservations reservation = seatReservationMapper.findCurrentReservationByUser(userTicket.getUNo());
         log.info("사용자 좌석 예약 여부 : {}", reservation);
-        if (reservation != null) {
+
+        if (reservation.getEndTime().after(new Timestamp(System.currentTimeMillis()))) {
+            // endTime이 현재보다 나중이다 (아직 사용 중)
             // 기존 end_time 에 ticket 시간만큼 추가
             seatReservationMapper.extendEndTime(userTicket.getUNo(), ticketMinutes);
-            log.info("############ 티켓 시간 추가 : {}", reservation);
-        }   
+        } else {
+            // endTime이 현재보다 같거나 이전이다 (만료됨)
+            seatReservationMapper.extendTimeFromNow(userTicket.getUNo(), ticketMinutes);
+        }
+        log.info("############ (\"############ 시간 추가 : {}", reservation);
+
         
         // user 정보 조회 
         Users user = userService.selectByNo(userTicket.getUNo());

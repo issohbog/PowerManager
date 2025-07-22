@@ -34,4 +34,9 @@ public interface SeatReservationMapper {
 
     // 기존 end_time 에 ticket 시간만큼 추가
     int extendEndTime(@Param("userNo") Long userNo, @Param("minutes") long minutes);
+
+    // 현재시각 에 ticket 시간만큼 추가
+    int extendTimeFromNow(@Param("userNo") Long userNo, @Param("minutes") long minutes);
+
+
 } 
