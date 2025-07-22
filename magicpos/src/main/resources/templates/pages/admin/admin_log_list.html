@@ -112,34 +112,47 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(err => console.error("❌ 에러 발생:", err));
     });
+    
 
     // ✅ 페이지네이션 클릭 시 동적 로딩
-    document.addEventListener("click", function (e) {
-        const anchor = e.target.closest('.pagination a');
-        if (anchor) {
-            e.preventDefault();
-            const url = anchor.getAttribute('href');
+document.addEventListener("click", function (e) {
+    const anchor = e.target.closest('.pagination a');
+    if (anchor) {
+        e.preventDefault();
+        const url = anchor.getAttribute('href');
 
-            fetch(url)
-                .then(res => res.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, "text/html");
+        fetch(url)
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
 
                 const newTbody = doc.querySelector("#logTableArea tbody");
                 const currentTbody = document.querySelector("#logTableArea tbody");
 
                 if (newTbody && currentTbody) {
-                  currentTbody.innerHTML = newTbody.innerHTML;
-                  console.log("✅ tbody 교체 완료!");
+                    currentTbody.innerHTML = newTbody.innerHTML;
+                    console.log("✅ tbody 교체 완료!");
                 } else {
-                  console.warn("❗ tbody를 찾지 못했어.");
+                    console.warn("❗ tbody를 찾지 못했어.");
                 }
-                })
-                .catch(err => console.error("❌ 에러 발생:", err));
-        }
-    });
+
+                // ✅ pagination도 함께 교체
+                const newPagination = doc.querySelector(".pagination");
+                const currentPagination = document.querySelector(".pagination");
+
+                if (newPagination && currentPagination) {
+                    currentPagination.innerHTML = newPagination.innerHTML;
+                    console.log("✅ 페이지네이션 교체 완료!");
+                } else {
+                    console.warn("❗ .pagination을 찾지 못했어.");
+                }
+            }) // ← 이 괄호가 빠졌었어!
+            .catch(err => console.error("❌ 에러 발생:", err));
+    }
 });
+});
+
 </script>
 
 </body>

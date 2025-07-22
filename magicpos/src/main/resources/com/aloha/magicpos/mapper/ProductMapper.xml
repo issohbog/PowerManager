@@ -124,7 +124,6 @@
                 OR CAST(p_price AS CHAR) = #{keyword}
             )
         ORDER BY no DESC
-        LIMIT #{index}, #{size}
     </select>
 
     <!-- 상품 재고 조회 -->
@@ -173,5 +172,53 @@
         ORDER BY no DESC
         LIMIT #{index}, #{size}
     </select>
+
+    <!-- 상품명으로 검색 (Map 기반) -->
+    <select id="searchByNameMap" resultType="map">
+        SELECT p.*, c.c_name AS categoryName
+        FROM products p
+        JOIN categories c ON p.c_no = c.no
+        WHERE p.sell_status = 1
+        AND p.p_name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY p.no DESC
+    </select>
+
+    <!-- 상품설명으로 검색 (Map 기반) -->
+    <select id="searchByDescMap" resultType="map">
+        SELECT p.*, c.c_name AS categoryName
+        FROM products p
+        JOIN categories c ON p.c_no = c.no
+        WHERE p.sell_status = 1
+        AND p.description LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY p.no DESC
+    </select>
+
+    <!-- 상품가격으로 검색 (Map 기반) -->
+    <select id="searchByPriceMap" resultType="map">
+        SELECT p.*, c.c_name AS categoryName
+        FROM products p
+        JOIN categories c ON p.c_no = c.no
+        WHERE p.sell_status = 1
+        AND CAST(p.p_price AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY p.no DESC
+    </select>
+
+    <!-- 통합 검색 (Map 기반) -->
+    <select id="searchProductsAllMap" resultType="map">
+        SELECT p.*, c.c_name AS categoryName
+        FROM products p
+        JOIN categories c ON p.c_no = c.no
+        WHERE p.sell_status = 1
+        AND (
+            p.p_name LIKE CONCAT('%', #{keyword}, '%')
+            OR p.description LIKE CONCAT('%', #{keyword}, '%')
+            OR CAST(p.p_price AS CHAR) = #{keyword}
+        )
+        ORDER BY p.no DESC
+    </select>
+
+
+
+
 
 </mapper>
