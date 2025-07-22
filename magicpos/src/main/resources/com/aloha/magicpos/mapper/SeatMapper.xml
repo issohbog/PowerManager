@@ -108,16 +108,15 @@
     <!-- 로그아웃시 seats 테이블 사용 가능 -->
     <update id="releaseSeatStatus">
         <![CDATA[
-            UPDATE seats
-            SET seat_status = 3
-            WHERE seat_id = (
+            UPDATE seats s
+            JOIN (
                 SELECT seat_id
                 FROM seats_reservations
                 WHERE u_no = #{userNo}
-                AND end_time > NOW()
                 ORDER BY start_time DESC
                 LIMIT 1
-            )
+            ) sr ON s.seat_id = sr.seat_id
+            SET s.seat_status = 3
         ]]>
     </update>
 

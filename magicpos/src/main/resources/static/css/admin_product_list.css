@@ -743,11 +743,11 @@ textarea#memo {
 
 
 .category-edit-wrapper {
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     justify-content: space-around;
     gap: 7px;
-    align-items: center;
+    align-items: center; */
 }
 
 .category-table input[type="text"] {
