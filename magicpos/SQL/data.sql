@@ -1,4 +1,4 @@
--- Active: 1752492832515@@127.0.0.1@3306@magicpos
+-- Active: 1750388007092@@127.0.0.1@3306@magicpos
 USE magicpos;
 
 -- 외래 키 제약 해제
@@ -208,12 +208,6 @@ INSERT INTO orders (u_no, seat_id, total_price, payment, message, order_status, 
 (4, 'S4', 8000, 'CASH', '요청메시지4', 1, 0, NULL),   -- 결제 전
 (5, 'S5', 10000, 'CASH', '요청메시지5', 2, 1, NOW()); -- 결제 완료
 
-
-INSERT INTO carts (p_no, u_no, quantity) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3),
-(4, 4, 4);
 
 
 INSERT INTO user_tickets (u_no, t_no, remain_time, pay_at, payment) VALUES
