@@ -63,6 +63,7 @@ public class UserTicketServiceImpl implements UserTicketService {
         // 티켓 정보 조회
         Tickets ticket = ticketService.findById(userTicket.getTNo());
         if(ticket == null) return false;
+        log.info("############ 티켓 정보 있음 : {}", ticket);
 
         long ticketMinutes = ticket.getTime();
         userTicket.setRemainTime(ticketMinutes); // 티켓의 시간을 remainTime으로 설정
@@ -70,12 +71,15 @@ public class UserTicketServiceImpl implements UserTicketService {
         // userticket insert
         int insertCount = userTicketMapper.insert(userTicket);
         if(insertCount == 0) return false;
+        log.info("############ 티켓 등록됨 : {}", insertCount);
 
         // 사용자 좌석 예약 중인지 확인 
         SeatsReservations reservation = seatReservationMapper.findCurrentReservationByUser(userTicket.getUNo());
+        log.info("사용자 좌석 예약 여부 : {}", reservation);
         if (reservation != null) {
             // 기존 end_time 에 ticket 시간만큼 추가
             seatReservationMapper.extendEndTime(userTicket.getUNo(), ticketMinutes);
+            log.info("############ 티켓 시간 추가 : {}", reservation);
         }   
         
         // user 정보 조회 

@@ -1,4 +1,4 @@
--- Active: 1750388007092@@127.0.0.1@3306@magicpos
+-- Active: 1750388003489@@127.0.0.1@3306@magicpos
         SELECT 
             p.no AS productNo,
             IFNULL(SUM(CASE WHEN DATE(o.order_time) = CURDATE() THEN od.quantity ELSE 0 END), 0) AS todaySales
@@ -53,3 +53,9 @@ FROM seats_reservations s
 
 ;
 
+
+
+SELECT sr.seat_id, sr.start_time, sr.end_time, u.username 
+FROM seats_reservations sr JOIN users u ON sr.u_no = u.no 
+WHERE sr.u_no = 10 AND sr.end_time >= NOW() 
+ORDER BY sr.start_time DESC LIMIT 1;

@@ -171,8 +171,11 @@ public class HomeController {
 
         // 좌석 사용 시간 계산
         Map<String, Object> seatInfo = seatReservationService.findSeatReserveByUser(userNo);
-        long usedMinutes = (long) seatInfo.getOrDefault("used_time", 0L);
-        long remainMinutes = (long) seatInfo.getOrDefault("remain_time", 0L);
+        // long usedMinutes = (long) seatInfo.getOrDefault("used_time", 0L);
+        // long remainMinutes = (long) seatInfo.getOrDefault("remain_time", 0L);
+        long usedMinutes = ((Number) seatInfo.getOrDefault("used_time", 0)).longValue();
+        long remainMinutes = ((Number) seatInfo.getOrDefault("remain_time", 0)).longValue();
+
 
         model.addAttribute("usedTime", usedMinutes);
         model.addAttribute("remainTime", remainMinutes);
