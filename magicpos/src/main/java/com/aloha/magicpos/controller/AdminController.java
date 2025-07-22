@@ -151,7 +151,7 @@ public class AdminController {
     }
 
     @GetMapping("/admin/sell/counter")
-    public String sellcounter(@RequestParam(name = "keyword", required = false) String keyword,Model model, HttpSession session) throws Exception {
+    public String sellcounter(@RequestParam(name = "keyword", required = false) String keyword, Model model, HttpSession session) throws Exception {
         // ✅ 1. 세션에서 userNo 안전하게 변환
         Object userNoObj = session.getAttribute("userNo");
         Long userNo = null;
@@ -182,7 +182,7 @@ public class AdminController {
             cartList = new ArrayList<>();
         }
         model.addAttribute("cartList", cartList);
-
+        
         // 장바구니 총 주문 금액
         int totalPrice = cartService.getTotalPrice(userNo);
         model.addAttribute("totalPrice", totalPrice);
@@ -411,7 +411,7 @@ public class AdminController {
         return "fragments/admin/modal/userlistcontent :: userlistcontent";
     }
 
-    // 🔸 사용자 결제 정보 반환 (TossPayments 연동용)
+    // 🔸 관리자 상품 구매 (TossPayments 연동용)
     @PostMapping("/admin/sellcounter/payment-info")
     @ResponseBody
     public Map<String, Object> getProductOrderPaymentInfo(@RequestBody Map<String, Object> params) {

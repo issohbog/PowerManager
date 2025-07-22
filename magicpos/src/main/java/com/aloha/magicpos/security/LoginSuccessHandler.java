@@ -103,7 +103,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
             );
 
             request.getSession().setAttribute("userNo", user.getNo());
-            // request.getSession().setAttribute("usageInfo", user);
+            request.getSession().setAttribute("usageInfo", user);
 
             // 좌석 아이디 처리 
             String seatId = request.getParameter("seatId"); 
