@@ -48,16 +48,28 @@ LIMIT #{index}, #{size}
 <!-- ✅ 전체 로그 (검색 O) -->
 <select id="searchAllLogsByDate" resultType="map">
 SELECT l.*, u.username, u.id AS user_id,
-       CASE 
-        WHEN l.action_type = '상품 구매' THEN o.total_price
-        WHEN l.action_type = '이용권 구매' THEN t.price 
-        ELSE NULL 
-       END AS price
+        CASE 
+            WHEN l.action_type = '상품 구매' THEN (
+                SELECT o.total_price
+                FROM orders o
+                WHERE o.u_no = l.u_no
+                  AND DATE(o.order_time) = DATE(l.created_at)
+                ORDER BY o.order_time DESC
+                LIMIT 1
+            )
+            WHEN l.action_type = '이용권 구매' THEN (
+                SELECT t.price
+                FROM user_tickets ut
+                JOIN tickets t ON ut.t_no = t.no
+                WHERE ut.u_no = l.u_no
+                  AND DATE(ut.pay_at) = DATE(l.created_at)
+                ORDER BY ut.pay_at DESC
+                LIMIT 1
+            )
+            ELSE NULL
+        END AS price
 FROM logs l
 JOIN users u ON l.u_no = u.no
-LEFT JOIN orders o ON l.u_no = o.u_no
-LEFT JOIN user_tickets ut ON l.u_no = ut.u_no
-LEFT JOIN tickets t ON ut.t_no = t.no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND (
     u.username LIKE CONCAT('%', #{keyword}, '%')
@@ -123,11 +135,18 @@ LIMIT #{index}, #{size}
 
 <!-- ✅ 이용권 로그 (user_tickets 기준 price join) -->
 <select id="findTicketLogsByDate" resultType="map">
-SELECT l.*, u.username, u.id AS user_id, t.price
+SELECT l.*, u.username, u.id AS user_id,
+       (
+         SELECT t.price
+         FROM user_tickets ut
+         JOIN tickets t ON ut.t_no = t.no
+         WHERE ut.u_no = l.u_no
+           AND DATE(ut.pay_at) = DATE(l.created_at)
+         ORDER BY ut.pay_at DESC
+         LIMIT 1
+       ) AS price
 FROM logs l
 JOIN users u ON l.u_no = u.no
-LEFT JOIN user_tickets ut ON l.u_no = ut.u_no
-LEFT JOIN tickets t ON ut.t_no = t.no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND l.action_type = '이용권 구매'
 ORDER BY l.created_at DESC
@@ -135,11 +154,18 @@ LIMIT #{index}, #{size}
 </select>
 
 <select id="searchTicketLogsByDate" resultType="map">
-SELECT l.*, u.username, u.id AS user_id, t.price
+SELECT l.*, u.username, u.id AS user_id,
+       (
+         SELECT t.price
+         FROM user_tickets ut
+         JOIN tickets t ON ut.t_no = t.no
+         WHERE ut.u_no = l.u_no
+           AND DATE(ut.pay_at) = DATE(l.created_at)
+         ORDER BY ut.pay_at DESC
+         LIMIT 1
+       ) AS price
 FROM logs l
 JOIN users u ON l.u_no = u.no
-LEFT JOIN user_tickets ut ON l.u_no = ut.u_no
-LEFT JOIN tickets t ON ut.t_no = t.no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND l.action_type = '이용권 구매'
   AND (
@@ -151,23 +177,39 @@ ORDER BY l.created_at DESC
 LIMIT #{index}, #{size}
 </select>
 
+
 <!-- ✅ 상품 로그 (orders 기준 price join) -->
 <select id="findProductLogsByDate" resultType="map">
-SELECT l.*, u.username, u.id AS user_id, o.total_price AS price
+SELECT l.*, u.username, u.id AS user_id,
+       (
+         SELECT o.total_price
+         FROM orders o
+         WHERE o.u_no = l.u_no
+           AND DATE(o.order_time) = DATE(l.created_at)
+         ORDER BY o.order_time DESC
+         LIMIT 1
+       ) AS price
 FROM logs l
 JOIN users u ON l.u_no = u.no
-LEFT JOIN orders o ON l.u_no = o.u_no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND l.action_type = '상품 구매'
 ORDER BY l.created_at DESC
 LIMIT #{index}, #{size}
 </select>
 
+
 <select id="searchProductLogsByDate" resultType="map">
-SELECT l.*, u.username, u.id AS user_id, o.total_price AS price
+SELECT l.*, u.username, u.id AS user_id,
+       (
+         SELECT o.total_price
+         FROM orders o
+         WHERE o.u_no = l.u_no
+           AND DATE(o.order_time) = DATE(l.created_at)
+         ORDER BY o.order_time DESC
+         LIMIT 1
+       ) AS price
 FROM logs l
 JOIN users u ON l.u_no = u.no
-LEFT JOIN orders o ON l.u_no = o.u_no
 WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
   AND l.action_type = '상품 구매'
   AND (
@@ -178,6 +220,7 @@ WHERE DATE(l.created_at) BETWEEN #{startDate} AND #{endDate}
 ORDER BY l.created_at DESC
 LIMIT #{index}, #{size}
 </select>
+
 
 <select id="countLogsByDate" resultType="long">
 SELECT COUNT(*)

@@ -15,12 +15,19 @@ function closeAdminsellcounter() {
 }
 
 // 상품 목록 불러오기
-function loadProductsToModal() {
-  fetch("/admin/products/json")
+function loadProductsToModal(keyword = "", type = "") {
+  let url = "/admin/products/json";
+  const params = [];
+
+  if (keyword) params.push(`keyword=${encodeURIComponent(keyword)}`);
+  if (type) params.push(`type=${encodeURIComponent(type)}`);
+  if (params.length > 0) url += "?" + params.join("&");
+
+  fetch(url)
     .then(res => res.json())
     .then(productList => {
       const tbody = document.getElementById("productTableBody");
-      tbody.innerHTML = ""; // 초기화
+      tbody.innerHTML = "";
 
       productList.forEach(product => {
         const row = `
@@ -31,9 +38,9 @@ function loadProductsToModal() {
             <td>${product.stock}개</td>
             <td>${product.pPrice.toLocaleString()}원</td>
             <td>
-                <button class="cart-add-btn" data-pno="${product.no}">
-                    <img src="/images/회색 플러스.png" alt="담기" />
-                </button>
+              <button class="cart-add-btn" data-pno="${product.no}">
+                <img src="/images/회색 플러스.png" alt="담기" />
+              </button>
             </td>
           </tr>
         `;
@@ -42,6 +49,16 @@ function loadProductsToModal() {
     })
     .catch(err => console.error("상품 목록 로딩 실패:", err));
 }
+
+
+document.querySelector(".search-box").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const keyword = e.target.querySelector("input[name='keyword']").value.trim();
+  const type = e.target.querySelector("select[name='type']").value;
+  loadProductsToModal(keyword, type);
+});
+
+
 
 // ----------------------
 document.addEventListener("DOMContentLoaded", () => {
