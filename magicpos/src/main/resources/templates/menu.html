@@ -150,7 +150,7 @@
                 </div>
                 <input type="text" class="request-input" name="message" maxlength="50" placeholder="요청사항은 50자 까지 입력할 수 있습니다.">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button class="order-button" type="submit">주문하기</button>
+                <button class="order-button" type="button">주문하기</button>
             </form>
             <!-- 주문 폼 끝 -->
         </div>
@@ -356,12 +356,29 @@
     orderBtn.addEventListener('click', async function (e) {
         e.preventDefault(); // 기존 폼 제출 막기
 
-        const paymentMethod = orderForm.querySelector('input[name="payment"]:checked')?.value;
+        const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
+        const selectedCash = document.querySelector('input[name="cash"]:checked')?.value;
+        const manualInput = document.querySelector('input[name="cashManual"]');
         if (!paymentMethod) {
         alert("결제 수단을 선택해주세요.");
         return;
         }
 
+        // 현금인데 아무 금액도 선택 안 했을 때도 막아주기
+        if (paymentMethod === '현금' && !selectedCash) {
+            e.preventDefault();
+            alert('결제 금액을 선택해주세요!');
+            return;
+        }
+        // "직접 입력" 선택했는데 값이 없으면 막아주기
+        if (paymentMethod === '현금' && selectedCash === 'manual') {
+            if (!manualInput.value || manualInput.value.trim() === '') {
+                e.preventDefault(); // 제출 막기
+                alert('금액을 입력해주세요!');
+                manualInput.focus();
+                return;
+            }
+        }
         if (paymentMethod === "현금") {
         orderForm.submit();
         return;
@@ -448,7 +465,8 @@ document.addEventListener("DOMContentLoaded", function() {
     function formatTime(seconds) {
         const hrs = Math.floor(seconds / 3600);
         const mins = Math.floor((seconds % 3600) / 60);
-        return `${pad(hrs)}:${pad(mins)}`;
+        const secs = seconds % 60;
+        return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
     }
 
     function updateTimes() {
