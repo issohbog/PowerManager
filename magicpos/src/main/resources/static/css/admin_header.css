@@ -40,7 +40,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #FFD500;
+  background-color: #F4D03F;
   padding: 6px 0;
   font-size: 20px;
   text-align: center;
@@ -78,7 +78,7 @@
 /* 메뉴 링크 스타일 */
 
 .header-nav a {
-    background-color: #FFD500;
+    background-color: #F4D03F;
     border: none;
     text-decoration: none;
     color: black;

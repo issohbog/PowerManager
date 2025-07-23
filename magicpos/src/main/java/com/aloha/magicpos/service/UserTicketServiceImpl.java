@@ -78,7 +78,7 @@ public class UserTicketServiceImpl implements UserTicketService {
         SeatsReservations reservation = seatReservationMapper.findCurrentReservationByUser(userTicket.getUNo());
         log.info("사용자 좌석 예약 여부 : {}", reservation);
 
-        if (reservation.getEndTime().after(new Timestamp(System.currentTimeMillis()))) {
+        if (reservation != null && reservation.getEndTime().after(new Timestamp(System.currentTimeMillis()))) {
             // endTime이 현재보다 나중이다 (아직 사용 중)
             // 기존 end_time 에 ticket 시간만큼 추가
             seatReservationMapper.extendEndTime(userTicket.getUNo(), ticketMinutes);

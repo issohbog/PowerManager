@@ -761,8 +761,8 @@ textarea#memo {
 }
 
 .delete-category-btn {
-  border: 1px solid #5D6D7E;
-  background: #c4c4c4;
+  border: none;
+  background: none;
 }
 
 .pagination {

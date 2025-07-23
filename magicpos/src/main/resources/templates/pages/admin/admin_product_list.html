@@ -134,7 +134,9 @@
               <button type="button"
                       class="delete-category-btn"
                       th:attr="data-category-no=${entry.key}"
-                      onclick="deleteCategoryRow(this)">×</button>
+                      onclick="deleteCategoryRow(this)">
+              <img src="/images/icons8-delete-30.png" alt="삭제" style="width: 16px; height: 16px;">      
+              </button>
             </td> <!-- 삭제 버튼 -->
           </tr>
         </tbody>
