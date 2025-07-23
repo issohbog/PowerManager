@@ -239,14 +239,16 @@ function processAdminTicketPayment() {
         const amount = ticketInfo.price;
         const orderId = `admin_ticket_${Date.now()}_user${selectedUserNo}_ticket${selectedTicketNo}`;
         const orderName = ticketInfo.ticketName;
-        
+        const serverIp = ticketInfo.serverIp;       // 서버ip
+
         console.log("💳 백엔드에서 가져온 티켓 정보:", ticketInfo);
         console.log("💳 토스페이먼츠 결제 요청:", {
           orderId,
           amount,
           orderName,
           userNo: selectedUserNo,
-          ticketNo: selectedTicketNo
+          ticketNo: selectedTicketNo,
+          serverIp: serverIp
         });
         
         // 토스페이먼츠 결제창 직접 호출
@@ -255,8 +257,8 @@ function processAdminTicketPayment() {
           orderId: orderId,
           orderName: orderName,
           customerName: "관리자",
-          successUrl: "http://localhost:8080/admin/payment/ticket/success",
-          failUrl: "http://localhost:8080/admin/payment/ticket/fail",
+          successUrl: `http://${serverIp}:8080/admin/payment/ticket/success`,
+          failUrl: `http://${serverIp}:8080/admin/payment/ticket/fail`
         });
       })
       .catch(error => {

@@ -1,6 +1,9 @@
 package com.aloha.magicpos.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +11,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,15 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aloha.magicpos.domain.Carts;
 import com.aloha.magicpos.domain.Categories;
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.OrdersDetails;
-import com.aloha.magicpos.domain.Products;
 import com.aloha.magicpos.domain.Seats;
-import com.aloha.magicpos.domain.Tickets;
 import com.aloha.magicpos.domain.Users;
 import com.aloha.magicpos.service.CartService;
 import com.aloha.magicpos.service.CategoryService;
@@ -37,12 +34,10 @@ import com.aloha.magicpos.service.SeatReservationService;
 import com.aloha.magicpos.service.SeatService;
 import com.aloha.magicpos.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Arrays;
-import jakarta.servlet.http.HttpServletRequest;
 
 
 @RequiredArgsConstructor
@@ -426,7 +421,15 @@ public class AdminController {
     // 🔸 관리자 상품 구매 (TossPayments 연동용)
     @PostMapping("/admin/sellcounter/payment-info")
     @ResponseBody
-    public Map<String, Object> getProductOrderPaymentInfo(@RequestBody Map<String, Object> params) {
+    public Map<String, Object> getProductOrderPaymentInfo(@RequestBody Map<String, Object> params, HttpServletRequest request) throws UnknownHostException {
+        log.info("#############################################################");
+        log.info("client ip : {}", request.getRemoteAddr());
+        log.info("server ip : {}", InetAddress.getLocalHost().getHostAddress());
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        String ip = inetAddress.getHostAddress();
+        log.info("#############################################################");
+        
+        
         String seatId = params.get("seatId").toString();
         int totalPrice = Integer.parseInt(params.get("totalPrice").toString());
         String payment = params.get("payment").toString();
@@ -447,8 +450,8 @@ public class AdminController {
         result.put("orderName", orderName);
         result.put("amount", totalPrice);
         result.put("customerName", customerName); // 또는 로그인 유저 이름 등
-        result.put("successUrl", "http://localhost:8080/admin/payment/product/success");
-        result.put("failUrl", "http://localhost:8080/admin/payment/product/fail");
+        result.put("successUrl", "http://" + ip + ":8080/admin/payment/product/success");
+        result.put("failUrl", "http://"+ ip + ":8080/admin/payment/product/fail");
 
         return result;
     }

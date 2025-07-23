@@ -1,4 +1,4 @@
--- Active: 1750388007092@@127.0.0.1@3306@magicpos
+-- Active: 1750388003489@@127.0.0.1@3306@magicpos
 USE magicpos;
 
 -- 외래 키 제약 해제
@@ -28,7 +28,7 @@ INSERT INTO users (id, username, password, birth, gender, email, phone, memo, en
 VALUES
 ('user1', '장예지', '$2a$10$2o4jB6oDYALHLFQMMxNT8uXy4y82zwhTzJa.FKl2ptBJ65HqA2wem', '2000-01-01', 'M', 'user1@mail.com', '010-1234-1001', '메모1', 1),
 ('user2', '사용자2', '$2a$10$gQDwXAxGj1NrvaOttBedsuy.jDisoUL7oyyAAHBHryyAmnA2H8jli', '2000-01-02', 'F', 'user2@mail.com', '010-1234-1002', '메모2', 1),
-('user3', '사용자3', '$2a$10$kzqYrueR3LrNdbhTvjHHw.y8JDgblmWUDesl04EN6e2gMI7.7Gv9C', '2000-01-03', 'M', 'user3@mail.com', '010-1234-1003', '메모3', 1),
+('user3', '관리자', '$2a$10$kzqYrueR3LrNdbhTvjHHw.y8JDgblmWUDesl04EN6e2gMI7.7Gv9C', '2000-01-03', 'M', 'user3@mail.com', '010-1234-1003', '메모3', 1),
 ('user4', '사용자4', '$2a$10$mCPGOVR5VQS4JT3bhV62xOwrdLrK6WMjHk5AfaMIBYrU8igqQP1Am', '2000-01-04', 'F', 'user4@mail.com', '010-1234-1004', '메모4', 1),
 ('user5', '사용자5', '$2a$10$gUHFH4uGQy9PLaGTww2LEue.Hb9frGw6yJE6iblN5UDOhDSIMYb9e', '2000-01-05', 'M', 'user5@mail.com', '010-1234-1005', '메모5', 1);
 
@@ -39,7 +39,7 @@ INSERT INTO tickets (ticket_name, time, price) VALUES
 ('회원 1만원권', 600, 10000),
 ('회원 5만원권', 3600, 50000),
 ('회원 10만원권', 8640, 100000),
-('회원 6000원권', 220, 5000),
+('회원 6000원권', 220, 6000),
 ('회원 3만원권', 1980, 30000);
 
 
@@ -165,24 +165,24 @@ VALUES
 
 
 INSERT INTO seats (seat_id, seat_name, seat_status) VALUES
-('S1', '좌석1', 1),
-('S2', '좌석2', 1),
-('S3', '좌석3', 1),
-('S4', '좌석4', 1),
-('S5', '좌석5', 1),
+('S1', '좌석1', 0),
+('S2', '좌석2', 0),
+('S3', '좌석3', 0),
+('S4', '좌석4', 0),
+('S5', '좌석5', 0),
 ('S6', '좌석6', 2),
-('S7', '좌석7', 3),
+('S7', '좌석7', 0),
 ('S8', '좌석8', 2),
-('S9', '좌석9', 3),
+('S9', '좌석9', 0),
 ('S10', '좌석10', 0),
 ('S11', '좌석11', 0),
 ('S12', '좌석12', 0),
 ('S13', '좌석13', 0),
 ('S14', '좌석14', 0),
 ('S15', '좌석15', 0),
-('S16', '좌석16', 0),
+('S16', '좌석16', 2),
 ('S17', '좌석17', 0),
-('S18', '좌석18', 0),
+('S18', '좌석18', 2),
 ('S19', '좌석19', 0),
 ('S20', '좌석20', 0),
 ('S21', '좌석21', 0),
@@ -201,11 +201,11 @@ INSERT INTO seats (seat_id, seat_name, seat_status) VALUES
 ('S34', '좌석34', 0);
 
 -- 추가 샘플: 당일 주문 결제 내역 (결제완료)
-INSERT INTO orders (u_no, seat_id, total_price, payment, message, order_status, payment_status, pay_at) VALUES
-(1, 'S1', 2000, 'CASH', '요청메시지1', 1, 1, NOW()),  -- 결제 완료
-(2, 'S2', 4000, 'CASH', '요청메시지2', 2, 0, NULL),   -- 결제 전
-(3, 'S3', 6000, 'CASH', '요청메시지3', 0, 1, NOW()),  -- 결제 완료
-(4, 'S4', 8000, 'CASH', '요청메시지4', 1, 0, NULL);   -- 결제 전
+-- INSERT INTO orders (u_no, seat_id, total_price, payment, message, order_status, payment_status, pay_at) VALUES
+-- (1, 'S1', 2000, 'CASH', '요청메시지1', 1, 1, NOW()),  -- 결제 완료
+-- (2, 'S2', 4000, 'CASH', '요청메시지2', 2, 0, NULL),   -- 결제 전
+-- (3, 'S3', 6000, 'CASH', '요청메시지3', 0, 1, NOW()),  -- 결제 완료
+-- (4, 'S4', 8000, 'CASH', '요청메시지4', 1, 0, NULL);   -- 결제 전
 
 
 
@@ -223,20 +223,20 @@ INSERT INTO auths (u_no, auth) VALUES
 (3, 'ROLE_USER'),
 (4, 'ROLE_USER'),
 (5, 'ROLE_USER'),
-(3, 'ROLE_ADMIN'),
-(4, 'ROLE_ADMIN'),
-(5, 'ROLE_ADMIN');
+(3, 'ROLE_ADMIN');
+-- (4, 'ROLE_ADMIN'),
+-- (5, 'ROLE_ADMIN');
 
 
-INSERT INTO orders_details (o_no, p_no, quantity) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3),
-(4, 4, 4);
+-- INSERT INTO orders_details (o_no, p_no, quantity) VALUES
+-- (1, 1, 1),
+-- (2, 2, 2),
+-- (3, 3, 3),
+-- (4, 4, 4);
 
 
-INSERT INTO logs (u_no, seat_id, action_type, description) VALUES
-(1, 'S1', '로그인/로그아웃', '사용자1님이 로그인하셨습니다.');
+-- INSERT INTO logs (u_no, seat_id, action_type, description) VALUES
+-- (1, 'S1', '로그인/로그아웃', '사용자1님이 로그인하셨습니다.');
 -- (1, 'S1', '이용권 구매', '사용자1님이 5시간 이용권을 결제하셨습니다.'),
 -- (1, 'S1', '상품 구매', '사용자1님이 포카칩(1개)를 주문하셨습니다.'),
 -- (1, 'S1', '상품 구매', '사용자1님이 콜라(1개)를 주문하셨습니다.'),

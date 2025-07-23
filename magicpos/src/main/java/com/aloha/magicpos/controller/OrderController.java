@@ -1,5 +1,7 @@
 package com.aloha.magicpos.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +28,7 @@ import com.aloha.magicpos.service.UserService;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
@@ -127,7 +129,14 @@ public class OrderController {
 
     @PostMapping("/payment-info")
     @ResponseBody
-    public Map<String, Object> getProductOrderPaymentInfo(@RequestBody Map<String, Object> params) {
+    public Map<String, Object> getProductOrderPaymentInfo(@RequestBody Map<String, Object> params, HttpServletRequest request) throws UnknownHostException {
+        log.info("#############################################################");
+        log.info("client ip : {}", request.getRemoteAddr());
+        log.info("server ip : {}", InetAddress.getLocalHost().getHostAddress());
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        String ip = inetAddress.getHostAddress();
+        log.info("#############################################################");
+
         String seatId = params.get("seatId").toString();
         int totalPrice = Integer.parseInt(params.get("totalPrice").toString());
         String payment = params.get("payment").toString();
@@ -157,8 +166,8 @@ public class OrderController {
         result.put("orderName", orderName);
         result.put("amount", totalPrice);
         result.put("customerName", customerName); // 또는 로그인 유저 이름 등
-        result.put("successUrl", "http://localhost:8080/users/payment/product/success");
-        result.put("failUrl", "http://localhost:8080/users/payment/product/fail");
+        result.put("successUrl", "http://" + ip + ":8080/users/payment/product/success");
+        result.put("failUrl", "http://"+ ip + ":8080/users/payment/product/fail");
 
         return result;
     }
