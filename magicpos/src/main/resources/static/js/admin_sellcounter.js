@@ -2,6 +2,7 @@ function openAdminsellcounter() {
   const modal = document.getElementById("adminsellcounter");
   if (modal) {
     modal.style.display = "flex";
+    loadCategoriesToSelect() // 카테고리 불러오기
     loadProductsToModal(); // 상품 불러오기
     loadCartItems();
   }
@@ -14,13 +15,45 @@ function closeAdminsellcounter() {
   }
 }
 
+// 카테고리 불러오기
+function loadCategoriesToSelect() {
+  fetch("/admin/categories/json")
+    .then(res => res.json())
+    .then(categories => {
+      const select = document.querySelector("select[name='category']");
+      if (!select) return;
+
+      select.innerHTML = `<option value="">카테고리 전체</option>`; // 초기화
+
+      categories.forEach(c => {
+        const option = document.createElement("option");
+        option.value = c.no;
+        option.textContent = c.cname;
+        select.appendChild(option);
+      });
+    })
+    .catch(err => console.error("❌ 카테고리 불러오기 실패:", err));
+}
+
+categorySelect.addEventListener("change", () => {
+  const category = categorySelect.value;
+  const keyword = document.querySelector("input[name='keyword']").value.trim(); // 현재 입력된 검색어도 같이
+  loadProductsToModal(keyword, category); // 👉 필터링하려면 반드시 넘겨줘야 해!
+});
+
+
+
+
 // 상품 목록 불러오기
-function loadProductsToModal(keyword = "", type = "") {
+function loadProductsToModal(keyword = "", category = "") {
   let url = "/admin/products/json";
   const params = [];
-
+  
   if (keyword) params.push(`keyword=${encodeURIComponent(keyword)}`);
-  if (type) params.push(`type=${encodeURIComponent(type)}`);
+  if (category) params.push(`category=${encodeURIComponent(category)}`);
+  
+  console.log("✅ 검색어:", keyword);
+  console.log("✅ 카테고리:", category);
   if (params.length > 0) url += "?" + params.join("&");
 
   fetch(url)
@@ -29,9 +62,14 @@ function loadProductsToModal(keyword = "", type = "") {
       const tbody = document.getElementById("productTableBody");
       tbody.innerHTML = "";
 
+      if (!productList || productList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6">😢 상품이 없습니다</td></tr>`;
+        return;
+      }
+
       productList.forEach(product => {
         const row = `
-          <tr data-product-no="${product.no}">
+          <tr>
             <td>${product.no}</td>
             <td>${product.categoryName}</td>
             <td>${product.pName}</td>
@@ -46,17 +84,16 @@ function loadProductsToModal(keyword = "", type = "") {
         `;
         tbody.insertAdjacentHTML("beforeend", row);
       });
-    })
-    .catch(err => console.error("상품 목록 로딩 실패:", err));
+    });
 }
-
 
 document.querySelector(".search-box").addEventListener("submit", (e) => {
   e.preventDefault();
   const keyword = e.target.querySelector("input[name='keyword']").value.trim();
-  const type = e.target.querySelector("select[name='type']").value;
-  loadProductsToModal(keyword, type);
+  const category = e.target.querySelector("select[name='category']").value;
+  loadProductsToModal(keyword, category);
 });
+
 
 
 
