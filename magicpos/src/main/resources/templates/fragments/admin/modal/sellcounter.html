@@ -12,14 +12,11 @@
         <div class="productlist">
           
           <div class="top-controls">
-            <form th:action="@{/admin/sell/counter}" method="get" class="search-box">
-              <select name="type" class="admin_product_category" >
-                <option value="" th:selected="${type == null or type == ''}">상품 분류 전체</option>
-                <option value="pname" th:selected="${type == 'pname'}">상품명</option>
-                <option value="desc" th:selected="${type == 'desc'}">상품설명</option>
-                <option value="price" th:selected="${type == 'price'}">상품가격</option>
+            <form class="search-box">
+              <select name="category" id="categorySelect" class="admin_product_category">
+                <option value="">카테고리 전체</option>
+                <!-- JS로 카테고리 option이 여기에 추가될 예정 -->
               </select>
-              
               <div class="search-box">
                 <input type="text" name="keyword" th:value="${keyword}" placeholder="상품명/상품설명/상품가격" />
                 <button type="submit" class="search-icon">

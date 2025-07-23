@@ -217,6 +217,46 @@
         ORDER BY p.no DESC
     </select>
 
+    <!-- 🔍 상품 통합 검색 + 카테고리 조인 -->
+    <select id="searchProductsAllWithCategory" resultType="map">
+        SELECT
+            p.no AS no,
+            p.p_name AS pName,
+            p.p_price AS pPrice,
+            p.stock AS stock,
+            p.description AS description,
+            p.sell_status AS sellStatus,
+            p.c_no AS cNo,
+            c.c_name AS categoryName
+        FROM products p
+        JOIN categories c ON p.c_no = c.no
+        WHERE p.sell_status = 1
+        AND (
+            p.p_name LIKE CONCAT('%', #{keyword}, '%')
+            OR p.description LIKE CONCAT('%', #{keyword}, '%')
+            OR CAST(p.p_price AS CHAR) = #{keyword}
+        )
+        ORDER BY p.no DESC
+    </select>
+
+
+    <!-- 📂 카테고리별 상품 조회 + 카테고리 이름 포함 -->
+    <select id="findProductsByCategoryWithCategoryName" resultType="map">
+        SELECT
+            p.no AS no,
+            p.p_name AS pName,
+            p.p_price AS pPrice,
+            p.stock AS stock,
+            p.description AS description,
+            p.sell_status AS sellStatus,
+            p.c_no AS cNo,
+            c.c_name AS categoryName
+        FROM products p
+        JOIN categories c ON p.c_no = c.no
+        WHERE p.sell_status = 1
+        AND p.c_no = #{categoryNo}
+        ORDER BY p.no DESC
+    </select>
 
 
 

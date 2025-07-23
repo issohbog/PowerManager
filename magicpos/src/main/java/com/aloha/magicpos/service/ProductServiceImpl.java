@@ -127,5 +127,15 @@ public class ProductServiceImpl implements ProductService  {
         return productMapper.searchProductsforAdmin(cNo, keyword, index, size);
     }   
     
+    @Override
+    public List<Map<String, Object>> searchProductsAllWithCategory(String keyword) {
+        return productMapper.searchProductsAllWithCategory(keyword);
+    }
+
+    @Override
+    public List<Map<String, Object>> findProductsByCategoryWithCategoryName(Long categoryNo) {
+        return productMapper.findProductsByCategoryWithCategoryName(categoryNo);
+    }
+
 
 }

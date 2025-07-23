@@ -64,4 +64,11 @@ public interface ProductMapper {
 
     // 상품 리스트 + 분류 이름
     List<Map<String, Object>> getProductListWithCategory();
+
+    // 전체 검색
+    List<Map<String, Object>> searchProductsAllWithCategory(String keyword);
+
+    // 카테고리별 상품 조회
+    List<Map<String, Object>> findProductsByCategoryWithCategoryName(Long categoryNo);
+
 }

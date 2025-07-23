@@ -1,4 +1,4 @@
--- Active: 1752492832515@@127.0.0.1@3306@magicpos
+-- Active: 1750388007092@@127.0.0.1@3306@magicpos
 USE magicpos;
 
 -- 외래 키 제약 해제
@@ -26,7 +26,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT INTO users (id, username, password, birth, gender, email, phone, memo, enabled)
 VALUES
-('user1', '사용자1', '$2a$10$2o4jB6oDYALHLFQMMxNT8uXy4y82zwhTzJa.FKl2ptBJ65HqA2wem', '2000-01-01', 'M', 'user1@mail.com', '010-1234-1001', '메모1', 1),
+('user1', '장예지', '$2a$10$2o4jB6oDYALHLFQMMxNT8uXy4y82zwhTzJa.FKl2ptBJ65HqA2wem', '2000-01-01', 'M', 'user1@mail.com', '010-1234-1001', '메모1', 1),
 ('user2', '사용자2', '$2a$10$gQDwXAxGj1NrvaOttBedsuy.jDisoUL7oyyAAHBHryyAmnA2H8jli', '2000-01-02', 'F', 'user2@mail.com', '010-1234-1002', '메모2', 1),
 ('user3', '사용자3', '$2a$10$kzqYrueR3LrNdbhTvjHHw.y8JDgblmWUDesl04EN6e2gMI7.7Gv9C', '2000-01-03', 'M', 'user3@mail.com', '010-1234-1003', '메모3', 1),
 ('user4', '사용자4', '$2a$10$mCPGOVR5VQS4JT3bhV62xOwrdLrK6WMjHk5AfaMIBYrU8igqQP1Am', '2000-01-04', 'F', 'user4@mail.com', '010-1234-1004', '메모4', 1),
