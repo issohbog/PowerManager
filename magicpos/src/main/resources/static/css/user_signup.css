@@ -44,7 +44,7 @@ padding: 15px 12px;
   /* border-radius: 6px; */
   font-size: 14px;
   background-color: inherit;
-  color: #333;
+  color: #ffffff;
 }
 
 .user-signup-form-group input:focus {
@@ -124,7 +124,7 @@ width: 98.5%;
   padding: 10px;
   border: 1px solid #ccc;
   background-color: inherit;
-  color: #333;
+  color: #ccc;
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
@@ -138,9 +138,9 @@ width: 98.5%;
 }
 
 .user-signup-gender-btn.selected {
-  background-color: #007bff;
-  color: white;
-  border: 1px solid #007bff;
+  background-color: #F4D03F;
+  color: #2C3E50;
+  border: 1px solid #F4D03F;
 }
 
 
