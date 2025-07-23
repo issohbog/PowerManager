@@ -1,5 +1,6 @@
 package com.aloha.magicpos.controller;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import com.aloha.magicpos.service.TicketService;
 import com.aloha.magicpos.service.UserService;
 import com.aloha.magicpos.service.UserTicketService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -138,6 +140,11 @@ public class UserTicketController {
                 ticketInfo.put("ticketName", ticket.getTicketName());
                 ticketInfo.put("time", ticket.getTime());
                 ticketInfo.put("price", ticket.getPrice());
+                
+                // ✅ 서버 IP 추가
+                String serverIp = InetAddress.getLocalHost().getHostAddress();
+                ticketInfo.put("serverIp", serverIp);
+
                 log.info("🎫 티켓 정보 조회 완료: {}", ticketInfo);
                 return ticketInfo;
             } else {
@@ -157,7 +164,16 @@ public class UserTicketController {
     // 🔸 사용자 결제 정보 반환 (TossPayments 연동용)
     @PostMapping("/payment-info")
     @ResponseBody
-    public Map<String, Object> getPaymentInfo(@RequestBody Map<String, Object> params) throws Exception {
+    public Map<String, Object> getPaymentInfo(@RequestBody Map<String, Object> params, HttpServletRequest request) throws Exception {
+        log.info("#############################################################");
+        log.info("client ip : {}", request.getRemoteAddr());
+        log.info("server ip : {}", InetAddress.getLocalHost().getHostAddress());
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        String ip = inetAddress.getHostAddress();
+        log.info("#############################################################");
+        
+        
+        
         Long userNo = Long.valueOf(params.get("userNo").toString());
         Long ticketNo = Long.valueOf(params.get("ticketNo").toString());
 
@@ -175,8 +191,9 @@ public class UserTicketController {
         result.put("orderName", orderName);
         result.put("amount", amount);
         result.put("customerName", customerName);
-        result.put("successUrl", "http://localhost:8080/users/payment/ticket/success?userNo=" + userNo + "&ticketNo=" + ticketNo);
-        result.put("failUrl", "http://localhost:8080/users/payment/ticket/fail");
+
+        result.put("successUrl", "http://" + ip + ":8080/users/payment/ticket/success?userNo=" + userNo + "&ticketNo=" + ticketNo);
+        result.put("failUrl", "http://"+ ip + ":8080/users/payment/ticket/fail");
 
         return result;
     }
