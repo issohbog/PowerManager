@@ -96,7 +96,7 @@ public class UserTicketServiceImpl implements UserTicketService {
         String username = (user != null) ? user.getUsername() : "알 수 없음";
 
         String description = username + "님이 " +  "요금제 구매하였습니다.";
-        logService.insertLogNoSeatId(user.getNo(), "요금제 구매", description);
+        logService.insertLogNoSeatId(user.getNo(), "이용권 구매", description);
 
         // 요금제 구매 처리
         return true;
