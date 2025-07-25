@@ -16,4 +16,7 @@ public interface SeatReservationService {
 
     // 현재 이용중인 좌석 조회 
     public List<Map<String, Object>> findCurrentSeatUsage() throws Exception;
+
+    
+
 }

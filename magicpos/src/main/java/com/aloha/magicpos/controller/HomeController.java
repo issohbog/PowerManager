@@ -20,7 +20,6 @@ import com.aloha.magicpos.domain.Categories;
 import com.aloha.magicpos.domain.CustomUser;
 import com.aloha.magicpos.domain.Orders;
 import com.aloha.magicpos.domain.Products;
-import com.aloha.magicpos.domain.SeatsReservations;
 import com.aloha.magicpos.domain.Tickets;
 import com.aloha.magicpos.service.CartService;
 import com.aloha.magicpos.service.CategoryService;
@@ -32,10 +31,6 @@ import com.aloha.magicpos.service.TicketService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.LocalDateTime;
-import java.time.Duration;
-import java.sql.Timestamp;
 
 @Slf4j
 @Controller
@@ -84,6 +79,9 @@ public class HomeController {
         CustomUser customUser = (CustomUser) auth.getPrincipal();           // CustomUser로 캐스팅
         Long userNo = customUser.getUser().getNo();                         // 실제 Users 객체에서 no 추출
         log.info("✅ 로그인한 사용자 번호 (userNo): {}", userNo);
+
+        // 세션에 userNo 추가 0725-1
+        session.setAttribute("userNo", userNo);
 
         // ✅ 3. userNo로 모든 사용자 정보 + 좌석 정보 + 남은 시간 조회
 
