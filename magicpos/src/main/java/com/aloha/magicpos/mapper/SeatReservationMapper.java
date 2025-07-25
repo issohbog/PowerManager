@@ -38,5 +38,7 @@ public interface SeatReservationMapper {
     // 현재시각 에 ticket 시간만큼 추가
     int extendTimeFromNow(@Param("userNo") Long userNo, @Param("minutes") long minutes);
 
+    // 서버 시작 전 비정상 완료된 좌석 userNo 추출 
+    List<Long> findLoggedInUserNosFromSeatStatus();
 
 } 
