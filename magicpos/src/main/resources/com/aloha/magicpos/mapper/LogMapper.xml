@@ -186,7 +186,7 @@ SELECT l.*, u.username, u.id AS user_id,
          FROM orders o
          WHERE o.u_no = l.u_no
            AND DATE(o.order_time) = DATE(l.created_at)
-         ORDER BY o.order_time DESC
+         ORDER BY ABS(TIMESTAMPDIFF(SECOND, o.order_time, l.created_at)) ASC
          LIMIT 1
        ) AS price
 FROM logs l
@@ -198,6 +198,7 @@ LIMIT #{index}, #{size}
 </select>
 
 
+
 <select id="searchProductLogsByDate" resultType="map">
 SELECT l.*, u.username, u.id AS user_id,
        (
@@ -205,7 +206,7 @@ SELECT l.*, u.username, u.id AS user_id,
          FROM orders o
          WHERE o.u_no = l.u_no
            AND DATE(o.order_time) = DATE(l.created_at)
-         ORDER BY o.order_time DESC
+         ORDER BY ABS(TIMESTAMPDIFF(SECOND, o.order_time, l.created_at)) ASC
          LIMIT 1
        ) AS price
 FROM logs l

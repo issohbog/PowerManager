@@ -45,15 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ✅ 카드 뒤집기
-  const cards = document.querySelectorAll(".product-card");
-  if (cards.length > 0) {
-    cards.forEach(card => {
-      card.addEventListener("click", () => {
-        card.classList.toggle("flipped");
-      });
-    });
-  }
+  // ✅ 카드 뒤집기 (이벤트 위임 방식)
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".product-card")) {
+      const card = e.target.closest(".product-card");
+      card.classList.toggle("flipped");
+    }
+  });
 });
 
 // document.addEventListener('DOMContentLoaded', function () {
