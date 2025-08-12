@@ -178,6 +178,7 @@ LIMIT #{index}, #{size}
 </select>
 
 
+
 <!-- ✅ 상품 로그 (orders 기준 price join) -->
 <select id="findProductLogsByDate" resultType="map">
 SELECT l.*, u.username, u.id AS user_id,

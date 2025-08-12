@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+
   // ✅ 카드 뒤집기
   const cards = document.querySelectorAll(".product-card");
   if (cards.length > 0) {
@@ -53,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-}); // ✅ 여기에 닫는 괄호와 중괄호 추가!
+}); 
 
 // 주문 완료 모달 열기
 document.addEventListener('DOMContentLoaded', () => {
