@@ -77,6 +77,18 @@
         ]]>
     </update>
 
+    <!-- 서버 시작 전 이전에 비정상 완료된 좌석 찾기 -->
+    <select id="findLoggedInUserNosFromSeatStatus" resultType="long">
+        SELECT u_no
+        FROM (
+            SELECT *,
+                ROW_NUMBER() OVER (PARTITION BY seat_id ORDER BY start_time DESC) AS rn
+            FROM seats_reservations
+        ) sr
+        WHERE rn = 1
+        AND seat_id IN (SELECT seat_id FROM seats WHERE seat_status = 1);
+    </select>
+
 
 
 

@@ -32,6 +32,24 @@ VALUES
 ('user4', '사용자4', '$2a$10$mCPGOVR5VQS4JT3bhV62xOwrdLrK6WMjHk5AfaMIBYrU8igqQP1Am', '2000-01-04', 'F', 'user4@mail.com', '010-1234-1004', '메모4', 1),
 ('user5', '사용자5', '$2a$10$gUHFH4uGQy9PLaGTww2LEue.Hb9frGw6yJE6iblN5UDOhDSIMYb9e', '2000-01-05', 'M', 'user5@mail.com', '010-1234-1005', '메모5', 1);
 
+INSERT INTO users (id, username, password, birth, gender, email, phone, memo, enabled)
+VALUES
+('user6', '정현우', '$2a$10$hqlRnKIk5ZKTOcMZPVbkZe5DwBg4x1aSOUkgHfRIzYRUj7MvwFv4K', '1999-06-18', 'M', 'hyunwoo_j@outlook.com', '010-1234-1006', '시간 단위로 정밀하게 플레이함', 1),
+('user7', '한지민', '$2a$10$8nWAv5mnU5J35KZcElDW8e0BPUpMPxRuZpeK.yWnJD6Qf2wNTpdx2', '1996-08-09', 'F', 'jimin_h@naver.com', '010-1234-1007', '자주 뒷자리 손님과 다툼 있음', 1),
+('user8', '오승훈', '$2a$10$R2RYo8PdpbeYRx5A8Y3u3eUOr6GShMc/hFc3qDMyW8ExVu2cl9W9e', '2003-12-22', 'M', 'ohsh@hanmail.net', '010-1234-1008', '본인 키보드 들고 다님', 1),
+('user9', '유나영', '$2a$10$0RWZb2jaAfNQZ0i8eqOEvu0Mzv9ZWXYq13gxgCVQGZpbiJvyDMfG6', '2002-04-01', 'F', 'nana_yoo@gmail.com', '010-1234-1009', '항상 커피랑 샌드위치 주문', 1),
+('user10', '강동현', '$2a$10$uo7K5PZ9PbfGpCKc35FyGOYjIvmD.NKqlkmPIo1qkFC4MHQSK6OPG', '1995-01-31', 'M', 'donghyun.k@naver.com', '010-1234-1010', '게임 중 욕설 자주함, 주의 필요', 1),
+('user11', '서지호', '$2a$10$h9EZCbHD3N62Ebv0tzUMxOBzpoTx3bqHk6t0eEwDjR8x4fF6yZ2Ui', '2004-10-10', 'M', 'jihoseo@daum.net', '010-1234-1011', '매주 토요일 정기적으로 방문함', 1),
+('user12', '김하린', '$2a$10$Ycs7qVc6GHSkpBzK6QKb4.qr59mEYMyIEQ4kL4kMOp1m8T1iCzZ5O', '2000-05-05', 'F', 'harin.kim@naver.com', '010-1234-1012', '가끔 요금제 관련 문의 많음', 1),
+('user13', '윤도현', '$2a$10$EJQ2R1UpCE7D23DFyO9geO1UxDczFUTV9hAXYpy0lAs8ZGkv04ZrK', '1999-02-28', 'M', 'dohyuny@naver.com', '010-1234-1013', '게임 실력 좋음, 유튜브 방송도 함', 1),
+('user14', '배수지', '$2a$10$gVFtF3xqJHkG/PJbsWnh4.88EVrP0M1iDkC9gW6FwyoC7k1dBWWwO', '1994-10-10', 'F', 'suzibae@gmail.com', '010-1234-1014', '항상 음료만 구매 후 퇴장', 1),
+('user15', '임지성', '$2a$10$ZPfzCz0JFLRe4m7oYyZDu.z3rYk8KdPZVKzMroGZgeMdlT39HPmMe', '1996-12-30', 'M', 'jisung.i@hanmail.net', '010-1234-1015', '매장 내 모니터 밝기 민감함', 1),
+('user16', '조유리', '$2a$10$P4Et7zR6Up2UCRZUwN9ov.VZWvRxn70HfW7Z6tYoUGOmcRhsYupZe', '2001-11-11', 'F', 'yurich@naver.com', '010-1234-1016', '마우스패드 항상 바꿔달라 함', 1),
+('user17', '남준혁', '$2a$10$4Yh0w1jq3aE2bfe1D3pSHupTHJkR3PfzE0BCJQW3AzVGnExh8FaXa', '1995-09-17', 'M', 'junhyuk.n@kakao.com', '010-1234-1017', '야간 시간대에만 이용', 1),
+('user18', '홍지민', '$2a$10$sd0zU9tp0E/3gXPJ7x6Tr.3lfraQHeLt1D7ISD3ZQpF4h1bLZV1Qa', '2002-02-02', 'F', 'jiminhong@gmail.com', '010-1234-1018', '항상 지정 좌석 요청함', 1),
+('user19', '김태형', '$2a$10$e4xsk9QkwCCM8FSkdkfU/Oab/eq0JhPYrYkpoXDZbR4KrEtfDgHxe', '1993-03-03', 'M', 'tae_h@outlook.com', '010-1234-1019', '새 키보드 사용 요청함', 1),
+('user20', '이지은', '$2a$10$GqCxPLCS9z8WqgR13TDde.mLvTzHRPZ0mWWuZgGHxoILZEVBOhxWa', '1998-08-08', 'F', 'jieun_lee@naver.com', '010-1234-1020', '친절하게 인사해줌, 단골 손님', 1);
+
 
 INSERT INTO tickets (ticket_name, time, price) VALUES
 ('회원 1000원권', 40, 1000),

@@ -223,6 +223,9 @@ LIMIT #{index}, #{size}
 </select>
 
 
+
+
+
 <select id="countLogsByDate" resultType="long">
 SELECT COUNT(*)
 FROM logs l
