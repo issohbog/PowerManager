@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ✅ 카드 뒤집기 (이벤트 위임 방식)
+  // ✅ 카드 뒤집기 (이벤트 위임 방식 수정)
   document.addEventListener("click", (e) => {
     if (e.target.closest(".product-card")) {
       const card = e.target.closest(".product-card");
@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
 
 // document.addEventListener('DOMContentLoaded', function () {
 //     const paymentRadios = document.querySelectorAll('input[name="payment"]');
