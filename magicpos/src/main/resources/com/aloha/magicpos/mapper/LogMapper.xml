@@ -178,7 +178,8 @@ LIMIT #{index}, #{size}
 </select>
 
 
-<!-- ✅ 상품 로그(orders 기준 price join) -->
+
+<!-- ✅ 상품 로그 (orders 기준 price join) -->
 <select id="findProductLogsByDate" resultType="map">
 SELECT l.*, u.username, u.id AS user_id,
        (
@@ -186,7 +187,7 @@ SELECT l.*, u.username, u.id AS user_id,
          FROM orders o
          WHERE o.u_no = l.u_no
            AND DATE(o.order_time) = DATE(l.created_at)
-         ORDER BY ABS(TIMESTAMPDIFF(SECOND, o.order_time, l.created_at)) ASC
+         ORDER BY o.order_time DESC
          LIMIT 1
        ) AS price
 FROM logs l
@@ -206,7 +207,7 @@ SELECT l.*, u.username, u.id AS user_id,
          FROM orders o
          WHERE o.u_no = l.u_no
            AND DATE(o.order_time) = DATE(l.created_at)
-         ORDER BY ABS(TIMESTAMPDIFF(SECOND, o.order_time, l.created_at)) ASC
+         ORDER BY o.order_time DESC
          LIMIT 1
        ) AS price
 FROM logs l
