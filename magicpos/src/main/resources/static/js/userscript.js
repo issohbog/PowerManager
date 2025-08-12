@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   // ✅ 모달 열기/닫기
   const modal = document.getElementById('orderModal');
@@ -45,65 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ✅ 카드 뒤집기 (이벤트 위임 방식 수정)
-  document.addEventListener("click", (e) => {
-    if (e.target.closest(".product-card")) {
-      const card = e.target.closest(".product-card");
-      card.classList.toggle("flipped");
-    }
-  });
-});
-
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     const paymentRadios = document.querySelectorAll('input[name="payment"]');
-//     const cashRadios = document.querySelectorAll('.cash-option');
-//     const manualInput = document.querySelector('input[name="cashManual"]');
-//     const orderForm = document.getElementById('orderForm');
-//     const orderBtn = document.querySelector('.order-button');
-
-    
-//     function updateCashRequirement() {
-//         const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
-
-//         if (selectedPayment === '현금') {
-//             cashRadios.forEach(r => r.required = true);
-//         } else {
-//             cashRadios.forEach(r => r.required = false);
-//         }
-//     }
-//     // 💥 form 제출할 때 "직접 입력"이면 값 있는지 확인
-//     orderBtn.addEventListener('click', function (e) {
-//       console.log("🟡 버튼 눌림!");
-//         e.preventDefault(); // 기본 동작 막기
-//         const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
-//         const selectedCash = document.querySelector('input[name="cash"]:checked')?.value;
-
-//         // 현금인데 아무 금액도 선택 안 했을 때도 막아주기
-//         if (selectedPayment === '현금' && !selectedCash) {
-//             e.preventDefault();
-//             alert('결제 금액을 선택해주세요!');
-//             return;
-//         }
-//         // "직접 입력" 선택했는데 값이 없으면 막아주기
-//         if (selectedPayment === '현금' && selectedCash === 'manual') {
-//             if (!manualInput.value || manualInput.value.trim() === '') {
-//                 e.preventDefault(); // 제출 막기
-//                 alert('금액을 입력해주세요!');
-//                 manualInput.focus();
-//                 return;
-//             }
-//         }
-//         orderForm.submit();
-//       });
-
-//     // 최초, 변경 시마다 cash required 업데이트
-//     updateCashRequirement();
-//     paymentRadios.forEach(radio => {
-//         radio.addEventListener('change', updateCashRequirement);
-//     });
-// });
-
+  // ✅ 카드 뒤집기
+  const cards = document.querySelectorAll(".product-card");
+  if (cards.length > 0) {
+    cards.forEach(card => {
+      card.addEventListener("click", () => {
+        card.classList.toggle("flipped");
+      });
+    });
+  }
+}); // ✅ 여기에 닫는 괄호와 중괄호 추가!
 
 // 주문 완료 모달 열기
 document.addEventListener('DOMContentLoaded', () => {
