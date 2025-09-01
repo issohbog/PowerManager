@@ -51,12 +51,6 @@
 </details>
 
 
-<br><br>
-<a href="http://naver.com" target="_blank">네이버</a>
-
-
-
-
 
 ## 🚀 주요 기능 (Features)
 ### 사용자 (User)
