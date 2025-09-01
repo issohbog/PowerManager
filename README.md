@@ -39,24 +39,18 @@
 
 ## 🏗️ 시스템 설계 (Design)
 
-<details>
-  <summary>Flow Chart</summary>
-  <img width="2500" height="2414" alt="화면이동흐름도" src="https://github.com/user-attachments/assets/b959dabb-f330-4263-8f14-eb7002a49111" />
-</details>
-
-<details>
-  <summary>요구사항 정의서</summary>
-  <img width="602" height="527" alt="image" src="https://github.com/user-attachments/assets/76e5e044-8b33-489d-8ccd-245429afd34e" />
-</details>
-
+| 설계 자료 | 자료 링크 |
+|------|------|
+| FlowChart | [🔗 FlowChart](https://docs.google.com/drawings/d/1cZcGNW485Q9RnWW2i46_Ri4NdfCccu1uSYA8aGwsszo/edit?usp=drive_link) |
+| 요구사항 정의서 | [🔗 요구사항 정의서](https://docs.google.com/spreadsheets/d/1TrKOJpOL5LU2FmXpr_JJwGrRrlpWS6bZ/edit?usp=drive_link&ouid=116494253856014580670&rtpof=true&sd=true) |
+| 테이블 정의서 | [🔗 테이블 정의서](https://docs.google.com/document/d/1MKLIWFyV2bdyJmFlM4hYc0Ky8dZfVXbmS4uJ1mVEvSU/edit?usp=sharing) |
+| 화면 설계 | [🔗 Figma 화면설계](https://www.figma.com/design/6iwS9UY0lueFwxBOsccpAJ/POSRanger?node-id=0-1&t=gfZO85VLxMjnhKrK-1) |
 <details>
   <summary>📊ERD</summary>
   <img width="2470" height="874" alt="소상공인 매장관리 시스템 (2)" src="https://github.com/user-attachments/assets/6483388e-3baa-43f3-9b4e-fe596861f1f1" />
 </details>
 
 
-
-[Figma 화면설계 바로가기](https://www.figma.com/design/6iwS9UY0lueFwxBOsccpAJ/POSRanger?node-id=0-1&t=gfZO85VLxMjnhKrK-1)
 
 
 
