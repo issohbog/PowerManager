@@ -1,21 +1,8 @@
 # 💻 소상공인 시간제 매장관리 시스템 (PowerManager MagicPOS)
 <img width="859" height="482" alt="image" src="https://github.com/user-attachments/assets/32c324e7-0156-4c0f-8f0b-29b2b2b9db72" />
 
----
-
-## 📑 목차 (Table of Contents)
-1. [개요 (Overview)](#-개요-overview)
-2. [역할 분담 (Roles)](#-역할-분담-roles)
-3. [프로젝트 특징 (Highlights)](#-프로젝트-특징-highlights)
-4. [시스템 설계 (Design)](#-시스템-설계-design)
-5. [주요 기능 (Features)](#-주요-기능-features)
-6. [후기 (Retrospective)](#-후기-retrospective)
-
----
 ## 프로젝트 배경 
 <img width="859" height="486" alt="image" src="https://github.com/user-attachments/assets/e2e3f0aa-115f-4692-a6a1-7f80b1dff2ec" />
-
-
 
 ---
 
@@ -23,15 +10,22 @@
 - 이 프로젝트는 **좌석 관리, 요금제 관리, 상품 주문/결제 처리** 등을 통합적으로 관리할 수 있는 시스템입니다.  
 - Spring Boot, MyBatis기반으로 개발하였으며, MySQL DB를 활용해 데이터 관리 및 트랜잭션을 처리합니다.  
 
-
-
 ---
 
 ## 👥 팀 구성 (Roles)
 <img width="847" height="482" alt="image" src="https://github.com/user-attachments/assets/dd9f1e5f-4020-46cc-908c-9e6df9733589" />
 
-
-
+---
+## 개발 환경 
+- 사용 언어
+  html, javascript, css3, java
+- 프레임 워크
+  springBoot
+- 사용 Tools
+  vscode
+- 사용 DB
+  mysql
+  
 ---
 
 ## ✨ 프로젝트 특징 (Highlights)
@@ -44,23 +38,28 @@
 ---
 
 ## 🏗️ 시스템 설계 (Design)
-### 📂 아키텍처
-- **Frontend**: React (Vite 기반), TailwindCSS  
-- **Backend**: Spring Boot, MyBatis, Lombok  
-- **Database**: MySQL 8.0  
-- **Infra**: AWS EC2, Nginx  
 
-### Flow Chart
-<img width="2500" height="2414" alt="화면이동흐름도" src="https://github.com/user-attachments/assets/b959dabb-f330-4263-8f14-eb7002a49111" />
+<details>
+  <summary>Flow Chart</summary>
+  <img width="2500" height="2414" alt="화면이동흐름도" src="https://github.com/user-attachments/assets/b959dabb-f330-4263-8f14-eb7002a49111" />
+</details>
+
+<details>
+  <summary>요구사항 정의서</summary>
+  <img width="602" height="527" alt="image" src="https://github.com/user-attachments/assets/76e5e044-8b33-489d-8ccd-245429afd34e" />
+</details>
+
+<details>
+  <summary>📊ERD</summary>
+  <img width="2470" height="874" alt="소상공인 매장관리 시스템 (2)" src="https://github.com/user-attachments/assets/6483388e-3baa-43f3-9b4e-fe596861f1f1" />
+</details>
 
 
-### 📊 ERD
-<img width="2470" height="874" alt="소상공인 매장관리 시스템 (2)" src="https://github.com/user-attachments/assets/6483388e-3baa-43f3-9b4e-fe596861f1f1" />
 
-### Figma
-https://www.figma.com/design/6iwS9UY0lueFwxBOsccpAJ/POSRanger?node-id=0-1&t=gfZO85VLxMjnhKrK-1
+[Figma 화면설계 바로가기](https://www.figma.com/design/6iwS9UY0lueFwxBOsccpAJ/POSRanger?node-id=0-1&t=gfZO85VLxMjnhKrK-1)
 
----
+
+
 
 ## 🚀 주요 기능 (Features)
 ### 사용자 (User)
