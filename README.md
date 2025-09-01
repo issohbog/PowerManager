@@ -4,7 +4,7 @@
 ### [<img src="https://github.com/user-attachments/assets/c25f1946-b54c-4562-a1ea-72307995b319" width="20" height="20"> Shorts로 핵심기능 보기](https://youtube.com/shorts/iqtNZYeWNZs)
 
 
-### [🔗발표 영상 풀 버전](https://youtu.be/_A77mq09baw)
+### [🔗발표 영상 풀 버전](https://youtu.be/_A77mq09baw?si=oIPCRr7spGy_9EE2&t=1)
 ### [🔗프로젝트 시연부터 보기](https://youtu.be/_A77mq09baw?si=-GPS-Xy2KgZrJMgV&t=235)
 
 
