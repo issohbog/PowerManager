@@ -1,4 +1,5 @@
 # 💻 소상공인 시간제 매장관리 시스템 (PowerManager MagicPOS)
+<img width="859" height="482" alt="image" src="https://github.com/user-attachments/assets/32c324e7-0156-4c0f-8f0b-29b2b2b9db72" />
 
 ---
 
@@ -9,6 +10,11 @@
 4. [시스템 설계 (Design)](#-시스템-설계-design)
 5. [주요 기능 (Features)](#-주요-기능-features)
 6. [후기 (Retrospective)](#-후기-retrospective)
+
+---
+## 프로젝트 배경 
+<img width="859" height="486" alt="image" src="https://github.com/user-attachments/assets/e2e3f0aa-115f-4692-a6a1-7f80b1dff2ec" />
+
 
 
 ---
@@ -21,9 +27,9 @@
 
 ---
 
-## 👥 역할 분담 (Roles)
-- **장예지**: 
-- **박도현**: 
+## 👥 팀 구성 (Roles)
+<img width="847" height="482" alt="image" src="https://github.com/user-attachments/assets/dd9f1e5f-4020-46cc-908c-9e6df9733589" />
+
 
 
 ---
@@ -44,8 +50,15 @@
 - **Database**: MySQL 8.0  
 - **Infra**: AWS EC2, Nginx  
 
+### Flow Chart
+<img width="2500" height="2414" alt="화면이동흐름도" src="https://github.com/user-attachments/assets/b959dabb-f330-4263-8f14-eb7002a49111" />
+
+
 ### 📊 ERD
-(여기에 ERD 이미지 첨부)
+<img width="2470" height="874" alt="소상공인 매장관리 시스템 (2)" src="https://github.com/user-attachments/assets/6483388e-3baa-43f3-9b4e-fe596861f1f1" />
+
+### Figma
+https://www.figma.com/design/6iwS9UY0lueFwxBOsccpAJ/POSRanger?node-id=0-1&t=gfZO85VLxMjnhKrK-1
 
 ---
 
