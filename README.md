@@ -1,6 +1,14 @@
 # PowerManager MagicPOS 
 <img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/32c324e7-0156-4c0f-8f0b-29b2b2b9db72" />
 
+### [<img src="https://github.com/user-attachments/assets/c25f1946-b54c-4562-a1ea-72307995b319" width="20" height="20"> Shorts로 핵심기능 보기](https://youtube.com/shorts/iqtNZYeWNZs)
+
+
+### [🔗발표 영상 풀 버전](https://youtu.be/_A77mq09baw)
+### [🔗프로젝트 시연부터 보기](https://youtu.be/_A77mq09baw?si=-GPS-Xy2KgZrJMgV&t=235)
+
+
+
 ## 📑 목차 
 - [📌 프로젝트 개요](#-프로젝트-개요)
   - [🎯 주제 및 선정배경](#-주제-및-선정-배경)
