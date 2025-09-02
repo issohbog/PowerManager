@@ -105,6 +105,7 @@
 | 기능 정의서 | [🔗 기능 정의서](https://docs.google.com/spreadsheets/d/1aHBR8ZeyLRghmxpQeWnzBXLKpcgtXvwa/edit?usp=drive_link&ouid=109677689284487268281&rtpof=true&sd=true) |
 | 테이블 정의서 | [🔗 테이블 정의서](https://docs.google.com/document/d/1MKLIWFyV2bdyJmFlM4hYc0Ky8dZfVXbmS4uJ1mVEvSU/edit?usp=sharing) |
 | 화면 설계 | [🔗 Figma 화면설계](https://www.figma.com/design/6iwS9UY0lueFwxBOsccpAJ/POSRanger?node-id=0-1&t=gfZO85VLxMjnhKrK-1) |
+| ERD | [🔗 ERD](https://www.erdcloud.com/d/WXTqA3CdqNCqvx72m) |
 
 <details>
   <summary>📊 ERD</summary>
