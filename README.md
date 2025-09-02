@@ -31,11 +31,28 @@
 <img width="800" height="600" alt="사용자" src="https://github.com/user-attachments/assets/8b1553e6-c15c-4bcf-980f-6568dd1936ba" />
 <details>
   <summary>핵심 기능 화면 보기_사용자 </summary>
+  <br>
+  메인화면
   <img width="973" height="552" alt="image" src="https://github.com/user-attachments/assets/f9d3e511-4bb6-4ba3-b6bb-48fa29525036" />
+  <br>
+  <br>
+  상품구매 및 장바구니 
   <img width="987" height="554" alt="image" src="https://github.com/user-attachments/assets/974d1b9f-8406-420c-a891-ed5db3e4c306" />
+  <br>
+  <br>
+  상품결제 
   <img width="703" height="397" alt="image" src="https://github.com/user-attachments/assets/670533e0-d507-4b1f-ac23-0b84d85df004" />
+  <br>
+  <br>
+  주문내역
   <img width="690" height="387" alt="image" src="https://github.com/user-attachments/assets/48bbe106-83ab-43f8-b4f0-3ae5b8e8c11a" />
+  <br>
+  <br>
+  요금제구매 
   <img width="695" height="388" alt="image" src="https://github.com/user-attachments/assets/3f1c365a-79ca-4fff-a7b1-c7a800441361" />
+  <br>
+  <br>
+  요금제결제
   <img width="1143" height="639" alt="image" src="https://github.com/user-attachments/assets/020df20b-9852-4def-8f09-d90d7142f464" />
 </details>
 
