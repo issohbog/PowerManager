@@ -105,12 +105,8 @@
 | 기능 정의서 | [🔗 기능 정의서](https://docs.google.com/spreadsheets/d/1aHBR8ZeyLRghmxpQeWnzBXLKpcgtXvwa/edit?usp=drive_link&ouid=109677689284487268281&rtpof=true&sd=true) |
 | 테이블 정의서 | [🔗 테이블 정의서](https://docs.google.com/document/d/1MKLIWFyV2bdyJmFlM4hYc0Ky8dZfVXbmS4uJ1mVEvSU/edit?usp=sharing) |
 | 화면 설계 | [🔗 Figma 화면설계](https://www.figma.com/design/6iwS9UY0lueFwxBOsccpAJ/POSRanger?node-id=0-1&t=gfZO85VLxMjnhKrK-1) |
-| ERD | [🔗 ERD](https://www.erdcloud.com/d/WXTqA3CdqNCqvx72m) |
+| ERD | [🔗 ERD](https://drive.google.com/file/d/1-QKO0EpytCZcESEZdrmcuCCT5eD877mQ/view?usp=drive_link) |
 
-<details>
-  <summary>📊 ERD</summary>
-  <img width="2470" height="874" alt="소상공인 매장관리 시스템 (2)" src="https://github.com/user-attachments/assets/6483388e-3baa-43f3-9b4e-fe596861f1f1" />
-</details>
 
 ### 🛠️ 개발 환경 
 <img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/fda11dcd-2849-4b9c-a8df-65af1d937d75" />
