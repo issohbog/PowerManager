@@ -33,50 +33,50 @@
   <summary>핵심 기능 화면 보기_사용자 </summary>
   <br>
   메인화면
-  <img width="973" height="552" alt="image" src="https://github.com/user-attachments/assets/f9d3e511-4bb6-4ba3-b6bb-48fa29525036" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/f9d3e511-4bb6-4ba3-b6bb-48fa29525036" />
   <br>
   <br>
   상품구매 및 장바구니 
-  <img width="987" height="554" alt="image" src="https://github.com/user-attachments/assets/974d1b9f-8406-420c-a891-ed5db3e4c306" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/974d1b9f-8406-420c-a891-ed5db3e4c306" />
   <br>
   <br>
   상품결제 
-  <img width="703" height="397" alt="image" src="https://github.com/user-attachments/assets/670533e0-d507-4b1f-ac23-0b84d85df004" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/670533e0-d507-4b1f-ac23-0b84d85df004" />
   <br>
   <br>
   주문내역
-  <img width="690" height="387" alt="image" src="https://github.com/user-attachments/assets/48bbe106-83ab-43f8-b4f0-3ae5b8e8c11a" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/48bbe106-83ab-43f8-b4f0-3ae5b8e8c11a" />
   <br>
   <br>
   요금제구매 
-  <img width="695" height="388" alt="image" src="https://github.com/user-attachments/assets/3f1c365a-79ca-4fff-a7b1-c7a800441361" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/3f1c365a-79ca-4fff-a7b1-c7a800441361" />
   <br>
   <br>
   요금제결제
-  <img width="1143" height="639" alt="image" src="https://github.com/user-attachments/assets/020df20b-9852-4def-8f09-d90d7142f464" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/020df20b-9852-4def-8f09-d90d7142f464" />
 </details>
 
 <details>
   <summary>핵심 기능 화면 보기_관리자 </summary>
   <br>
   좌석관리
-  <img width="1155" height="651" alt="image" src="https://github.com/user-attachments/assets/16d9716a-498f-4855-aeaa-460aff688a4b" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/16d9716a-498f-4855-aeaa-460aff688a4b" />
   <br>
   <br>
   당일내역
-  <img width="1217" height="665" alt="image" src="https://github.com/user-attachments/assets/ed7d2cae-e184-48f5-aadc-2264565101c7" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/ed7d2cae-e184-48f5-aadc-2264565101c7" />
   <br>
   <br>
   회원관리(등록)
-  <img width="1148" height="644" alt="image" src="https://github.com/user-attachments/assets/4cd44f32-6067-463b-891b-71a5da2ea132" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/4cd44f32-6067-463b-891b-71a5da2ea132" />
   <br>
   <br>
   상품관리
-  <img width="1149" height="646" alt="image" src="https://github.com/user-attachments/assets/100dd9cd-db59-4427-aa3d-cd4fe37915e4" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/100dd9cd-db59-4427-aa3d-cd4fe37915e4" />
   <br>
   <br>
   로그분석
-  <img width="1206" height="677" alt="image" src="https://github.com/user-attachments/assets/5a47baa6-c7fe-4428-aca1-2bb06074c172" />
+  <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/5a47baa6-c7fe-4428-aca1-2bb06074c172" />
   <br>
   <br>
   상품판매
